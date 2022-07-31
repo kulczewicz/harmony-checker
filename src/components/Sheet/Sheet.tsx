@@ -1,12 +1,12 @@
 import { Box, BoxProps, Divider, Flex } from "theme-ui";
-import { Note } from "../../types/data";
+import { Bar } from "../../types/data";
 import { BassKey, ViolinKey } from "../Notation";
 
 const distanceBetweenTheLines = 8;
 const lineThickness = 1;
 const staffHeight = 5 * lineThickness + 4 * distanceBetweenTheLines;
 const staffPadding = 32;
-function Staff() {
+function StaffLines() {
   return (
     <Box
       sx={{
@@ -53,6 +53,102 @@ const Accolade = () => (
 //   positionInBar: number;
 // }
 
+const melody: Bar[] = [
+  {
+    length: 32,
+    voices: {
+      soprano: [
+        {
+          duration: 8,
+          position: 0,
+          pitch: "A4",
+        },
+        {
+          duration: 8,
+          position: 8,
+          pitch: "B4",
+        },
+        {
+          duration: 8,
+          position: 16,
+          pitch: "G4",
+        },
+        {
+          duration: 8,
+          position: 24,
+          pitch: "A4",
+        },
+      ],
+      alto: [
+        {
+          duration: 8,
+          position: 0,
+          pitch: "G4",
+        },
+        {
+          duration: 8,
+          position: 8,
+          pitch: "F4",
+        },
+        {
+          duration: 8,
+          position: 16,
+          pitch: "E4",
+        },
+        {
+          duration: 8,
+          position: 24,
+          pitch: "F4",
+        },
+      ],
+      tenor: [
+        {
+          duration: 8,
+          position: 0,
+          pitch: "C4",
+        },
+        {
+          duration: 8,
+          position: 8,
+          pitch: "B3",
+        },
+        {
+          duration: 8,
+          position: 16,
+          pitch: "F4",
+        },
+        {
+          duration: 8,
+          position: 24,
+          pitch: "E4",
+        },
+      ],
+      bass: [
+        {
+          duration: 8,
+          position: 0,
+          pitch: "C3",
+        },
+        {
+          duration: 8,
+          position: 8,
+          pitch: "D3",
+        },
+        {
+          duration: 8,
+          position: 16,
+          pitch: "E3",
+        },
+        {
+          duration: 8,
+          position: 24,
+          pitch: "F3",
+        },
+      ],
+    },
+  },
+];
+
 function Bar() {
   return (
     <Box sx={{ height: "100%", minWidth: "16px", position: "relative" }}></Box>
@@ -81,7 +177,7 @@ function ViolinStaff({ children, sx, ...props }: BoxProps) {
       }}
       {...props}
     >
-      <Staff />
+      <StaffLines />
       <Flex sx={{ height: "100%" }}>
         <ViolinKey height="60px" sx={{ mt: "22px", mx: 2 }} />
         <ViolinKeySignature />
@@ -102,7 +198,7 @@ function BassStaff({ children, sx, ...props }: BoxProps) {
       }}
       {...props}
     >
-      <Staff />
+      <StaffLines />
       <Flex sx={{ h: "100%" }}>
         <BassKey height="30px" sx={{ mt: "33px", mx: 2 }} />
         <BassKeySignature />

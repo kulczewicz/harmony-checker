@@ -1,6 +1,6 @@
 type NoteSymbol = "C" | "D" | "E" | "F" | "G" | "A" | "B";
-type Octave = 2 | 3 | 4 | 5 | 6; // others are out of the voice range
-type NotePitch = `${NoteSymbol}${Octave}`;
+// type Octave = 2 | 3 | 4 | 5 | 6; // others are out of the voice range
+// type NotePitch = `${NoteSymbol}${Octave}`;
 
 /* NoteDuration in thirty-second notes - we can get only following values
  * whole note = 32            | whole with dot = 48                | whole with two dots = 56
@@ -34,8 +34,37 @@ type NoteAccidental =
   | "double-flat"
   | "double-sharp";
 
-export interface Note {
+export interface BaseNote {
   duration: NoteDuration;
-  pitch: NotePitch;
+  position: number; // offset from the beginning of the bar
   accidental?: NoteAccidental;
+}
+
+export interface NoteSoprano extends BaseNote {
+  pitch: `${"A" | "B"}3` | `${NoteSymbol}${4 | 5}` | `${"C" | "D" | "E"}6`;
+}
+
+export interface NoteAlto extends BaseNote {
+  pitch:
+    | `${Exclude<NoteSymbol, "C">}3`
+    | `${NoteSymbol}4`
+    | `${Exclude<NoteSymbol, "B">}5`;
+}
+
+export interface NoteTenor extends BaseNote {
+  pitch: `${"A" | "B"}2` | `${NoteSymbol}${3 | 4}` | `${"C" | "D" | "E"}5`;
+}
+
+export interface NoteBass extends BaseNote {
+  pitch: `${NoteSymbol}${2 | 3}` | `${Exclude<NoteSymbol, "A" | "B">}${4}`;
+}
+
+export interface Bar {
+  length: number;
+  voices: {
+    soprano: NoteSoprano[];
+    alto: NoteAlto[];
+    tenor: NoteTenor[];
+    bass: NoteBass[];
+  };
 }

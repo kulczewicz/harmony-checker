@@ -1,6 +1,6 @@
 import { SxProp } from "theme-ui";
 
-export const ViolinKey = (props: React.SVGProps<SVGSVGElement> & SxProp) => (
+export const ViolinKeySvg = (props: React.SVGProps<SVGSVGElement> & SxProp) => (
   <svg viewBox="0 -1100 671 1756" {...props}>
     <path
       transform="scale(1, -1)"
@@ -13,7 +13,7 @@ c-68 23 -115 87 -115 177c0 85 57 164 145 194c18 6 18 5 15 24zM430 103l49 -285c2 
   </svg>
 );
 
-export const BassKey = (props: React.SVGProps<SVGSVGElement> & SxProp) => (
+export const BassKeySvg = (props: React.SVGProps<SVGSVGElement> & SxProp) => (
   <svg viewBox="-5 -263 689 897" {...props}>
     <path
       transform="scale(1, -1)"

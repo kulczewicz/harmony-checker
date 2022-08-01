@@ -1,29 +1,16 @@
 import { Box, BoxProps, Divider, Flex } from "theme-ui";
 import { Bar } from "../../types/data";
-import { BassKey, ViolinKey } from "../Notation";
+import { BassKeySvg, ViolinKeySvg } from "../Notation";
+import { BarBlock } from "./Bar";
+import { Keys } from "./Keys";
+import { KeySignatures } from "./KeySignatures";
+import { Staff } from "./Staff";
+import { TimeSignatures } from "./TimeSignatures";
 
 const distanceBetweenTheLines = 8;
 const lineThickness = 1;
 const staffHeight = 5 * lineThickness + 4 * distanceBetweenTheLines;
 const staffPadding = 32;
-function StaffLines() {
-  return (
-    <Box
-      sx={{
-        position: "absolute",
-        top: `${staffPadding}px`,
-        height: `${staffHeight}px`,
-        width: "100%",
-      }}
-    >
-      <Divider mb={`${distanceBetweenTheLines}px`} mt={0} />
-      <Divider mb={`${distanceBetweenTheLines}px`} mt={0} />
-      <Divider mb={`${distanceBetweenTheLines}px`} mt={0} />
-      <Divider mb={`${distanceBetweenTheLines}px`} mt={0} />
-      <Divider mb={0} mt={0} />
-    </Box>
-  );
-}
 
 const Accolade = () => (
   <Box
@@ -42,18 +29,7 @@ const Accolade = () => (
   </Box>
 );
 
-// const melody: Note[] = [
-//   { duration: 8, pitch: "C5" },
-//   { duration: 8, pitch: "A4" },
-//   { duration: 8, pitch: "F4" },
-//   { duration: 8, pitch: "D4" },
-// ];
-
-// interface NoteInBar extends Note {
-//   positionInBar: number;
-// }
-
-const melody: Bar[] = [
+const bars: Bar[] = [
   {
     length: 32,
     voices: {
@@ -81,25 +57,25 @@ const melody: Bar[] = [
       ],
       alto: [
         {
-          duration: 8,
+          duration: 16,
           position: 0,
           pitch: "G4",
         },
+        // {
+        //   duration: 8,
+        //   position: 8,
+        //   pitch: "F4",
+        // },
         {
-          duration: 8,
-          position: 8,
-          pitch: "F4",
-        },
-        {
-          duration: 8,
+          duration: 16,
           position: 16,
           pitch: "E4",
         },
-        {
-          duration: 8,
-          position: 24,
-          pitch: "F4",
-        },
+        // {
+        //   duration: 8,
+        //   position: 24,
+        //   pitch: "F4",
+        // },
       ],
       tenor: [
         {
@@ -149,82 +125,21 @@ const melody: Bar[] = [
   },
 ];
 
-function Bar() {
-  return (
-    <Box sx={{ height: "100%", minWidth: "16px", position: "relative" }}></Box>
-  );
-}
-
-function ViolinKeySignature() {
-  return <></>;
-}
-
-function BassKeySignature() {
-  return <></>;
-}
-
-function TimeSignature() {
-  return <></>;
-}
-
-function ViolinStaff({ children, sx, ...props }: BoxProps) {
-  return (
-    <Box
-      sx={{
-        position: "relative",
-        height: `${staffHeight + 2 * staffPadding}px`,
-        ...sx,
-      }}
-      {...props}
-    >
-      <StaffLines />
-      <Flex sx={{ height: "100%" }}>
-        <ViolinKey height="60px" sx={{ mt: "22px", mx: 2 }} />
-        <ViolinKeySignature />
-        <TimeSignature />
-        {children}
-      </Flex>
-    </Box>
-  );
-}
-
-function BassStaff({ children, sx, ...props }: BoxProps) {
-  return (
-    <Box
-      sx={{
-        position: "relative",
-        height: `${staffHeight + 2 * staffPadding}px`,
-        ...sx,
-      }}
-      {...props}
-    >
-      <StaffLines />
-      <Flex sx={{ h: "100%" }}>
-        <BassKey height="30px" sx={{ mt: "33px", mx: 2 }} />
-        <BassKeySignature />
-        <TimeSignature />
-        {children}
-      </Flex>
-    </Box>
-  );
-}
-
 export function Sheet() {
   return (
     <Flex
       sx={{
-        position: "relative",
         width: "100%",
         maxWidth: "1024px",
       }}
     >
       <Accolade />
-      <Box sx={{ height: "100%", width: "100%" }}>
-        <ViolinStaff>
-          <Bar />
-        </ViolinStaff>
-        <BassStaff></BassStaff>
-      </Box>
+      <Keys />
+      <KeySignatures />
+      <TimeSignatures />
+      {bars.map((bar, index) => (
+        <BarBlock id="bar-block" key={index} bar={bar} />
+      ))}
     </Flex>
   );
 }

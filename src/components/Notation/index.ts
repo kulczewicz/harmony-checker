@@ -1,3 +1,3 @@
 export * from "./Notes";
-export * from "./Keys";
+export * from "./KeySvgs";
 export * from "./Rests";

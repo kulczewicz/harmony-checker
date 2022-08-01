@@ -10,7 +10,7 @@ type NoteSymbol = "C" | "D" | "E" | "F" | "G" | "A" | "B";
  * sixteenth note = 2         | sixteenth with dot = 3             | sixteenth with two dots is a float
  * thirty-second note = 1     | thirty-second with dot is a float  | thirty-second with two dots is a float
  */
-type NoteDuration =
+export type NoteDuration =
   | 1
   | 2
   | 3

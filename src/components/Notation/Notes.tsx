@@ -2,8 +2,8 @@ import { SxProp } from "theme-ui";
 
 export type SvgPropsThemeUi = React.SVGProps<SVGSVGElement> & SxProp;
 
-const longNoteWidth = 12;
-export const shortNoteWidth = 21;
+const longNoteWidth = 11;
+export const shortNoteWidth = 19;
 
 export function FullNote(props: SvgPropsThemeUi) {
   return (

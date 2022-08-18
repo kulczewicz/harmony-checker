@@ -1,10 +1,8 @@
-import { Box, BoxProps, Divider, Flex } from "theme-ui";
+import { Box, Flex } from "theme-ui";
 import { Bar } from "../../types/data";
-import { BassKeySvg, ViolinKeySvg } from "../Notation";
 import { BarBlock } from "./Bar";
 import { Keys } from "./Keys";
 import { KeySignatures } from "./KeySignatures";
-import { Staff } from "./Staff";
 import { TimeSignatures } from "./TimeSignatures";
 
 const distanceBetweenTheLines = 8;
@@ -37,29 +35,34 @@ const bars: Bar[] = [
         {
           duration: 8,
           position: 0,
-          pitch: "A4",
+          pitch: { octave: 4, noteSymbol: "A" },
         },
         {
           duration: 8,
           position: 8,
-          pitch: "B4",
+          pitch: { octave: 4, noteSymbol: "B" },
         },
         {
           duration: 8,
           position: 16,
-          pitch: "G4",
+          pitch: { octave: 4, noteSymbol: "G" },
         },
         {
-          duration: 8,
+          duration: 4,
           position: 24,
-          pitch: "A4",
+          pitch: { octave: 4, noteSymbol: "A" },
+        },
+        {
+          duration: 4,
+          position: 28,
+          pitch: { octave: 4, noteSymbol: "A" },
         },
       ],
       alto: [
         {
           duration: 16,
           position: 0,
-          pitch: "G4",
+          pitch: { octave: 4, noteSymbol: "G" },
         },
         // {
         //   duration: 8,
@@ -69,7 +72,7 @@ const bars: Bar[] = [
         {
           duration: 16,
           position: 16,
-          pitch: "E4",
+          pitch: { octave: 4, noteSymbol: "E" },
         },
         // {
         //   duration: 8,
@@ -81,44 +84,44 @@ const bars: Bar[] = [
         {
           duration: 8,
           position: 0,
-          pitch: "C4",
+          pitch: { octave: 4, noteSymbol: "C" },
         },
         {
           duration: 8,
           position: 8,
-          pitch: "B3",
+          pitch: { octave: 3, noteSymbol: "B" },
         },
         {
           duration: 8,
           position: 16,
-          pitch: "F4",
+          pitch: { octave: 4, noteSymbol: "F" },
         },
         {
           duration: 8,
           position: 24,
-          pitch: "E4",
+          pitch: { octave: 4, noteSymbol: "E" },
         },
       ],
       bass: [
         {
           duration: 8,
           position: 0,
-          pitch: "C3",
+          pitch: { octave: 3, noteSymbol: "C" },
         },
         {
           duration: 8,
           position: 8,
-          pitch: "D3",
+          pitch: { octave: 3, noteSymbol: "D" },
         },
         {
           duration: 8,
           position: 16,
-          pitch: "E3",
+          pitch: { octave: 3, noteSymbol: "E" },
         },
         {
           duration: 8,
           position: 24,
-          pitch: "F3",
+          pitch: { octave: 3, noteSymbol: "F" },
         },
       ],
     },
@@ -138,7 +141,7 @@ export function Sheet() {
       <KeySignatures />
       <TimeSignatures />
       {bars.map((bar, index) => (
-        <BarBlock id="bar-block" key={index} bar={bar} />
+        <BarBlock key={index} bar={bar} />
       ))}
     </Flex>
   );

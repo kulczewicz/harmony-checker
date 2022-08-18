@@ -1,5 +1,5 @@
 type NoteSymbol = "C" | "D" | "E" | "F" | "G" | "A" | "B";
-// type Octave = 2 | 3 | 4 | 5 | 6; // others are out of the voice range
+type NoteOctave = 2 | 3 | 4 | 5 | 6; // others are out of the voice range
 // type NotePitch = `${NoteSymbol}${Octave}`;
 
 /* NoteDuration in thirty-second notes - we can get only following values
@@ -37,27 +37,71 @@ type NoteAccidental =
 export interface BaseNote {
   duration: NoteDuration;
   position: number; // offset from the beginning of the bar
-  accidental?: NoteAccidental;
+  pitch: {
+    octave: NoteOctave;
+    noteSymbol: NoteSymbol;
+    accidental?: NoteAccidental;
+  };
 }
 
+export type NoteSopranoPitch =
+  | {
+      octave: 4;
+      noteSymbol: NoteSymbol;
+    }
+  | {
+      octave: 5;
+      noteSymbol: Exclude<NoteSymbol, "B">;
+    };
 export interface NoteSoprano extends BaseNote {
-  pitch: `${"A" | "B"}3` | `${NoteSymbol}${4 | 5}` | `${"C" | "D" | "E"}6`;
+  pitch: NoteSopranoPitch;
 }
 
+export type NoteAltoPitch =
+  | {
+      octave: 3;
+      noteSymbol: Exclude<NoteSymbol, "C" | "D" | "E">;
+    }
+  | {
+      octave: 4;
+      noteSymbol: NoteSymbol;
+    }
+  | {
+      octave: 5;
+      noteSymbol: Extract<NoteSymbol, "C" | "D">;
+    };
 export interface NoteAlto extends BaseNote {
-  pitch:
-    | `${Exclude<NoteSymbol, "C">}3`
-    | `${NoteSymbol}4`
-    | `${Exclude<NoteSymbol, "B">}5`;
+  pitch: NoteAltoPitch;
 }
+
+export type NoteTenorPitch =
+  | {
+      octave: 3;
+      noteSymbol: NoteSymbol;
+    }
+  | {
+      octave: 4;
+      noteSymbol: Exclude<NoteSymbol, "A" | "B">;
+    };
 
 export interface NoteTenor extends BaseNote {
-  pitch: `${"A" | "B"}2` | `${NoteSymbol}${3 | 4}` | `${"C" | "D" | "E"}5`;
+  pitch: NoteTenorPitch;
 }
 
+export type NoteBassPitch =
+  | {
+      octave: 2 | 3;
+      noteSymbol: NoteSymbol;
+    }
+  | {
+      octave: 3;
+      noteSymbol: Extract<NoteSymbol, "C" | "D" | "E">;
+    };
 export interface NoteBass extends BaseNote {
-  pitch: `${NoteSymbol}${2 | 3}` | `${Exclude<NoteSymbol, "A" | "B">}${4}`;
+  pitch: NoteBassPitch;
 }
+
+export type Note = NoteSoprano | NoteAlto | NoteTenor | NoteBass;
 
 export interface Bar {
   length: number;

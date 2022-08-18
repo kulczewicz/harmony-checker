@@ -24,10 +24,10 @@ function StaffLines(props: BoxProps) {
   );
 }
 
-interface Staff extends BoxProps {
+export interface StaffProps extends BoxProps {
   staffLinesProps?: BoxProps;
 }
-export function Staff({ children, sx, staffLinesProps, ...props }: Staff) {
+export function Staff({ children, sx, staffLinesProps, ...props }: StaffProps) {
   return (
     <Box
       sx={{

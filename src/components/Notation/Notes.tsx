@@ -2,8 +2,8 @@ import { SxProp } from "theme-ui";
 
 export type SvgPropsThemeUi = React.SVGProps<SVGSVGElement> & SxProp;
 
-const longNoteWidth = 11;
-export const shortNoteWidth = 19;
+const longNoteWidth = 12;
+export const shortNoteWidth = 21;
 
 export function FullNote(props: SvgPropsThemeUi) {
   return (
@@ -48,7 +48,7 @@ export function QuarterNoteUp(props: SvgPropsThemeUi) {
 
 export function QuarterNoteDown(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${longNoteWidth}px`} viewBox="-330 -140 332 1016">
+    <svg width={`${longNoteWidth}px`} viewBox="-330 -140 332 1016" {...props}>
       <path transform="scale(-1, 1)" d={quarterNotePathPoints} />
     </svg>
   );

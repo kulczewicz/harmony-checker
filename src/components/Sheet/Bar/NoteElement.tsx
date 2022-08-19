@@ -7,17 +7,11 @@ interface NoteElementProps extends SvgPropsThemeUi {
   note: Note;
 }
 export function NoteElement({ direction, note, ...props }: NoteElementProps) {
-  const { sx, ...baseProps } = props;
-  const extendedProps: SvgPropsThemeUi = {
-    sx: { position: "absolute", ...sx },
-    ...baseProps,
-  };
   if (note.duration >= 32) {
-    return <FullNote {...extendedProps} />;
+    return <FullNote {...props} />;
   }
   if (direction === "up") {
-    return getNoteUpSvg(note.duration)(extendedProps);
-  } else {
-    return getNoteDownSvg(note.duration)(extendedProps);
+    return getNoteUpSvg(note.duration)(props);
   }
+  return getNoteDownSvg(note.duration)(props);
 }

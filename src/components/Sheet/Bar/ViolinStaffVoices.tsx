@@ -3,13 +3,15 @@ import { shortNoteWidth } from "../../Notation";
 import { Staff, StaffProps } from "../Staff";
 import { noteElementPadding } from "./constants";
 import { NoteElement } from "./NoteElement";
+import {
+  calculateNotePositionFromBottom,
+  calculateNotePositionFromTop,
+} from "./utils";
 
 interface ViolinStaffVoicesProps extends StaffProps {
   noteSoprano?: NoteSoprano;
   noteAlto?: NoteAlto;
 }
-
-// function calculateSopranoPositionFromTheBottom() {}
 
 export function ViolinStaffVoices({
   noteSoprano,
@@ -25,12 +27,30 @@ export function ViolinStaffVoices({
     >
       {noteSoprano ? (
         <NoteElement
-          sx={{ bottom: "41px" }}
+          sx={{
+            position: "absolute",
+            bottom: calculateNotePositionFromBottom({
+              ...noteSoprano.pitch,
+              voice: "soprano",
+            }),
+          }}
           direction="up"
           note={noteSoprano}
         />
       ) : null}
-      {noteAlto ? <NoteElement direction="down" note={noteAlto} /> : null}
+      {noteAlto ? (
+        <NoteElement
+          sx={{
+            position: "absolute",
+            top: calculateNotePositionFromTop({
+              ...noteAlto.pitch,
+              voice: "alto",
+            }),
+          }}
+          direction="down"
+          note={noteAlto}
+        />
+      ) : null}
     </Staff>
   );
 }

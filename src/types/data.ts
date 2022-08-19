@@ -1,5 +1,14 @@
-type NoteSymbol = "C" | "D" | "E" | "F" | "G" | "A" | "B";
-type NoteOctave = 2 | 3 | 4 | 5 | 6; // others are out of the voice range
+export type NoteSymbol = "C" | "D" | "E" | "F" | "G" | "A" | "B";
+export enum NoteSymbolEnum {
+  C,
+  D,
+  E,
+  F,
+  G,
+  A,
+  B,
+}
+export type NoteOctave = 2 | 3 | 4 | 5 | 6; // others are out of the voice range
 // type NotePitch = `${NoteSymbol}${Octave}`;
 
 /* NoteDuration in thirty-second notes - we can get only following values
@@ -34,14 +43,15 @@ type NoteAccidental =
   | "double-flat"
   | "double-sharp";
 
+export type NotePitch = {
+  octave: NoteOctave;
+  noteSymbol: NoteSymbol;
+  accidental?: NoteAccidental;
+};
 export interface BaseNote {
   duration: NoteDuration;
   position: number; // offset from the beginning of the bar
-  pitch: {
-    octave: NoteOctave;
-    noteSymbol: NoteSymbol;
-    accidental?: NoteAccidental;
-  };
+  pitch: NotePitch;
 }
 
 export type NoteSopranoPitch =

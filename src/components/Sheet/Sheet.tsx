@@ -3,18 +3,14 @@ import { Bar } from "../../types/data";
 import { BarBlock } from "./Bar";
 import { Keys } from "./Keys";
 import { KeySignatures } from "./KeySignatures";
+import { staffHeight, staffVerticalPadding } from "./Staff";
 import { TimeSignatures } from "./TimeSignatures";
-
-const distanceBetweenTheLines = 8;
-const lineThickness = 1;
-const staffHeight = 5 * lineThickness + 4 * distanceBetweenTheLines;
-const staffPadding = 32;
 
 const Accolade = () => (
   <Box
     sx={{
-      my: `${staffPadding}px`,
-      height: `${staffHeight * 2 + staffPadding * 2}px`,
+      my: `${staffVerticalPadding}px`,
+      height: `${staffHeight * 2 + staffVerticalPadding * 2}px`,
       borderRight: "2px solid",
     }}
   >
@@ -55,14 +51,14 @@ const bars: Bar[] = [
         {
           duration: 4,
           position: 28,
-          pitch: { octave: 4, noteSymbol: "A" },
+          pitch: { octave: 5, noteSymbol: "C" },
         },
       ],
       alto: [
         {
           duration: 16,
           position: 0,
-          pitch: { octave: 4, noteSymbol: "G" },
+          pitch: { octave: 4, noteSymbol: "F" },
         },
         // {
         //   duration: 8,
@@ -84,7 +80,7 @@ const bars: Bar[] = [
         {
           duration: 8,
           position: 0,
-          pitch: { octave: 4, noteSymbol: "C" },
+          pitch: { octave: 3, noteSymbol: "C" },
         },
         {
           duration: 8,
@@ -94,19 +90,19 @@ const bars: Bar[] = [
         {
           duration: 8,
           position: 16,
-          pitch: { octave: 4, noteSymbol: "F" },
+          pitch: { octave: 3, noteSymbol: "G" },
         },
         {
           duration: 8,
           position: 24,
-          pitch: { octave: 4, noteSymbol: "E" },
+          pitch: { octave: 3, noteSymbol: "A" },
         },
       ],
       bass: [
         {
           duration: 8,
           position: 0,
-          pitch: { octave: 3, noteSymbol: "C" },
+          pitch: { octave: 2, noteSymbol: "A" },
         },
         {
           duration: 8,
@@ -121,7 +117,7 @@ const bars: Bar[] = [
         {
           duration: 8,
           position: 24,
-          pitch: { octave: 3, noteSymbol: "F" },
+          pitch: { octave: 3, noteSymbol: "D" },
         },
       ],
     },

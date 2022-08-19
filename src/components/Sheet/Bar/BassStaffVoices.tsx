@@ -3,11 +3,16 @@ import { shortNoteWidth } from "../../Notation";
 import { Staff, StaffProps } from "../Staff";
 import { noteElementPadding } from "./constants";
 import { NoteElement } from "./NoteElement";
+import {
+  calculateNotePositionFromBottom,
+  calculateNotePositionFromTop,
+} from "./utils";
 
 interface BassStaffVoicesProps extends StaffProps {
   noteTenor?: NoteTenor;
   noteBass?: NoteBass;
 }
+
 export function BassStaffVoices({
   noteTenor,
   noteBass,
@@ -20,8 +25,32 @@ export function BassStaffVoices({
       px={`${noteElementPadding}px`}
       {...props}
     >
-      {noteTenor ? <NoteElement direction="up" note={noteTenor} /> : null}
-      {noteBass ? <NoteElement direction="down" note={noteBass} /> : null}
+      {noteTenor ? (
+        <NoteElement
+          sx={{
+            position: "absolute",
+            bottom: calculateNotePositionFromBottom({
+              ...noteTenor.pitch,
+              voice: "tenor",
+            }),
+          }}
+          direction="up"
+          note={noteTenor}
+        />
+      ) : null}
+      {noteBass ? (
+        <NoteElement
+          sx={{
+            position: "absolute",
+            top: calculateNotePositionFromTop({
+              ...noteBass.pitch,
+              voice: "bass",
+            }),
+          }}
+          direction="down"
+          note={noteBass}
+        />
+      ) : null}
     </Staff>
   );
 }

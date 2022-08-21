@@ -1,54 +1,42 @@
-import { NoteBass, NoteTenor } from "../../../types/data";
-import { shortNoteWidth } from "../../Notation";
+import { ElementBass, ElementTenor } from "../../../types";
+import { wideNoteWidth } from "../../Notation";
 import { Staff, StaffProps } from "../Staff";
 import { noteElementPadding } from "./constants";
-import { NoteElement } from "./NoteElement";
-import {
-  calculateNotePositionFromBottom,
-  calculateNotePositionFromTop,
-} from "./utils";
+import { NotationElementLower, NotationElementUpper } from "./NoteElement";
+import { calculateStaffElementsPositions } from "./utils";
 
 interface BassStaffVoicesProps extends StaffProps {
-  noteTenor?: NoteTenor;
-  noteBass?: NoteBass;
+  elementTenor?: ElementTenor;
+  elementBass?: ElementBass;
 }
 
 export function BassStaffVoices({
-  noteTenor,
-  noteBass,
+  elementTenor,
+  elementBass,
   ...props
 }: BassStaffVoicesProps) {
+  const { offsetFromBottom, offsetFromTop } = calculateStaffElementsPositions({
+    upperElement: elementTenor,
+    lowerElement: elementBass,
+  });
+
   return (
     <Staff
-      sx={{ width: `${shortNoteWidth + noteElementPadding * 2}px` }}
+      sx={{ width: `${wideNoteWidth + noteElementPadding * 2}px` }}
       staffLinesProps={{ sx: { left: "0px" } }}
       px={`${noteElementPadding}px`}
       {...props}
     >
-      {noteTenor ? (
-        <NoteElement
-          sx={{
-            position: "absolute",
-            bottom: calculateNotePositionFromBottom({
-              ...noteTenor.pitch,
-              voice: "tenor",
-            }),
-          }}
-          direction="up"
-          note={noteTenor}
+      {elementTenor ? (
+        <NotationElementUpper
+          element={elementTenor}
+          offsetFromBottom={offsetFromBottom}
         />
       ) : null}
-      {noteBass ? (
-        <NoteElement
-          sx={{
-            position: "absolute",
-            top: calculateNotePositionFromTop({
-              ...noteBass.pitch,
-              voice: "bass",
-            }),
-          }}
-          direction="down"
-          note={noteBass}
+      {elementBass ? (
+        <NotationElementLower
+          element={elementBass}
+          offsetFromTop={offsetFromTop}
         />
       ) : null}
     </Staff>

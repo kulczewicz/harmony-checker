@@ -1,20 +1,20 @@
 import { Box, BoxProps } from "theme-ui";
 import {
   Bar,
-  NoteAlto,
-  NoteBass,
-  NoteSoprano,
-  NoteTenor,
-} from "../../../types/data";
+  ElementAlto,
+  ElementBass,
+  ElementSoprano,
+  ElementTenor,
+} from "../../../types";
 import { BassStaffVoices } from "./BassStaffVoices";
 import { ViolinStaffVoices } from "./ViolinStaffVoices";
 
 interface Beat {
   position: number;
-  soprano?: NoteSoprano;
-  alto?: NoteAlto;
-  tenor?: NoteTenor;
-  bass?: NoteBass;
+  soprano?: ElementSoprano;
+  alto?: ElementAlto;
+  tenor?: ElementTenor;
+  bass?: ElementBass;
 }
 
 interface BarProps extends BoxProps {
@@ -50,8 +50,8 @@ export function BarBlock({ bar, ...props }: BarProps) {
     <>
       {beats.map(({ position, soprano, alto, tenor, bass }) => (
         <Box key={position} {...props}>
-          <ViolinStaffVoices noteSoprano={soprano} noteAlto={alto} />
-          <BassStaffVoices noteTenor={tenor} noteBass={bass} />
+          <ViolinStaffVoices elementSoprano={soprano} elementAlto={alto} />
+          <BassStaffVoices elementTenor={tenor} elementBass={bass} />
         </Box>
       ))}
     </>

@@ -1,71 +1,35 @@
 import {
-  NoteAltoPitch,
-  NoteBassPitch,
-  NoteDuration,
+  ElementAlto,
+  ElementBass,
+  ElementSoprano,
+  ElementTenor,
+  NoteAlto,
+  NoteBass,
   NotePitch,
-  NoteSopranoPitch,
+  NoteSoprano,
   NoteSymbol,
   NoteSymbolEnum,
-  NoteTenorPitch,
-} from "../../../types/data";
-import {
-  EighthsNoteDown,
-  EighthsNoteUp,
-  HalfNoteDown,
-  HalfNoteUp,
-  QuarterNoteDown,
-  QuarterNoteUp,
-  SixteenthNoteDown,
-  SixteenthNoteUp,
-  ThirtySecondNoteDown,
-  ThirtySecondNoteUp,
-} from "../../Notation";
+  NoteTenor,
+} from "../../../types";
 import {
   distanceBetweenConsecutiveNotes,
   distanceBetweenOctaveNotes,
   notesInOctave,
+  staffWithPaddingHeight,
 } from "../Staff";
-
-export function getNoteUpSvg(duration: NoteDuration) {
-  if (duration >= 16 && duration < 32) {
-    return HalfNoteUp;
-  }
-  if (duration >= 8 && duration < 16) {
-    return QuarterNoteUp;
-  }
-  if (duration >= 4 && duration < 8) {
-    return EighthsNoteUp;
-  }
-  if (duration >= 2 && duration < 4) {
-    return SixteenthNoteUp;
-  }
-  return ThirtySecondNoteUp;
-}
-
-export function getNoteDownSvg(duration: NoteDuration) {
-  if (duration >= 16 && duration < 32) {
-    return HalfNoteDown;
-  }
-  if (duration >= 8 && duration < 16) {
-    return QuarterNoteDown;
-  }
-  if (duration >= 4 && duration < 8) {
-    return EighthsNoteDown;
-  }
-  if (duration >= 2 && duration < 4) {
-    return SixteenthNoteDown;
-  }
-  return ThirtySecondNoteDown;
-}
 
 function mod(n: number, m: number) {
   return ((n % m) + m) % m;
 }
 
+type CalculatePositionFromBottomParams = Pick<
+  NoteSoprano | NoteTenor,
+  "pitch" | "voice"
+>;
 function calculateOffsetFromBottom({
-  octave,
+  pitch: { octave },
   voice,
-}: CalculateNotePositionFromBottomParams) {
+}: CalculatePositionFromBottomParams) {
   const lowestViolinKeyOctave = 4;
   const lowestBassKeyOctave = 2;
   const relativeOctave =
@@ -86,16 +50,14 @@ function calculateOffsetToLowestCNoteFromBottom(voice: "soprano" | "tenor") {
   );
 }
 
-type CalculateNotePositionFromBottomParams =
-  | (NoteSopranoPitch & { voice: "soprano" })
-  | (NoteTenorPitch & { voice: "tenor" });
-export function calculateNotePositionFromBottom(
-  params: CalculateNotePositionFromBottomParams
-) {
+export function calculateNotePositionFromBottom({
+  pitch,
+  voice,
+}: CalculatePositionFromBottomParams) {
   return (
-    calculateOffsetToLowestCNoteFromBottom(params.voice) +
-    calculateOffsetFromBottom(params) +
-    NoteSymbolEnum[params.noteSymbol] * distanceBetweenConsecutiveNotes
+    calculateOffsetToLowestCNoteFromBottom(voice) +
+    calculateOffsetFromBottom({ pitch, voice }) +
+    NoteSymbolEnum[pitch.noteSymbol] * distanceBetweenConsecutiveNotes
   );
 }
 
@@ -112,12 +74,12 @@ function getNoteNumberFromTheTop(noteSymbol: NoteSymbol) {
   return notesInOctave - NoteSymbolEnum[noteSymbol];
 }
 
-type CalculateNotePositionFromTopParams =
-  | (NoteAltoPitch & { voice: "alto" })
-  | (NoteBassPitch & { voice: "bass" });
+type CalculateNotePositionFromTopParams = Pick<
+  NoteAlto | NoteBass,
+  "pitch" | "voice"
+>;
 export function calculateNotePositionFromTop({
-  octave,
-  noteSymbol,
+  pitch: { octave, noteSymbol },
   voice,
 }: CalculateNotePositionFromTopParams) {
   const noteNumberFromTop = getNoteNumberFromTheTop(noteSymbol);
@@ -144,8 +106,59 @@ export function calculateNotePositionFromTop({
   const noteOffSet = noteNumberFromTop * distanceBetweenConsecutiveNotes;
 
   const res = highestOctaveOffset + octaveOffset + noteOffSet;
-  if (voice === "bass") {
-    console.log(res);
-  }
   return res;
+}
+
+type CalculateStaffElementsPositionsParams =
+  | {
+      upperElement?: ElementSoprano;
+      lowerElement?: ElementAlto;
+    }
+  | {
+      upperElement?: ElementTenor;
+      lowerElement?: ElementBass;
+    };
+// we need both values to calculate the position of rest, if the other element is the note
+export function calculateStaffElementsPositions({
+  upperElement,
+  lowerElement,
+}: CalculateStaffElementsPositionsParams) {
+  // where we put rest
+  const distanceFromEdgeToMiddlePlusOneNote =
+    staffWithPaddingHeight / 2 + distanceBetweenConsecutiveNotes;
+
+  const offsetFromBottom =
+    upperElement?.type === "note"
+      ? calculateNotePositionFromBottom(upperElement)
+      : distanceFromEdgeToMiddlePlusOneNote;
+  const offsetFromTop =
+    lowerElement?.type === "note"
+      ? calculateNotePositionFromTop(lowerElement)
+      : distanceFromEdgeToMiddlePlusOneNote;
+
+  if (upperElement?.type === "note" && lowerElement?.type === "rest") {
+    return {
+      offsetFromBottom,
+      offsetFromTop: Math.max(
+        staffWithPaddingHeight -
+          offsetFromBottom +
+          distanceBetweenConsecutiveNotes,
+        offsetFromTop
+      ),
+    };
+  }
+  if (upperElement?.type === "rest" && lowerElement?.type === "note") {
+    return {
+      offsetFromBottom: Math.max(
+        staffWithPaddingHeight -
+          offsetFromTop +
+          distanceBetweenConsecutiveNotes,
+        offsetFromBottom
+      ),
+      offsetFromTop,
+    };
+  }
+
+  // both are either notes or rests and we already calculated that
+  return { offsetFromBottom, offsetFromTop };
 }

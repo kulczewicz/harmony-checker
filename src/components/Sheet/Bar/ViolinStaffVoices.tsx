@@ -1,54 +1,42 @@
-import { NoteAlto, NoteSoprano } from "../../../types/data";
-import { shortNoteWidth } from "../../Notation";
+import { ElementAlto, ElementSoprano } from "../../../types";
+import { wideNoteWidth } from "../../Notation";
 import { Staff, StaffProps } from "../Staff";
 import { noteElementPadding } from "./constants";
-import { NoteElement } from "./NoteElement";
-import {
-  calculateNotePositionFromBottom,
-  calculateNotePositionFromTop,
-} from "./utils";
+import { NotationElementLower, NotationElementUpper } from "./NoteElement";
+import { calculateStaffElementsPositions } from "./utils";
 
 interface ViolinStaffVoicesProps extends StaffProps {
-  noteSoprano?: NoteSoprano;
-  noteAlto?: NoteAlto;
+  elementSoprano?: ElementSoprano;
+  elementAlto?: ElementAlto;
 }
 
 export function ViolinStaffVoices({
-  noteSoprano,
-  noteAlto,
+  elementSoprano,
+  elementAlto,
   ...props
 }: ViolinStaffVoicesProps) {
+  const { offsetFromBottom, offsetFromTop } = calculateStaffElementsPositions({
+    upperElement: elementSoprano,
+    lowerElement: elementAlto,
+  });
+
   return (
     <Staff
-      sx={{ width: `${shortNoteWidth + noteElementPadding * 2}px` }}
+      sx={{ width: `${wideNoteWidth + noteElementPadding * 2}px` }}
       staffLinesProps={{ sx: { left: "0px" } }}
       px={`${noteElementPadding}px`}
       {...props}
     >
-      {noteSoprano ? (
-        <NoteElement
-          sx={{
-            position: "absolute",
-            bottom: calculateNotePositionFromBottom({
-              ...noteSoprano.pitch,
-              voice: "soprano",
-            }),
-          }}
-          direction="up"
-          note={noteSoprano}
+      {elementSoprano ? (
+        <NotationElementUpper
+          element={elementSoprano}
+          offsetFromBottom={offsetFromBottom}
         />
       ) : null}
-      {noteAlto ? (
-        <NoteElement
-          sx={{
-            position: "absolute",
-            top: calculateNotePositionFromTop({
-              ...noteAlto.pitch,
-              voice: "alto",
-            }),
-          }}
-          direction="down"
-          note={noteAlto}
+      {elementAlto ? (
+        <NotationElementLower
+          element={elementAlto}
+          offsetFromTop={offsetFromTop}
         />
       ) : null}
     </Staff>

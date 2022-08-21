@@ -5,10 +5,13 @@ export const lineThickness = 1;
 export const distanceBetweenConsecutiveNotes =
   (distanceBetweenTheLines + lineThickness) / 2;
 export const staffHeight = 5 * lineThickness + 4 * distanceBetweenTheLines;
+
 export const notesInOctave = 7;
 export const distanceBetweenOctaveNotes =
   distanceBetweenConsecutiveNotes * notesInOctave;
 export const staffVerticalPadding = distanceBetweenOctaveNotes;
+export const staffWithPaddingHeight = staffHeight + 2 * staffVerticalPadding;
+export const sheetHeight = staffHeight * 2 + staffVerticalPadding * 2;
 function StaffLines(props: BoxProps) {
   return (
     <Box
@@ -37,7 +40,7 @@ export function Staff({ children, sx, staffLinesProps, ...props }: StaffProps) {
     <Box
       sx={{
         position: "relative",
-        height: `${staffHeight + 2 * staffVerticalPadding}px`,
+        height: `${staffWithPaddingHeight}px`,
         ...sx,
       }}
       {...props}

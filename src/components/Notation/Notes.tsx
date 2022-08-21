@@ -1,13 +1,16 @@
-import { SxProp } from "theme-ui";
+import { SvgPropsThemeUi } from "../../types/css";
 
-export type SvgPropsThemeUi = React.SVGProps<SVGSVGElement> & SxProp;
+const narrowNoteWidth = 12;
+export const wideNoteWidth = 21;
 
-const longNoteWidth = 12;
-export const shortNoteWidth = 21;
+const addPropsToComponent =
+  <T, K>(comp: (props: T) => K, extendedProps: T) =>
+  (props: T) =>
+    comp({ ...props, ...extendedProps });
 
-export function FullNote(props: SvgPropsThemeUi) {
+export function WholeNote(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${longNoteWidth}px`} viewBox="0 -137 459 273" {...props}>
+    <svg viewBox="0 -137 459 273" {...props}>
       <path
         transform="scale(1, -1)"
         d="M235 136c101 0 224 -58 224 -135c0 -76 -57 -138 -235 -138c-162 0 -224 65 -224 138c0 74 90 135 235 135zM207 111c-51 0 -90 -14 -90 -70c0 -70 69 -153 141 -153c49 0 83 22 83 77c0 66 -60 146 -134 146z"
@@ -21,7 +24,7 @@ const halfNotePathPoints =
 
 export function HalfNoteUp(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${longNoteWidth}px`} viewBox="0 -875 341 1020" {...props}>
+    <svg viewBox="0 -875 341 1020" {...props}>
       <path transform="scale(1, -1)" d={halfNotePathPoints} />
     </svg>
   );
@@ -29,7 +32,7 @@ export function HalfNoteUp(props: SvgPropsThemeUi) {
 
 export function HalfNoteDown(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${longNoteWidth}px`} viewBox="-340 -145 341 1020" {...props}>
+    <svg viewBox="-340 -145 341 1020" {...props}>
       <path transform="scale(-1, 1)" d={halfNotePathPoints} />
     </svg>
   );
@@ -40,7 +43,7 @@ const quarterNotePathPoints =
 
 export function QuarterNoteUp(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${longNoteWidth}px`} viewBox="0 -872 332 1016" {...props}>
+    <svg viewBox="0 -872 332 1016" {...props}>
       <path transform="scale(1, -1)" d={quarterNotePathPoints} />
     </svg>
   );
@@ -48,7 +51,7 @@ export function QuarterNoteUp(props: SvgPropsThemeUi) {
 
 export function QuarterNoteDown(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${longNoteWidth}px`} viewBox="-330 -140 332 1016" {...props}>
+    <svg viewBox="-330 -140 332 1016" {...props}>
       <path transform="scale(-1, 1)" d={quarterNotePathPoints} />
     </svg>
   );
@@ -66,7 +69,7 @@ const shortNoteDownViewBox = "0 0 12 37.5";
 
 export function EighthsNoteUp(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${shortNoteWidth}px`} viewBox={shortNoteUpViewBox} {...props}>
+    <svg viewBox={shortNoteUpViewBox} {...props}>
       <svg y="0.3" width="12" viewBox="0 -872 332 1016">
         <path transform="scale(1, -1)" d={quarterNotePathPoints} />
       </svg>
@@ -79,7 +82,7 @@ export function EighthsNoteUp(props: SvgPropsThemeUi) {
 
 export function EighthsNoteDown(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${longNoteWidth}px`} viewBox={shortNoteDownViewBox} {...props}>
+    <svg viewBox={shortNoteDownViewBox} {...props}>
       <svg y="-0.2" width="12" viewBox="-330 -140 332 1016">
         <path transform="scale(-1, 1)" d={quarterNotePathPoints} />
       </svg>
@@ -92,8 +95,8 @@ export function EighthsNoteDown(props: SvgPropsThemeUi) {
 
 export function SixteenthNoteUp(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${shortNoteWidth}px`} viewBox={shortNoteUpViewBox}>
-      <svg y="0.3" width="12" viewBox="0 -872 332 1016" {...props}>
+    <svg viewBox={shortNoteUpViewBox} {...props}>
+      <svg y="0.3" width="12" viewBox="0 -872 332 1016">
         <path transform="scale(1, -1)" d={quarterNotePathPoints} />
       </svg>
       <svg x="10.9" y="-3.1" width="10" viewBox="0 -2 279 855.75">
@@ -105,7 +108,7 @@ export function SixteenthNoteUp(props: SvgPropsThemeUi) {
 
 export function SixteenthNoteDown(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${longNoteWidth}px`} viewBox={shortNoteDownViewBox} {...props}>
+    <svg viewBox={shortNoteDownViewBox} {...props}>
       <svg y="-0.2" width="12" viewBox="-330 -140 332 1016">
         <path transform="scale(-1, 1)" d={quarterNotePathPoints} />
       </svg>
@@ -118,8 +121,8 @@ export function SixteenthNoteDown(props: SvgPropsThemeUi) {
 
 export function ThirtySecondNoteUp(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${shortNoteWidth}px`} viewBox={shortNoteUpViewBox}>
-      <svg y="0.3" width="12" viewBox="0 -872 332 1016" {...props}>
+    <svg viewBox={shortNoteUpViewBox} {...props}>
+      <svg y="0.3" width="12" viewBox="0 -872 332 1016">
         <path transform="scale(1, -1)" d={quarterNotePathPoints} />
       </svg>
       <svg x="10.9" y="-3" width="10.5" viewBox="0 -150 326.25 961">
@@ -131,7 +134,7 @@ export function ThirtySecondNoteUp(props: SvgPropsThemeUi) {
 
 export function ThirtySecondNoteDown(props: SvgPropsThemeUi) {
   return (
-    <svg width={`${longNoteWidth}px`} viewBox={shortNoteDownViewBox}>
+    <svg viewBox={shortNoteDownViewBox} {...props}>
       <svg y="-0.2" width="12" viewBox="-330 -140 332 1016">
         <path transform="scale(-1, 1)" d={quarterNotePathPoints} />
       </svg>
@@ -141,3 +144,10 @@ export function ThirtySecondNoteDown(props: SvgPropsThemeUi) {
     </svg>
   );
 }
+
+export const ThirtySecondNoteDownStaff = addPropsToComponent(
+  ThirtySecondNoteDown,
+  {
+    width: `${narrowNoteWidth}px`,
+  }
+);

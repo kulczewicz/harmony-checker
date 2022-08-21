@@ -12,29 +12,39 @@ export type NoteOctave = 2 | 3 | 4 | 5 | 6; // others are out of the voice range
 // type NotePitch = `${NoteSymbol}${Octave}`;
 
 /* NoteDuration in thirty-second notes - we can get only following values
- * whole note = 32            | whole with dot = 48                | whole with two dots = 56
- * half note = 16             | half with dot = 24                 | half with two dots = 28
- * quarter note = 8           | quarter with dot = 12              | quarter with two dots = 14
- * eighth note = 4            | eighth with dot = 6                | eighth with two dots = 7
- * sixteenth note = 2         | sixteenth with dot = 3             | sixteenth with two dots is a float
- * thirty-second note = 1     | thirty-second with dot is a float  | thirty-second with two dots is a float
+ * whole note = 32            | whole with dot = 48
+ * half note = 16             | half with dot = 24
+ * quarter note = 8           | quarter with dot = 12
+ * eighth note = 4            | eighth with dot = 6
+ * sixteenth note = 2         | sixteenth with dot = 3
+ * thirty-second note = 1     | thirty-second with dot is a float
  */
-export type NoteDuration =
+export type NoteDurationInThirtySeconds =
   | 1
   | 2
   | 3
   | 4
   | 6
-  | 7
   | 8
   | 12
-  | 14
   | 16
   | 24
-  | 28
   | 32
-  | 48
-  | 56;
+  | 48;
+
+export type NotationElementType = "note" | "rest";
+export type DurationValue =
+  | "whole"
+  | "half"
+  | "quarter"
+  | "eights"
+  | "sixteenth"
+  | "thirtySecond";
+
+export interface ElementDuration {
+  value: DurationValue;
+  dot?: boolean;
+}
 
 type NoteAccidental =
   | "natural"
@@ -43,15 +53,26 @@ type NoteAccidental =
   | "double-flat"
   | "double-sharp";
 
+export type Voice = "soprano" | "alto" | "tenor" | "bass";
+
 export type NotePitch = {
   octave: NoteOctave;
   noteSymbol: NoteSymbol;
   accidental?: NoteAccidental;
 };
-export interface BaseNote {
-  duration: NoteDuration;
-  position: number; // offset from the beginning of the bar
+
+export interface BaseElement {
+  type: NotationElementType;
+  duration: ElementDuration; // offset from the beginning of the bar
+  position: number;
+}
+export interface BaseNote extends BaseElement {
+  type: "note";
+  voice: Voice;
   pitch: NotePitch;
+}
+export interface Rest extends BaseElement {
+  type: "rest";
 }
 
 export type NoteSopranoPitch =
@@ -64,8 +85,11 @@ export type NoteSopranoPitch =
       noteSymbol: Exclude<NoteSymbol, "B">;
     };
 export interface NoteSoprano extends BaseNote {
+  voice: "soprano";
   pitch: NoteSopranoPitch;
 }
+
+export type ElementSoprano = NoteSoprano | Rest;
 
 export type NoteAltoPitch =
   | {
@@ -81,8 +105,10 @@ export type NoteAltoPitch =
       noteSymbol: Extract<NoteSymbol, "C" | "D">;
     };
 export interface NoteAlto extends BaseNote {
+  voice: "alto";
   pitch: NoteAltoPitch;
 }
+export type ElementAlto = NoteAlto | Rest;
 
 export type NoteTenorPitch =
   | {
@@ -95,8 +121,11 @@ export type NoteTenorPitch =
     };
 
 export interface NoteTenor extends BaseNote {
+  voice: "tenor";
   pitch: NoteTenorPitch;
 }
+
+export type ElementTenor = NoteTenor | Rest;
 
 export type NoteBassPitch =
   | {
@@ -108,17 +137,20 @@ export type NoteBassPitch =
       noteSymbol: Extract<NoteSymbol, "C" | "D" | "E">;
     };
 export interface NoteBass extends BaseNote {
+  voice: "bass";
   pitch: NoteBassPitch;
 }
+
+export type ElementBass = NoteBass | Rest;
 
 export type Note = NoteSoprano | NoteAlto | NoteTenor | NoteBass;
 
 export interface Bar {
   length: number;
   voices: {
-    soprano: NoteSoprano[];
-    alto: NoteAlto[];
-    tenor: NoteTenor[];
-    bass: NoteBass[];
+    soprano: ElementSoprano[];
+    alto: ElementAlto[];
+    tenor: ElementTenor[];
+    bass: ElementBass[];
   };
 }

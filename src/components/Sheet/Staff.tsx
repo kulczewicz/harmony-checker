@@ -1,15 +1,14 @@
 import { Box, BoxProps, Divider } from "theme-ui";
 
-export const distanceBetweenTheLines = 9;
+export const distanceBetweenTheLines = 11;
 export const lineThickness = 1;
-export const distanceBetweenConsecutiveNotes =
-  (distanceBetweenTheLines + lineThickness) / 2;
+export const noteHeadHight = distanceBetweenTheLines + lineThickness;
+export const consecutiveNotesDistance = noteHeadHight / 2;
 export const staffHeight = 5 * lineThickness + 4 * distanceBetweenTheLines;
 
 export const notesInOctave = 7;
-export const distanceBetweenOctaveNotes =
-  distanceBetweenConsecutiveNotes * notesInOctave;
-export const staffVerticalPadding = distanceBetweenOctaveNotes;
+export const octaveNotesDistance = consecutiveNotesDistance * notesInOctave;
+export const staffVerticalPadding = octaveNotesDistance;
 export const staffWithPaddingHeight = staffHeight + 2 * staffVerticalPadding;
 export const sheetHeight = staffHeight * 2 + staffVerticalPadding * 2;
 function StaffLines(props: BoxProps) {

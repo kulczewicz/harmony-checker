@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Bar } from "../../types";
-import { getBarId, getBeatId } from "./Bar/utils";
+import { getBarId, getBeatId, getNoteByCursorPositon } from "./Bar/utils";
 
 interface CursorProps {
   bars: Bar[];
@@ -8,23 +8,23 @@ interface CursorProps {
   beatPositions: number[];
 }
 export function Cursor({ bars }: CursorProps) {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [offset, setOffset] = useState({ left: 0, top: 0 });
+  const [yPosition, setYPosition] = useState(0);
+  const [offsetTop, setOffsetTop] = useState(0);
   const [currentBar, setCurrentBar] = useState(0);
   const [currentBeat, setCurrentBeat] = useState(0);
 
   const onMouseMove = useCallback(
     (e: MouseEvent) => {
-      setPosition({ x: e.clientX - offset.left, y: e.clientY - offset.top });
+      setYPosition(e.clientY - offsetTop);
     },
-    [setPosition, offset]
+    [setYPosition, offsetTop]
   );
 
   useEffect(() => {
     const barElement = document.getElementById(getBarId(currentBar));
-    const { offsetLeft = 0, offsetTop = 0 } = barElement ?? {};
-    setOffset({ left: offsetLeft, top: offsetTop });
-  }, [setOffset, currentBar]);
+    const { offsetTop = 0 } = barElement ?? {};
+    setOffsetTop(offsetTop);
+  }, [setOffsetTop, currentBar]);
 
   useEffect(() => {
     const addEventListeners = () => {
@@ -71,8 +71,10 @@ export function Cursor({ bars }: CursorProps) {
   }, [currentBeat]);
 
   useEffect(() => {
-    console.log(`x:${position.x};y:${position.y}`);
-  }, [position]);
+    const note = getNoteByCursorPositon({ yPosition });
+    console.log(`${note.noteSymbol}:${note.octave}`);
+    console.log(`y:${yPosition}`);
+  }, [yPosition]);
 
   return <div id="custom_cursor" />;
 }

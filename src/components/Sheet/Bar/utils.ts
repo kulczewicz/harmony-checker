@@ -5,15 +5,19 @@ import {
   ElementTenor,
   NoteAlto,
   NoteBass,
+  NoteOctave,
   NotePitch,
   NoteSoprano,
   NoteSymbol,
   NoteSymbolEnum,
+  NoteSymbolFromTopEnum,
   NoteTenor,
+  Voice,
 } from "../../../types";
 import {
-  distanceBetweenConsecutiveNotes,
-  distanceBetweenOctaveNotes,
+  consecutiveNotesDistance,
+  octaveNotesDistance,
+  noteHeadHight,
   notesInOctave,
   staffWithPaddingHeight,
 } from "../Staff";
@@ -40,7 +44,7 @@ function calculateOffsetFromBottom({
   const relativeOctave =
     octave -
     (voice === "soprano" ? lowestViolinKeyOctave : lowestBassKeyOctave);
-  return relativeOctave * distanceBetweenOctaveNotes;
+  return relativeOctave * octaveNotesDistance;
 }
 
 // C is the lowest note in the octave and both
@@ -48,7 +52,7 @@ function calculateOffsetToLowestCNoteFromBottom(voice: "soprano" | "tenor") {
   const notesUnderLowestCNoteInViolinKey = 4;
   const notesUnderLowestCNoteInBassKey = 2;
   return (
-    distanceBetweenConsecutiveNotes *
+    consecutiveNotesDistance *
     (voice === "soprano"
       ? notesUnderLowestCNoteInViolinKey
       : notesUnderLowestCNoteInBassKey)
@@ -62,7 +66,7 @@ export function calculateNotePositionFromBottom({
   return (
     calculateOffsetToLowestCNoteFromBottom(voice) +
     calculateOffsetFromBottom({ pitch, voice }) +
-    NoteSymbolEnum[pitch.noteSymbol] * distanceBetweenConsecutiveNotes
+    NoteSymbolEnum[pitch.noteSymbol] * consecutiveNotesDistance
   );
 }
 
@@ -75,7 +79,7 @@ const highestNoteInBassStaff: NotePitch = {
   octave: 4,
 };
 
-function getNoteNumberFromTheTop(noteSymbol: NoteSymbol) {
+function getNoteNumberFromTheTopOfOctave(noteSymbol: NoteSymbol) {
   return notesInOctave - NoteSymbolEnum[noteSymbol];
 }
 
@@ -87,31 +91,29 @@ export function calculateNotePositionFromTop({
   pitch: { octave, noteSymbol },
   voice,
 }: CalculateNotePositionFromTopParams) {
-  const noteNumberFromTop = getNoteNumberFromTheTop(noteSymbol);
   const highestNoteInStaff =
     voice === "alto" ? highestNoteInViolinStaff : highestNoteInBassStaff;
 
   // highest notes in staff aren't just last note in octave (B)
-  // so we have to make an exeption for that
+  // so we have to make an exception for that
   if (octave === highestNoteInStaff.octave) {
-    const highestNoteInStaffFromTheTop = getNoteNumberFromTheTop(
-      highestNoteInStaff.noteSymbol
-    );
+    const highestNoteInStaffFromTop =
+      NoteSymbolFromTopEnum[highestNoteInStaff.noteSymbol];
     return (
-      (noteNumberFromTop - highestNoteInStaffFromTheTop) *
-      distanceBetweenConsecutiveNotes
+      (NoteSymbolFromTopEnum[noteSymbol] - highestNoteInStaffFromTop) *
+      consecutiveNotesDistance
     );
   }
 
   const highestOctaveOffset =
-    NoteSymbolEnum[highestNoteInStaff.noteSymbol] *
-    distanceBetweenConsecutiveNotes;
+    (NoteSymbolEnum[highestNoteInStaff.noteSymbol] + 1) *
+    consecutiveNotesDistance;
   const octaveOffset =
-    (highestNoteInStaff.octave - 1 - octave) * distanceBetweenOctaveNotes;
-  const noteOffSet = noteNumberFromTop * distanceBetweenConsecutiveNotes;
+    (highestNoteInStaff.octave - 1 - octave) * octaveNotesDistance;
+  const noteOffSet =
+    NoteSymbolFromTopEnum[noteSymbol] * consecutiveNotesDistance;
 
-  const res = highestOctaveOffset + octaveOffset + noteOffSet;
-  return res;
+  return highestOctaveOffset + octaveOffset + noteOffSet;
 }
 
 type CalculateStaffElementsPositionsParams =
@@ -130,7 +132,7 @@ export function calculateStaffElementsPositions({
 }: CalculateStaffElementsPositionsParams) {
   // where we put rest
   const distanceFromEdgeToMiddlePlusOneNote =
-    staffWithPaddingHeight / 2 + distanceBetweenConsecutiveNotes;
+    staffWithPaddingHeight / 2 + consecutiveNotesDistance;
 
   const offsetFromBottom =
     upperElement?.type === "note"
@@ -145,9 +147,7 @@ export function calculateStaffElementsPositions({
     return {
       offsetFromBottom,
       offsetFromTop: Math.max(
-        staffWithPaddingHeight -
-          offsetFromBottom +
-          distanceBetweenConsecutiveNotes,
+        staffWithPaddingHeight - offsetFromBottom + consecutiveNotesDistance,
         offsetFromTop
       ),
     };
@@ -155,9 +155,7 @@ export function calculateStaffElementsPositions({
   if (upperElement?.type === "rest" && lowerElement?.type === "note") {
     return {
       offsetFromBottom: Math.max(
-        staffWithPaddingHeight -
-          offsetFromTop +
-          distanceBetweenConsecutiveNotes,
+        staffWithPaddingHeight - offsetFromTop + consecutiveNotesDistance,
         offsetFromBottom
       ),
       offsetFromTop,
@@ -166,4 +164,93 @@ export function calculateStaffElementsPositions({
 
   // both are either notes or rests and we already calculated that
   return { offsetFromBottom, offsetFromTop };
+}
+
+function getRangeForVoice(voice: Voice): {
+  lowest: NotePitch;
+  highest: NotePitch;
+} {
+  if (voice === "soprano") {
+    return {
+      lowest: { octave: 4, noteSymbol: "C" },
+      highest: { octave: 5, noteSymbol: "A" },
+    };
+  }
+  if (voice === "alto") {
+    return {
+      lowest: { octave: 3, noteSymbol: "F" },
+      highest: { octave: 5, noteSymbol: "D" },
+    };
+  }
+  if (voice === "tenor") {
+    return {
+      lowest: { octave: 3, noteSymbol: "C" },
+      highest: { octave: 4, noteSymbol: "G" },
+    };
+  }
+  return {
+    lowest: { octave: 2, noteSymbol: "E" },
+    highest: { octave: 4, noteSymbol: "E" },
+  };
+}
+
+interface GetNoteByCursorPositonInBarParams {
+  yPosition: number;
+  voice?: Voice;
+}
+export function getNoteByCursorPositon({
+  yPosition,
+  voice,
+}: GetNoteByCursorPositonInBarParams): NotePitch {
+  let offset = consecutiveNotesDistance / 2;
+  const numberOfNotesInTopOctave = 3;
+  const topOctaveNotesDistance =
+    numberOfNotesInTopOctave * consecutiveNotesDistance;
+  let octave: NoteOctave = 6;
+  if (yPosition <= offset) {
+    return { octave: 6, noteSymbol: "E" };
+  }
+  if (yPosition < offset + topOctaveNotesDistance) {
+    const noteNumberFromTheTop =
+      Math.floor((yPosition - offset) / consecutiveNotesDistance) + 4;
+    return {
+      octave,
+      noteSymbol: NoteSymbolFromTopEnum[noteNumberFromTheTop] as NoteSymbol,
+    };
+  }
+  octave = 5;
+  offset += topOctaveNotesDistance;
+  if (yPosition < offset + octaveNotesDistance) {
+    const noteNumberFromTheTop = Math.floor(
+      (yPosition - offset) / consecutiveNotesDistance
+    );
+    return {
+      octave,
+      noteSymbol: NoteSymbolFromTopEnum[noteNumberFromTheTop] as NoteSymbol,
+    };
+  }
+  octave = 4;
+  offset += octaveNotesDistance;
+  if (yPosition < offset + octaveNotesDistance) {
+    const noteNumberFromTheTop = Math.floor(
+      (yPosition - offset) / consecutiveNotesDistance
+    );
+    return {
+      octave,
+      noteSymbol: NoteSymbolFromTopEnum[noteNumberFromTheTop] as NoteSymbol,
+    };
+  }
+  octave = 3;
+  offset += octaveNotesDistance;
+
+  if (yPosition < offset + consecutiveNotesDistance * 4) {
+    const noteNumberFromTheTop = Math.floor(
+      (yPosition - offset) / consecutiveNotesDistance
+    );
+    return {
+      octave,
+      noteSymbol: NoteSymbolFromTopEnum[noteNumberFromTheTop] as NoteSymbol,
+    };
+  }
+  return { noteSymbol: "F", octave: 3 };
 }

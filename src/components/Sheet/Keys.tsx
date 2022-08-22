@@ -5,7 +5,7 @@ import { Staff } from "./Staff";
 function ViolinKey(props: BoxProps) {
   return (
     <Staff {...props}>
-      <ViolinKeySvg height="64px" sx={{ mt: "26px", mx: 2 }} />
+      <ViolinKeySvg height="84px" sx={{ mt: "26px", mx: 2 }} />
     </Staff>
   );
 }
@@ -13,7 +13,7 @@ function ViolinKey(props: BoxProps) {
 function BassKey(props: BoxProps) {
   return (
     <Staff {...props}>
-      <BassKeySvg height="32px" sx={{ mt: "36px", mx: 2 }} />
+      <BassKeySvg height="42px" sx={{ mt: "42px", mx: 2 }} />
     </Staff>
   );
 }

@@ -8,6 +8,15 @@ export enum NoteSymbolEnum {
   A,
   B,
 }
+export enum NoteSymbolFromTopEnum {
+  B,
+  A,
+  G,
+  F,
+  E,
+  D,
+  C,
+}
 export type NoteOctave = 2 | 3 | 4 | 5 | 6; // others are out of the voice range
 // type NotePitch = `${NoteSymbol}${Octave}`;
 
@@ -129,11 +138,15 @@ export type ElementTenor = NoteTenor | Rest;
 
 export type NoteBassPitch =
   | {
-      octave: 2 | 3;
-      noteSymbol: NoteSymbol;
+      octave: 2;
+      noteSymbol: Exclude<NoteSymbol, "C" | "D">;
     }
   | {
       octave: 3;
+      noteSymbol: NoteSymbol;
+    }
+  | {
+      octave: 4;
       noteSymbol: Extract<NoteSymbol, "C" | "D" | "E">;
     };
 export interface NoteBass extends BaseNote {

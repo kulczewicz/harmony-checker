@@ -11,8 +11,9 @@ import {
   ElementNoteSvgDown,
   WholeNote,
 } from "../../Notation";
-import { distanceBetweenConsecutiveNotes } from "../Staff";
+import { consecutiveNotesDistance } from "../Staff";
 
+const noteHeight = 46;
 interface NotationElementUpper extends SvgPropsThemeUi {
   element: ElementSoprano | ElementTenor;
   offsetFromBottom: number;
@@ -20,18 +21,17 @@ interface NotationElementUpper extends SvgPropsThemeUi {
 export function NotationElementUpper({
   element,
   offsetFromBottom,
-  ...props
 }: NotationElementUpper) {
   const durationValue = element.duration.value;
   if (durationValue === "whole") {
-    return <WholeNote height={`${distanceBetweenConsecutiveNotes * 2}px`} />;
+    return <WholeNote height={`${consecutiveNotesDistance * 2}px`} />;
   }
   if (element.type === "note") {
     return ElementNoteSvgUp[durationValue]({
       sx: {
         position: "absolute",
-        bottom: offsetFromBottom,
-        height: "39px",
+        bottom: `${offsetFromBottom}px`,
+        height: `${noteHeight}px`,
       },
     });
   }
@@ -50,11 +50,15 @@ export function NotationElementLower({
 }: NotationElementLower) {
   const durationValue = element.duration.value;
   if (durationValue === "whole") {
-    return <WholeNote height={`${distanceBetweenConsecutiveNotes * 2}px`} />;
+    return <WholeNote height={`${consecutiveNotesDistance * 2}px`} />;
   }
   if (element.type === "note") {
     return ElementNoteSvgDown[durationValue]({
-      sx: { position: "absolute", top: offsetFromTop, height: "39px" },
+      sx: {
+        position: "absolute",
+        top: `${offsetFromTop}px`,
+        height: `${noteHeight}px`,
+      },
     });
   }
   return ElementRestSvg[durationValue]({

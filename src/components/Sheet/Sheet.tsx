@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Flex } from "theme-ui";
 import { Bar } from "../../types/data";
 import { BarBlock } from "./Bar";
+import { Cursor } from "./Cursor";
 import { Keys } from "./Keys";
 import { KeySignatures } from "./KeySignatures";
 import { sheetHeight, staffVerticalPadding } from "./Staff";
@@ -26,127 +27,252 @@ const Accolade = () => (
 
 const bars: Bar[] = [
   {
-    length: 32,
-    voices: {
-      soprano: [
-        {
+    barNumber: 0,
+    barLength: 32,
+    beats: [
+      {
+        beatPosition: 0,
+        soprano: {
           type: "note",
           voice: "soprano",
           duration: { value: "quarter" },
           position: 0,
           pitch: { octave: 4, noteSymbol: "A" },
         },
-        {
-          type: "note",
-          voice: "soprano",
-          duration: { value: "quarter" },
-          position: 8,
-          pitch: { octave: 4, noteSymbol: "B" },
-        },
-        {
-          type: "note",
-          voice: "soprano",
-          duration: { value: "quarter" },
-          position: 16,
-          pitch: { octave: 4, noteSymbol: "G" },
-        },
-        {
-          type: "note",
-          voice: "soprano",
-          duration: { value: "eights" },
-          position: 24,
-          pitch: { octave: 4, noteSymbol: "A" },
-        },
-        {
-          type: "note",
-          voice: "soprano",
-          duration: { value: "eights" },
-          position: 28,
-          pitch: { octave: 5, noteSymbol: "C" },
-        },
-      ],
-      alto: [
-        {
+        alto: {
           type: "note",
           voice: "alto",
           duration: { value: "half" },
           position: 0,
           pitch: { octave: 4, noteSymbol: "F" },
         },
-        {
-          type: "note",
-          voice: "alto",
-          duration: { value: "half" },
-          position: 16,
-          pitch: { octave: 4, noteSymbol: "E" },
-        },
-      ],
-      tenor: [
-        {
+        tenor: {
           type: "note",
           voice: "tenor",
           duration: { value: "quarter" },
           position: 0,
           pitch: { octave: 3, noteSymbol: "C" },
         },
-        {
-          type: "note",
-          voice: "tenor",
-          duration: { value: "quarter" },
-          position: 8,
-          pitch: { octave: 3, noteSymbol: "B" },
-        },
-        {
-          type: "note",
-          voice: "tenor",
-          duration: { value: "quarter" },
-          position: 16,
-          pitch: { octave: 4, noteSymbol: "C" },
-        },
-        {
-          type: "note",
-          voice: "tenor",
-          duration: { value: "quarter" },
-          position: 24,
-          pitch: { octave: 4, noteSymbol: "C" },
-        },
-      ],
-      bass: [
-        {
+        bass: {
           type: "note",
           voice: "bass",
           duration: { value: "quarter" },
           position: 0,
           pitch: { octave: 2, noteSymbol: "A" },
         },
-        {
+      },
+      {
+        beatPosition: 8,
+        soprano: {
+          type: "note",
+          voice: "soprano",
+          duration: { value: "quarter" },
+          position: 8,
+          pitch: { octave: 4, noteSymbol: "B" },
+        },
+        tenor: {
+          type: "note",
+          voice: "tenor",
+          duration: { value: "quarter" },
+          position: 8,
+          pitch: { octave: 3, noteSymbol: "B" },
+        },
+        bass: {
           type: "note",
           voice: "bass",
           duration: { value: "quarter" },
           position: 8,
           pitch: { octave: 3, noteSymbol: "D" },
         },
-        {
+      },
+      {
+        beatPosition: 16,
+        soprano: {
+          type: "note",
+          voice: "soprano",
+          duration: { value: "quarter" },
+          position: 16,
+          pitch: { octave: 4, noteSymbol: "G" },
+        },
+        alto: {
+          type: "note",
+          voice: "alto",
+          duration: { value: "half" },
+          position: 16,
+          pitch: { octave: 4, noteSymbol: "E" },
+        },
+        tenor: {
+          type: "note",
+          voice: "tenor",
+          duration: { value: "quarter" },
+          position: 16,
+          pitch: { octave: 4, noteSymbol: "C" },
+        },
+        bass: {
           type: "note",
           voice: "bass",
           duration: { value: "quarter" },
           position: 16,
           pitch: { octave: 3, noteSymbol: "E" },
         },
-        {
+      },
+      {
+        beatPosition: 24,
+        soprano: {
+          type: "note",
+          voice: "soprano",
+          duration: { value: "eights" },
+          position: 24,
+          pitch: { octave: 4, noteSymbol: "A" },
+        },
+        tenor: {
+          type: "note",
+          voice: "tenor",
+          duration: { value: "quarter" },
+          position: 24,
+          pitch: { octave: 4, noteSymbol: "C" },
+        },
+        bass: {
           type: "rest",
           duration: { value: "quarter" },
           position: 24,
         },
-        // {
-        //   type: "note",
-        //   voice: "bass",
-        //   duration: { value: "quarter" },
-        //   position: 24,
-        //   pitch: { octave: 3, noteSymbol: "E" },
-        // },
-      ],
-    },
+      },
+      {
+        beatPosition: 28,
+        soprano: {
+          type: "note",
+          voice: "soprano",
+          duration: { value: "eights" },
+          position: 28,
+          pitch: { octave: 5, noteSymbol: "C" },
+        },
+      },
+    ],
+  },
+  {
+    barNumber: 1,
+    barLength: 32,
+    beats: [
+      {
+        beatPosition: 0,
+        soprano: {
+          type: "note",
+          voice: "soprano",
+          duration: { value: "quarter" },
+          position: 0,
+          pitch: { octave: 4, noteSymbol: "A" },
+        },
+        alto: {
+          type: "note",
+          voice: "alto",
+          duration: { value: "half" },
+          position: 0,
+          pitch: { octave: 4, noteSymbol: "F" },
+        },
+        tenor: {
+          type: "note",
+          voice: "tenor",
+          duration: { value: "quarter" },
+          position: 0,
+          pitch: { octave: 3, noteSymbol: "C" },
+        },
+        bass: {
+          type: "note",
+          voice: "bass",
+          duration: { value: "quarter" },
+          position: 0,
+          pitch: { octave: 2, noteSymbol: "A" },
+        },
+      },
+      {
+        beatPosition: 8,
+        soprano: {
+          type: "note",
+          voice: "soprano",
+          duration: { value: "quarter" },
+          position: 8,
+          pitch: { octave: 4, noteSymbol: "B" },
+        },
+        tenor: {
+          type: "note",
+          voice: "tenor",
+          duration: { value: "quarter" },
+          position: 8,
+          pitch: { octave: 3, noteSymbol: "B" },
+        },
+        bass: {
+          type: "note",
+          voice: "bass",
+          duration: { value: "quarter" },
+          position: 8,
+          pitch: { octave: 3, noteSymbol: "D" },
+        },
+      },
+      {
+        beatPosition: 16,
+        soprano: {
+          type: "note",
+          voice: "soprano",
+          duration: { value: "quarter" },
+          position: 16,
+          pitch: { octave: 4, noteSymbol: "G" },
+        },
+        alto: {
+          type: "note",
+          voice: "alto",
+          duration: { value: "half" },
+          position: 16,
+          pitch: { octave: 4, noteSymbol: "E" },
+        },
+        tenor: {
+          type: "note",
+          voice: "tenor",
+          duration: { value: "quarter" },
+          position: 16,
+          pitch: { octave: 4, noteSymbol: "C" },
+        },
+        bass: {
+          type: "note",
+          voice: "bass",
+          duration: { value: "quarter" },
+          position: 16,
+          pitch: { octave: 3, noteSymbol: "E" },
+        },
+      },
+      {
+        beatPosition: 24,
+        soprano: {
+          type: "note",
+          voice: "soprano",
+          duration: { value: "eights" },
+          position: 24,
+          pitch: { octave: 4, noteSymbol: "A" },
+        },
+        tenor: {
+          type: "note",
+          voice: "tenor",
+          duration: { value: "quarter" },
+          position: 24,
+          pitch: { octave: 4, noteSymbol: "C" },
+        },
+        bass: {
+          type: "rest",
+          duration: { value: "quarter" },
+          position: 24,
+        },
+      },
+      {
+        beatPosition: 28,
+        soprano: {
+          type: "note",
+          voice: "soprano",
+          duration: { value: "eights" },
+          position: 28,
+          pitch: { octave: 5, noteSymbol: "C" },
+        },
+      },
+    ],
   },
 ];
 
@@ -156,11 +282,13 @@ export function Sheet() {
   });
   return (
     <Flex
+      id="bars"
       sx={{
         width: "100%",
         maxWidth: "1024px",
       }}
     >
+      <Cursor bars={bars} barNumber={1} beatPositions={[0, 8, 16, 24, 28]} />
       <Accolade />
       <Keys />
       <KeySignatures />

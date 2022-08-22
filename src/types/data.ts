@@ -145,12 +145,16 @@ export type ElementBass = NoteBass | Rest;
 
 export type Note = NoteSoprano | NoteAlto | NoteTenor | NoteBass;
 
+interface Beat {
+  beatPosition: number;
+  soprano?: ElementSoprano;
+  alto?: ElementAlto;
+  tenor?: ElementTenor;
+  bass?: ElementBass;
+}
+
 export interface Bar {
-  length: number;
-  voices: {
-    soprano: ElementSoprano[];
-    alto: ElementAlto[];
-    tenor: ElementTenor[];
-    bass: ElementBass[];
-  };
+  barNumber: number;
+  barLength: number;
+  beats: Beat[];
 }

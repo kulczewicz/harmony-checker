@@ -18,6 +18,11 @@ import {
   staffWithPaddingHeight,
 } from "../Staff";
 
+export const getBarId = (barNumber: number) => `bar-${barNumber}`;
+
+export const getBeatId = (barNumber: number, beatPosition: number) =>
+  `beat-${barNumber}-${beatPosition}`;
+
 function mod(n: number, m: number) {
   return ((n % m) + m) % m;
 }

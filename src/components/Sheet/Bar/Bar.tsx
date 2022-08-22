@@ -1,4 +1,4 @@
-import { Box, BoxProps } from "theme-ui";
+import { Box, BoxProps, Flex } from "theme-ui";
 import {
   Bar,
   ElementAlto,
@@ -6,11 +6,13 @@ import {
   ElementSoprano,
   ElementTenor,
 } from "../../../types";
+import { Cursor } from "../Cursor";
 import { BassStaffVoices } from "./BassStaffVoices";
+import { getBarId, getBeatId } from "./utils";
 import { ViolinStaffVoices } from "./ViolinStaffVoices";
 
 interface Beat {
-  position: number;
+  beatPosition: number;
   soprano?: ElementSoprano;
   alto?: ElementAlto;
   tenor?: ElementTenor;
@@ -20,40 +22,19 @@ interface Beat {
 interface BarProps extends BoxProps {
   bar: Bar;
 }
-export function BarBlock({ bar, ...props }: BarProps) {
-  const {
-    length,
-    voices: { soprano, alto, tenor, bass },
-  } = bar;
-  const allBeats: Beat[] = Array.from({ length }, (_, position) => ({
-    position,
-  }));
-
-  for (const note of soprano) {
-    allBeats[note.position].soprano = note;
-  }
-  for (const note of alto) {
-    allBeats[note.position].alto = note;
-  }
-  for (const note of tenor) {
-    allBeats[note.position].tenor = note;
-  }
-  for (const note of bass) {
-    allBeats[note.position].bass = note;
-  }
-
-  const beats = allBeats.filter(
-    ({ soprano, alto, tenor, bass }) => soprano || alto || tenor || bass
-  );
-
+export function BarBlock({ bar: { barNumber, beats }, ...props }: BarProps) {
   return (
-    <>
-      {beats.map(({ position, soprano, alto, tenor, bass }) => (
-        <Box key={position} {...props}>
+    <Flex id={getBarId(barNumber)}>
+      {beats.map(({ beatPosition, soprano, alto, tenor, bass }) => (
+        <Box
+          id={getBeatId(barNumber, beatPosition)}
+          key={beatPosition}
+          {...props}
+        >
           <ViolinStaffVoices elementSoprano={soprano} elementAlto={alto} />
           <BassStaffVoices elementTenor={tenor} elementBass={bass} />
         </Box>
       ))}
-    </>
+    </Flex>
   );
 }

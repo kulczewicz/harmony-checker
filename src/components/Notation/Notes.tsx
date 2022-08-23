@@ -1,7 +1,6 @@
 import { SvgPropsThemeUi } from "../../types/css";
 
-const narrowNoteWidth = 12;
-export const wideNoteWidth = 21;
+export const wideNoteWidth = 26;
 
 const addPropsToComponent =
   <T, K>(comp: (props: T) => K, extendedProps: T) =>
@@ -144,10 +143,3 @@ export function ThirtySecondNoteDown(props: SvgPropsThemeUi) {
     </svg>
   );
 }
-
-export const ThirtySecondNoteDownStaff = addPropsToComponent(
-  ThirtySecondNoteDown,
-  {
-    width: `${narrowNoteWidth}px`,
-  }
-);

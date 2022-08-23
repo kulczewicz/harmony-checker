@@ -71,7 +71,7 @@ export function Cursor({ bars }: CursorProps) {
   }, [currentBeat]);
 
   useEffect(() => {
-    const note = getNoteByCursorPositon({ yPosition });
+    const note = getNoteByCursorPositon({ yPosition, voice: "bass" });
     console.log(`${note.noteSymbol}:${note.octave}`);
     console.log(`y:${yPosition}`);
   }, [yPosition]);

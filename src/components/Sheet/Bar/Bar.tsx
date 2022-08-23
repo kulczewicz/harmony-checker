@@ -6,7 +6,7 @@ import {
   ElementSoprano,
   ElementTenor,
 } from "../../../types";
-import { Cursor } from "../Cursor";
+import { sheetHeight } from "../Staff";
 import { BassStaffVoices } from "./BassStaffVoices";
 import { getBarId, getBeatId } from "./utils";
 import { ViolinStaffVoices } from "./ViolinStaffVoices";
@@ -24,7 +24,7 @@ interface BarProps extends BoxProps {
 }
 export function BarBlock({ bar: { barNumber, beats }, ...props }: BarProps) {
   return (
-    <Flex id={getBarId(barNumber)}>
+    <Flex id={getBarId(barNumber)} sx={{ alignItems: "center" }}>
       {beats.map(({ beatPosition, soprano, alto, tenor, bass }) => (
         <Box
           id={getBeatId(barNumber, beatPosition)}
@@ -35,6 +35,14 @@ export function BarBlock({ bar: { barNumber, beats }, ...props }: BarProps) {
           <BassStaffVoices elementTenor={tenor} elementBass={bass} />
         </Box>
       ))}
+      <Box
+        sx={{
+          height: `${sheetHeight}px`,
+          width: "1px",
+          borderRight: "1px solid",
+          borderColor: "black",
+        }}
+      />
     </Flex>
   );
 }

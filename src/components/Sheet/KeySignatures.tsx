@@ -1,12 +1,12 @@
 import { Box, BoxProps } from "theme-ui";
-import { Staff } from "./Staff";
+import { StaffBox } from "./Staff";
 
 function ViolinKeySignature(props: BoxProps) {
-  return <Staff {...props}></Staff>;
+  return <StaffBox {...props}></StaffBox>;
 }
 
 function BassKeySignature(props: BoxProps) {
-  return <Staff {...props}></Staff>;
+  return <StaffBox {...props}></StaffBox>;
 }
 
 export function KeySignatures() {

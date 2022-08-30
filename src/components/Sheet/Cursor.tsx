@@ -38,6 +38,8 @@ export function Cursor({ bars }: CursorProps) {
   }, [onMouseMove]);
 
   useEffect(() => {
+    if (bars?.length === 0) return;
+
     const beatPositions = bars[currentBar].beats.map(
       ({ beatPosition }) => beatPosition
     );
@@ -71,7 +73,7 @@ export function Cursor({ bars }: CursorProps) {
   }, [currentBeat]);
 
   useEffect(() => {
-    const note = getNoteByCursorPositon({ yPosition, voice: "bass" });
+    const note = getNoteByCursorPositon({ yPosition, voice: "soprano" });
     console.log(`${note.noteSymbol}:${note.octave}`);
     console.log(`y:${yPosition}`);
   }, [yPosition]);

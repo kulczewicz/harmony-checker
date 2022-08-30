@@ -166,8 +166,10 @@ interface Beat {
   bass?: ElementBass;
 }
 
+export type Line = Bar[];
+export type SheetData = Line[];
+
 export interface Bar {
   barNumber: number;
-  barLength: number;
   beats: Beat[];
 }

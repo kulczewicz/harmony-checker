@@ -1,19 +1,19 @@
 import { Box, BoxProps } from "theme-ui";
-import { Staff } from "./Staff";
+import { StaffBox } from "./Staff";
 
 function ViolinTimeSignature(props: BoxProps) {
-  return <Staff {...props}></Staff>;
+  return <StaffBox {...props}></StaffBox>;
 }
 
 function BassTimeSignature(props: BoxProps) {
-  return <Staff {...props}></Staff>;
+  return <StaffBox {...props}></StaffBox>;
 }
 
 export function TimeSignatures() {
   return (
     <Box>
-      <Staff></Staff>
-      <Staff></Staff>
+      <StaffBox></StaffBox>
+      <StaffBox></StaffBox>
     </Box>
   );
 }

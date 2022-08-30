@@ -11,14 +11,15 @@ export const octaveNotesDistance = consecutiveNotesDistance * notesInOctave;
 export const staffVerticalPadding = octaveNotesDistance;
 export const staffWithPaddingHeight = staffHeight + 2 * staffVerticalPadding;
 export const sheetHeight = staffHeight * 2 + staffVerticalPadding * 2;
-function StaffLines(props: BoxProps) {
+
+export function StaffLines({ sx, ...props }: BoxProps) {
   return (
     <Box
       sx={{
         position: "absolute",
-        top: `${staffVerticalPadding}px`,
         height: `${staffHeight}px`,
         width: "100%",
+        ...sx,
       }}
       {...props}
     >
@@ -31,10 +32,26 @@ function StaffLines(props: BoxProps) {
   );
 }
 
+export function SheetStaffLines() {
+  return (
+    <>
+      <StaffLines sx={{ top: `${staffVerticalPadding}px` }} />
+      <StaffLines
+        sx={{ top: `${staffWithPaddingHeight + staffVerticalPadding}px` }}
+      />
+    </>
+  );
+}
+
 export interface StaffProps extends BoxProps {
   staffLinesProps?: BoxProps;
 }
-export function Staff({ children, sx, staffLinesProps, ...props }: StaffProps) {
+export function StaffBox({
+  children,
+  staffLinesProps,
+  sx,
+  ...props
+}: StaffProps) {
   return (
     <Box
       sx={{
@@ -44,7 +61,6 @@ export function Staff({ children, sx, staffLinesProps, ...props }: StaffProps) {
       }}
       {...props}
     >
-      <StaffLines {...staffLinesProps} />
       {children}
     </Box>
   );

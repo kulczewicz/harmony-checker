@@ -1,6 +1,5 @@
 import { ElementBass, ElementTenor } from "../../../types";
-import { wideNoteWidth } from "../../Notation";
-import { Staff, StaffProps } from "../Staff";
+import { StaffBox, StaffProps } from "../Staff";
 import { noteElementPadding } from "./constants";
 import { NotationElementLower, NotationElementUpper } from "./NoteElement";
 import { calculateStaffElementsPositions } from "./utils";
@@ -21,8 +20,8 @@ export function BassStaffVoices({
   });
 
   return (
-    <Staff
-      sx={{ width: `${wideNoteWidth + noteElementPadding * 2}px` }}
+    <StaffBox
+      sx={{ width: "100%" }}
       staffLinesProps={{ sx: { left: "0px" } }}
       px={`${noteElementPadding}px`}
       {...props}
@@ -39,6 +38,6 @@ export function BassStaffVoices({
           offsetFromTop={offsetFromTop}
         />
       ) : null}
-    </Staff>
+    </StaffBox>
   );
 }

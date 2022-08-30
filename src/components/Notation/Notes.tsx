@@ -1,6 +1,7 @@
 import { SvgPropsThemeUi } from "../../types/css";
 
-export const wideNoteWidth = 26;
+// set based on the widest note width
+export const maxNoteWidth = 26;
 
 const addPropsToComponent =
   <T, K>(comp: (props: T) => K, extendedProps: T) =>

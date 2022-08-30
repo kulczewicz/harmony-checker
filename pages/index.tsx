@@ -16,7 +16,7 @@ const Home: NextPage = () => {
       }}
     >
       <Flex sx={{ width: "100%", justifyContent: "center" }}>
-        <Box>
+        <Box sx={{ width: "100%", maxWidth: "1024px" }}>
           <InputNotationElements />
           <Flex>
             <InputVoices />

@@ -13,8 +13,8 @@ export function InputPanelButton({
       // disabled={!isActive}
       sx={{
         padding: "4px",
-        height: "32px",
-        width: "32px",
+        minHeight: "32px",
+        minWidth: "32px",
         color: "black",
         border: "1px solid",
         cursor: "pointer",

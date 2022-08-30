@@ -6,7 +6,7 @@ import {
   ElementSoprano,
   ElementTenor,
 } from "../../../types";
-import { sheetHeight } from "../Staff";
+import { sheetHeight, SheetStaffLines } from "../Staff";
 import { BassStaffVoices } from "./BassStaffVoices";
 import { getBarId, getBeatId } from "./utils";
 import { ViolinStaffVoices } from "./ViolinStaffVoices";
@@ -19,22 +19,35 @@ interface Beat {
   bass?: ElementBass;
 }
 
-interface BarProps extends BoxProps {
-  bar: Bar;
-}
-export function BarBlock({ bar: { barNumber, beats }, ...props }: BarProps) {
+interface BarProps extends Bar, BoxProps {}
+export function BarBlock({ barNumber, beats, ...props }: BarProps) {
   return (
-    <Flex id={getBarId(barNumber)} sx={{ alignItems: "center" }}>
-      {beats.map(({ beatPosition, soprano, alto, tenor, bass }) => (
-        <Box
-          id={getBeatId(barNumber, beatPosition)}
-          key={beatPosition}
-          {...props}
-        >
-          <ViolinStaffVoices elementSoprano={soprano} elementAlto={alto} />
-          <BassStaffVoices elementTenor={tenor} elementBass={bass} />
-        </Box>
-      ))}
+    <Flex
+      id={getBarId(barNumber)}
+      sx={{
+        flexBasis: 0,
+        flexGrow: 1,
+        position: "relative",
+        alignItems: "center",
+        minWidth: "32px",
+        justifyContent: "space-between",
+        width: "100%",
+      }}
+    >
+      <SheetStaffLines />
+      <Flex sx={{ width: "100%" }}>
+        {beats.map(({ beatPosition, soprano, alto, tenor, bass }) => (
+          <Box
+            sx={{ width: "100%" }}
+            id={getBeatId(barNumber, beatPosition)}
+            key={beatPosition}
+            {...props}
+          >
+            <ViolinStaffVoices elementSoprano={soprano} elementAlto={alto} />
+            <BassStaffVoices elementTenor={tenor} elementBass={bass} />
+          </Box>
+        ))}
+      </Flex>
       <Box
         sx={{
           height: `${sheetHeight}px`,

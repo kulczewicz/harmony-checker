@@ -14,10 +14,11 @@ export function ViolinStaffVoices({
   elementAlto,
   ...props
 }: ViolinStaffVoicesProps) {
-  const { offsetFromBottom, offsetFromTop } = calculateStaffElementsPositions({
-    upperElement: elementSoprano,
-    lowerElement: elementAlto,
-  });
+  const { upperElementFromBottom, lowerElementFromTop } =
+    calculateStaffElementsPositions({
+      upperElement: elementSoprano,
+      lowerElement: elementAlto,
+    });
 
   return (
     <StaffBox
@@ -31,13 +32,13 @@ export function ViolinStaffVoices({
       {elementSoprano ? (
         <NotationElementUpper
           element={elementSoprano}
-          offsetFromBottom={offsetFromBottom}
+          offsetFromBottom={upperElementFromBottom}
         />
       ) : null}
       {elementAlto ? (
         <NotationElementLower
           element={elementAlto}
-          offsetFromTop={offsetFromTop}
+          offsetFromTop={lowerElementFromTop}
         />
       ) : null}
     </StaffBox>

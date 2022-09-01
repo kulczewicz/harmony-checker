@@ -1,5 +1,11 @@
 import { atom } from "recoil";
-import { DurationValue, NotationElementType, SheetData, Voice } from "./types";
+import {
+  Beat,
+  DurationValue,
+  NotationElementType,
+  SheetData,
+  Voice,
+} from "./types";
 
 export const inputOnState = atom<boolean>({
   key: "inputOn",
@@ -24,25 +30,58 @@ export const inputVoiceState = atom<Voice>({
   default: "soprano",
 });
 
+const wholeRestsOnZeroPosition: Beat[] = [
+  {
+    beatPosition: 0,
+    soprano: {
+      type: "rest",
+      duration: { value: "whole" },
+      position: 0,
+    },
+    alto: {
+      type: "rest",
+      duration: { value: "whole" },
+      position: 0,
+    },
+    tenor: {
+      type: "rest",
+      duration: { value: "whole" },
+      position: 0,
+    },
+    bass: {
+      type: "rest",
+      duration: { value: "whole" },
+      position: 0,
+    },
+  },
+  // {
+  //   beatPosition: 16,
+  //   soprano: {
+  //     type: "rest",
+  //     duration: { value: "half" },
+  //     position: 16,
+  //   },
+  // },
+];
 export const sheetState = atom<SheetData>({
   key: "sheet",
   default: [
     [
-      { barNumber: 0, beats: [] },
-      { barNumber: 1, beats: [] },
-      { barNumber: 2, beats: [] },
-      { barNumber: 3, beats: [] },
+      { barNumber: 0, beats: wholeRestsOnZeroPosition },
+      { barNumber: 1, beats: wholeRestsOnZeroPosition },
+      { barNumber: 2, beats: wholeRestsOnZeroPosition },
+      { barNumber: 3, beats: wholeRestsOnZeroPosition },
     ],
     [
-      { barNumber: 4, beats: [] },
-      { barNumber: 5, beats: [] },
-      { barNumber: 6, beats: [] },
-      { barNumber: 7, beats: [] },
+      { barNumber: 4, beats: wholeRestsOnZeroPosition },
+      { barNumber: 5, beats: wholeRestsOnZeroPosition },
+      { barNumber: 6, beats: wholeRestsOnZeroPosition },
+      { barNumber: 7, beats: wholeRestsOnZeroPosition },
     ],
   ],
 });
 
-// export const timeSignatureState = atom<number>({
-//   key: "timeSignature",
-//   default: 32,
-// });
+export const timeSignatureState = atom<number>({
+  key: "timeSignature",
+  default: 32,
+});

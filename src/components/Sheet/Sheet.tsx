@@ -99,18 +99,16 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         pitch: { octave: 4, noteSymbol: "E" },
       },
       tenor: {
-        type: "note",
-        voice: "tenor",
-        duration: { value: "quarter" },
+        type: "rest",
+        duration: { value: "half" },
         position: 16,
-        pitch: { octave: 4, noteSymbol: "C" },
       },
       bass: {
         type: "note",
         voice: "bass",
-        duration: { value: "quarter" },
+        duration: { value: "half" },
         position: 16,
-        pitch: { octave: 3, noteSymbol: "E" },
+        pitch: { octave: 3, noteSymbol: "G" },
       },
     },
     {
@@ -121,21 +119,6 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         duration: { value: "quarter" },
         position: 20,
         pitch: { octave: 4, noteSymbol: "A" },
-      },
-    },
-    {
-      beatPosition: 24,
-      tenor: {
-        type: "note",
-        voice: "tenor",
-        duration: { value: "quarter" },
-        position: 24,
-        pitch: { octave: 4, noteSymbol: "C" },
-      },
-      bass: {
-        type: "rest",
-        duration: { value: "quarter" },
-        position: 24,
       },
     },
     {

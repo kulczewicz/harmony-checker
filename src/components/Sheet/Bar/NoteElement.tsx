@@ -23,9 +23,6 @@ export function NotationElementUpper({
   offsetFromBottom,
 }: NotationElementUpper) {
   const durationValue = element.duration.value;
-  if (durationValue === "whole") {
-    return <WholeNote height={`${consecutiveNotesDistance * 2}px`} />;
-  }
   if (element.type === "note") {
     return ElementNoteSvgUp[durationValue]({
       sx: {
@@ -49,9 +46,6 @@ export function NotationElementLower({
   offsetFromTop,
 }: NotationElementLower) {
   const durationValue = element.duration.value;
-  if (durationValue === "whole") {
-    return <WholeNote height={`${consecutiveNotesDistance * 2}px`} />;
-  }
   if (element.type === "note") {
     return ElementNoteSvgDown[durationValue]({
       sx: {

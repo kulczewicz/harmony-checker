@@ -14,10 +14,11 @@ export function BassStaffVoices({
   elementBass,
   ...props
 }: BassStaffVoicesProps) {
-  const { offsetFromBottom, offsetFromTop } = calculateStaffElementsPositions({
-    upperElement: elementTenor,
-    lowerElement: elementBass,
-  });
+  const { upperElementFromBottom, lowerElementFromTop } =
+    calculateStaffElementsPositions({
+      upperElement: elementTenor,
+      lowerElement: elementBass,
+    });
 
   return (
     <StaffBox
@@ -29,13 +30,13 @@ export function BassStaffVoices({
       {elementTenor ? (
         <NotationElementUpper
           element={elementTenor}
-          offsetFromBottom={offsetFromBottom}
+          offsetFromBottom={upperElementFromBottom}
         />
       ) : null}
       {elementBass ? (
         <NotationElementLower
           element={elementBass}
-          offsetFromTop={offsetFromTop}
+          offsetFromTop={lowerElementFromTop}
         />
       ) : null}
     </StaffBox>

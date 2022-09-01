@@ -130,39 +130,55 @@ export function calculateStaffElementsPositions({
   lowerElement,
 }: CalculateStaffElementsPositionsParams) {
   // where we put rest
-  const distanceFromEdgeToMiddlePlusOneNote =
-    staffWithPaddingHeight / 2 + consecutiveNotesDistance;
+  const distanceFromEdgeToMiddlePlusTwoNots =
+    staffWithPaddingHeight / 2 + noteHeadHight;
 
-  const offsetFromBottom =
+  const upperElementFromBottom =
     upperElement?.type === "note"
       ? calculateNotePositionFromBottom(upperElement)
-      : distanceFromEdgeToMiddlePlusOneNote;
-  const offsetFromTop =
+      : distanceFromEdgeToMiddlePlusTwoNots;
+  const lowerElementFromTop =
     lowerElement?.type === "note"
       ? calculateNotePositionFromTop(lowerElement)
-      : distanceFromEdgeToMiddlePlusOneNote;
+      : distanceFromEdgeToMiddlePlusTwoNots;
 
   if (upperElement?.type === "note" && lowerElement?.type === "rest") {
+    console.log({
+      staffWithPaddingHeight,
+      upperElementFromBottom,
+      consecutiveNotesDistance,
+    });
+
+    const restPositionFromTop = staffWithPaddingHeight - upperElementFromBottom;
+    // useful for whole and half rests
+    const restPositionFromTopRoundedToNearestLine =
+      Math.floor(restPositionFromTop / noteHeadHight) * noteHeadHight +
+      consecutiveNotesDistance;
+
     return {
-      offsetFromBottom,
-      offsetFromTop: Math.max(
-        staffWithPaddingHeight - offsetFromBottom + consecutiveNotesDistance,
-        offsetFromTop
+      upperElementFromBottom,
+      lowerElementFromTop: Math.max(
+        restPositionFromTopRoundedToNearestLine + noteHeadHight,
+        lowerElementFromTop
       ),
     };
   }
   if (upperElement?.type === "rest" && lowerElement?.type === "note") {
+    const restPositionFromBottom = staffWithPaddingHeight - lowerElementFromTop;
+    const restPositionFromTopRoundedToNearestLine =
+      Math.floor(restPositionFromBottom / noteHeadHight) * noteHeadHight +
+      consecutiveNotesDistance;
     return {
-      offsetFromBottom: Math.max(
-        staffWithPaddingHeight - offsetFromTop + consecutiveNotesDistance,
-        offsetFromBottom
+      upperElementFromBottom: Math.max(
+        restPositionFromTopRoundedToNearestLine + noteHeadHight,
+        upperElementFromBottom
       ),
-      offsetFromTop,
+      lowerElementFromTop,
     };
   }
 
   // both are either notes or rests and we already calculated that
-  return { offsetFromBottom, offsetFromTop };
+  return { upperElementFromBottom, lowerElementFromTop };
 }
 
 // function calculateOffsetFromTop(note: NotePitch, highestNote: NotePitch) {

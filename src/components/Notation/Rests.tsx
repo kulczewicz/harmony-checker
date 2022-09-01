@@ -1,15 +1,32 @@
 import { SvgPropsThemeUi } from "../../types";
+import { noteHeadHight } from "../Sheet/Staff";
 
 export function WholeRest(props: SvgPropsThemeUi) {
   return (
-    <svg height="10px" viewBox="0 -135 282 288" {...props}>
+    <svg height={`${noteHeadHight}px`} viewBox="-141 -135 564 288" {...props}>
+      <line
+        x1="-138"
+        y1="-122"
+        x2="423"
+        y2="-122"
+        stroke="black"
+        strokeWidth="24"
+      />
       <path d="M282 -109c0 -14 -12 -26 -26 -26h-230c-15 0 -26 12 -26 26v92c0 15 11 26 26 26h230c14 0 26 -11 26 -26v-92z" />
     </svg>
   );
 }
 export function HalfRest(props: SvgPropsThemeUi) {
   return (
-    <svg height="10px" viewBox="0 -279 282 288" {...props}>
+    <svg height={`${noteHeadHight}px`} viewBox="-141 -279 564 288" {...props}>
+      <line
+        x1="-139"
+        y1="-2"
+        x2="423"
+        y2="-2"
+        stroke="black"
+        strokeWidth="24"
+      />
       <path d="M282 -109c0 -14 -12 -26 -26 -26h-230c-15 0 -26 12 -26 26v92c0 15 11 26 26 26h230c14 0 26 -11 26 -26v-92z" />
     </svg>
   );

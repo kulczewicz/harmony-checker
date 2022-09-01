@@ -158,7 +158,7 @@ export type ElementBass = NoteBass | Rest;
 
 export type Note = NoteSoprano | NoteAlto | NoteTenor | NoteBass;
 
-interface Beat {
+export interface Beat {
   beatPosition: number;
   soprano?: ElementSoprano;
   alto?: ElementAlto;

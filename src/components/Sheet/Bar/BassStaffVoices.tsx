@@ -1,11 +1,11 @@
+import { noteElementPadding } from "../../../constants";
 import { ElementBass, ElementTenor } from "../../../types";
-import { StaffBox, StaffProps } from "../Staff";
-import { noteElementPadding } from "./constants";
-import { NotationElementLower, NotationElementUpper } from "./NoteElement";
 import {
   calculateStaffElementsHorizontalPositions,
   calculateStaffElementsVerticalPositions,
-} from "./utils";
+} from "../../../utils";
+import { StaffBox, StaffProps } from "../Staff";
+import { NotationElementLower, NotationElementUpper } from "./NoteElement";
 
 interface BassStaffVoicesProps extends StaffProps {
   elementTenor?: ElementTenor;

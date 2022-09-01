@@ -1,5 +1,5 @@
+import { noteHeadHight } from "../../constants";
 import { SvgPropsThemeUi } from "../../types";
-import { noteHeadHight } from "../Sheet/Staff";
 
 export function WholeRest(props: SvgPropsThemeUi) {
   return (

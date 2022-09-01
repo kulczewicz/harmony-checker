@@ -1,4 +1,5 @@
 import { Box, BoxProps, Flex } from "theme-ui";
+import { sheetHeight } from "../../../constants";
 import {
   Bar,
   ElementAlto,
@@ -6,9 +7,9 @@ import {
   ElementSoprano,
   ElementTenor,
 } from "../../../types";
-import { sheetHeight, SheetStaffLines } from "../Staff";
+import { getBarId, getBeatId } from "../../../utils";
+import { SheetStaffLines } from "../Staff";
 import { BassStaffVoices } from "./BassStaffVoices";
-import { getBarId, getBeatId } from "./utils";
 import { ViolinStaffVoices } from "./ViolinStaffVoices";
 
 interface Beat {

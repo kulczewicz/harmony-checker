@@ -1,8 +1,8 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Flex } from "theme-ui";
+import { sheetHeight } from "../../constants";
 import { inputOnState, inputVoiceState } from "../../NoteInputState";
 import { Voice } from "../../types";
-import { sheetHeight } from "../Sheet/Staff";
 import { InputPanelButton } from "./InputPanelButton";
 
 const voices: Voice[] = ["soprano", "alto", "tenor", "bass"];

@@ -1,11 +1,11 @@
+import { noteElementPadding } from "../../../constants";
 import { ElementAlto, ElementSoprano, NoteSymbolEnum } from "../../../types";
-import { StaffBox, StaffProps } from "../Staff";
-import { noteElementPadding } from "./constants";
-import { NotationElementLower, NotationElementUpper } from "./NoteElement";
 import {
   calculateStaffElementsHorizontalPositions,
   calculateStaffElementsVerticalPositions,
-} from "./utils";
+} from "../../../utils";
+import { StaffBox, StaffProps } from "../Staff";
+import { NotationElementLower, NotationElementUpper } from "./NoteElement";
 
 interface ViolinStaffVoicesProps extends StaffProps {
   elementSoprano?: ElementSoprano;

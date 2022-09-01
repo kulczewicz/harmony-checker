@@ -9,9 +9,7 @@ import {
   ElementNoteSvgUp,
   ElementRestSvg,
   ElementNoteSvgDown,
-  WholeNote,
 } from "../../Notation";
-import { consecutiveNotesDistance } from "../Staff";
 
 const noteHeight = 46;
 interface NotationElementUpper extends SvgPropsThemeUi {

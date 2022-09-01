@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, Flex } from "theme-ui";
+import { sheetHeight, staffVerticalPadding } from "../../constants";
 import { sheetState } from "../../NoteInputState";
 import { Bar } from "../../types/data";
+import { getLineId } from "../../utils";
 import { BarBlock } from "./Bar";
-import { getLineId } from "./Bar/utils";
 import { Cursor } from "./Cursor";
 import { Keys } from "./Keys";
-import { sheetHeight, staffVerticalPadding } from "./Staff";
 
 const Accolade = () => (
   <Box

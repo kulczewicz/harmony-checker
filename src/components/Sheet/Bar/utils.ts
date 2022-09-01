@@ -110,68 +110,121 @@ export function calculateNotePositionFromTop({
 
 type CalculateStaffElementsPositionsParams =
   | {
-      upperElement?: ElementSoprano;
-      lowerElement?: ElementAlto;
+      topElement?: ElementSoprano;
+      bottomElement?: ElementAlto;
     }
   | {
-      upperElement?: ElementTenor;
-      lowerElement?: ElementBass;
+      topElement?: ElementTenor;
+      bottomElement?: ElementBass;
     };
 // we need both values to calculate the position of rest, if the other element is the note
-export function calculateStaffElementsPositions({
-  upperElement,
-  lowerElement,
+export function calculateStaffElementsVerticalPositions({
+  topElement,
+  bottomElement,
 }: CalculateStaffElementsPositionsParams) {
   // where we put rest
   const distanceFromEdgeToMiddlePlusTwoNots =
     staffWithPaddingHeight / 2 + noteHeadHight;
 
-  const upperElementFromBottom =
-    upperElement?.type === "note"
-      ? calculateNotePositionFromBottom(upperElement)
+  const topElementFromBottom =
+    topElement?.type === "note"
+      ? calculateNotePositionFromBottom(topElement)
       : distanceFromEdgeToMiddlePlusTwoNots;
-  const lowerElementFromTop =
-    lowerElement?.type === "note"
-      ? calculateNotePositionFromTop(lowerElement)
+  const bottomElementFromTop =
+    bottomElement?.type === "note"
+      ? calculateNotePositionFromTop(bottomElement)
       : distanceFromEdgeToMiddlePlusTwoNots;
 
-  if (upperElement?.type === "note" && lowerElement?.type === "rest") {
-    console.log({
-      staffWithPaddingHeight,
-      upperElementFromBottom,
-      consecutiveNotesDistance,
-    });
-
-    const restPositionFromTop = staffWithPaddingHeight - upperElementFromBottom;
+  if (topElement?.type === "note" && bottomElement?.type === "rest") {
+    const restPositionFromTop = staffWithPaddingHeight - topElementFromBottom;
     // useful for whole and half rests
     const restPositionFromTopRoundedToNearestLine =
       Math.floor(restPositionFromTop / noteHeadHight) * noteHeadHight +
       consecutiveNotesDistance;
 
     return {
-      upperElementFromBottom,
-      lowerElementFromTop: Math.max(
+      topElementFromBottom,
+      bottomElementFromTop: Math.max(
         restPositionFromTopRoundedToNearestLine + noteHeadHight,
-        lowerElementFromTop
+        bottomElementFromTop
       ),
     };
   }
-  if (upperElement?.type === "rest" && lowerElement?.type === "note") {
-    const restPositionFromBottom = staffWithPaddingHeight - lowerElementFromTop;
+  if (topElement?.type === "rest" && bottomElement?.type === "note") {
+    const restPositionFromBottom =
+      staffWithPaddingHeight - bottomElementFromTop;
     const restPositionFromTopRoundedToNearestLine =
       Math.floor(restPositionFromBottom / noteHeadHight) * noteHeadHight +
       consecutiveNotesDistance;
     return {
-      upperElementFromBottom: Math.max(
+      topElementFromBottom: Math.max(
         restPositionFromTopRoundedToNearestLine + noteHeadHight,
-        upperElementFromBottom
+        topElementFromBottom
       ),
-      lowerElementFromTop,
+      bottomElementFromTop,
     };
   }
 
   // both are either notes or rests and we already calculated that
-  return { upperElementFromBottom, lowerElementFromTop };
+  return { topElementFromBottom, bottomElementFromTop };
+}
+
+export function calculateStaffElementsHorizontalPositions({
+  topElement,
+  bottomElement,
+}: CalculateStaffElementsPositionsParams) {
+  const offsetFromTheLeft = 4;
+  if (!(topElement?.type === "note" && bottomElement?.type === "note")) {
+    return {
+      topElementXPosition: offsetFromTheLeft,
+      bottomElementXPosition: offsetFromTheLeft,
+    };
+  }
+
+  if (bottomElement.pitch.octave < topElement.pitch.octave) {
+    return {
+      topElementXPosition: offsetFromTheLeft,
+      bottomElementXPosition: offsetFromTheLeft,
+    };
+  }
+
+  const topBottomDifference =
+    NoteSymbolEnum[topElement.pitch.noteSymbol] -
+    NoteSymbolEnum[bottomElement.pitch.noteSymbol];
+  const notesAreNextToEachOtherInSameOctave =
+    bottomElement.pitch.octave === topElement.pitch.octave &&
+    (topBottomDifference === 1 || topBottomDifference === 0);
+
+  const notesAreNextToEachOtherInConsecutiveOctaves =
+    topElement.pitch.octave === bottomElement.pitch.octave + 1 &&
+    topElement.pitch.noteSymbol === "B" &&
+    bottomElement.pitch.noteSymbol === "C";
+
+  if (
+    notesAreNextToEachOtherInSameOctave ||
+    notesAreNextToEachOtherInConsecutiveOctaves
+  ) {
+    return {
+      topElementXPosition: offsetFromTheLeft,
+      bottomElementXPosition: offsetFromTheLeft + 15,
+    };
+  }
+
+  // just in case we will allow voice crossing in the future
+  if (
+    (bottomElement.pitch.octave === topElement.pitch.octave &&
+      topBottomDifference < 0) ||
+    topElement.pitch.octave < bottomElement.pitch.octave
+  ) {
+    return {
+      topElementXPosition: offsetFromTheLeft + 13,
+      bottomElementXPosition: offsetFromTheLeft,
+    };
+  }
+  return {
+    topElementXPosition: offsetFromTheLeft,
+    bottomElementXPosition: offsetFromTheLeft,
+  };
 }
 
 function getRangeForVoice(voice: Voice): {

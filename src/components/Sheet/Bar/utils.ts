@@ -3,22 +3,17 @@ import {
   ElementBass,
   ElementSoprano,
   ElementTenor,
-  NoteAlto,
-  NoteBass,
   NoteOctave,
   NotePitch,
-  NoteSoprano,
   NoteSymbol,
   NoteSymbolEnum,
   NoteSymbolFromTopEnum,
-  NoteTenor,
   Voice,
 } from "../../../types";
 import {
   consecutiveNotesDistance,
   octaveNotesDistance,
   noteHeadHight,
-  notesInOctave,
   staffWithPaddingHeight,
 } from "../Staff";
 
@@ -32,43 +27,45 @@ function mod(n: number, m: number) {
   return ((n % m) + m) % m;
 }
 
-type CalculatePositionFromBottomParams = Pick<
-  NoteSoprano | NoteTenor,
-  "pitch" | "voice"
->;
-function calculateOffsetFromBottom({
-  pitch: { octave },
-  voice,
-}: CalculatePositionFromBottomParams) {
-  const lowestViolinKeyOctave = 4;
-  const lowestBassKeyOctave = 2;
-  const relativeOctave =
-    octave -
-    (voice === "soprano" ? lowestViolinKeyOctave : lowestBassKeyOctave);
-  return relativeOctave * octaveNotesDistance;
-}
+const lowestNoteInViolinStaff: NotePitch = {
+  noteSymbol: "F",
+  octave: 3,
+};
+const lowestNoteInBassStaff: NotePitch = {
+  noteSymbol: "A",
+  octave: 1,
+};
 
-// C is the lowest note in the octave and both
-function calculateOffsetToLowestCNoteFromBottom(voice: "soprano" | "tenor") {
-  const notesUnderLowestCNoteInViolinKey = 4;
-  const notesUnderLowestCNoteInBassKey = 2;
-  return (
-    consecutiveNotesDistance *
-    (voice === "soprano"
-      ? notesUnderLowestCNoteInViolinKey
-      : notesUnderLowestCNoteInBassKey)
-  );
+interface CalculateNotePositionParams {
+  pitch: NotePitch;
+  voice: Voice;
 }
 
 export function calculateNotePositionFromBottom({
-  pitch,
+  pitch: { octave, noteSymbol },
   voice,
-}: CalculatePositionFromBottomParams) {
-  return (
-    calculateOffsetToLowestCNoteFromBottom(voice) +
-    calculateOffsetFromBottom({ pitch, voice }) +
-    NoteSymbolEnum[pitch.noteSymbol] * consecutiveNotesDistance
-  );
+}: CalculateNotePositionParams) {
+  const lowestNoteInStaff =
+    voice === "soprano" || voice === "alto"
+      ? lowestNoteInViolinStaff
+      : lowestNoteInBassStaff;
+
+  if (octave === lowestNoteInStaff.octave) {
+    const lowestNoteInStaffFromBottom =
+      NoteSymbolEnum[lowestNoteInStaff.noteSymbol];
+    return (
+      (NoteSymbolEnum[noteSymbol] - lowestNoteInStaffFromBottom) *
+      consecutiveNotesDistance
+    );
+  }
+
+  const lowestOctaveOffset =
+    (NoteSymbolFromTopEnum[lowestNoteInStaff.noteSymbol] + 1) *
+    consecutiveNotesDistance;
+  const octaveOffset =
+    (octave - lowestNoteInStaff.octave - 1) * octaveNotesDistance;
+  const noteOffSet = NoteSymbolEnum[noteSymbol] * consecutiveNotesDistance;
+  return lowestOctaveOffset + octaveOffset + noteOffSet;
 }
 
 const highestNoteInViolinStaff: NotePitch = {
@@ -80,14 +77,10 @@ const highestNoteInBassStaff: NotePitch = {
   octave: 4,
 };
 
-interface CalculateNotePositionFromTopParams {
-  pitch: NotePitch;
-  voice: Voice;
-}
 export function calculateNotePositionFromTop({
   pitch: { octave, noteSymbol },
   voice,
-}: CalculateNotePositionFromTopParams) {
+}: CalculateNotePositionParams) {
   const highestNoteInStaff =
     voice === "soprano" || voice === "alto"
       ? highestNoteInViolinStaff
@@ -180,17 +173,6 @@ export function calculateStaffElementsPositions({
   // both are either notes or rests and we already calculated that
   return { upperElementFromBottom, lowerElementFromTop };
 }
-
-// function calculateOffsetFromTop(note: NotePitch, highestNote: NotePitch) {
-//   if (note.octave === highestNote.octave) {
-//     return (
-//       (NoteSymbolFromTopEnum[note.noteSymbol] -
-//         NoteSymbolFromTopEnum[highestNote.noteSymbol]) *
-//       consecutiveNotesDistance
-//     );
-//   }
-//   NoteSymbolEnum[highestNote.noteSymbol];
-// }
 
 function getRangeForVoice(voice: Voice): {
   lowest: NotePitch;

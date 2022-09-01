@@ -17,7 +17,7 @@ export enum NoteSymbolFromTopEnum {
   D,
   C,
 }
-export type NoteOctave = 2 | 3 | 4 | 5 | 6; // others are out of the voice range
+export type NoteOctave = 1 | 2 | 3 | 4 | 5 | 6; // others are out of the voice range
 // type NotePitch = `${NoteSymbol}${Octave}`;
 
 /* NoteDuration in thirty-second notes - we can get only following values

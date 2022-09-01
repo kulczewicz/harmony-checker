@@ -1,6 +1,7 @@
 import {
   consecutiveNotesDistance,
   noteHeadHight,
+  noteOffsetFromLeft,
   staffWithPaddingHeight,
 } from "../constants";
 import {
@@ -80,19 +81,16 @@ export function calculateStaffElementsHorizontalPositions({
   topElement,
   bottomElement,
 }: CalculateStaffElementsPositionsParams) {
-  const offsetFromTheLeft = 4;
-  if (!(topElement?.type === "note" && bottomElement?.type === "note")) {
-    return {
-      topElementXPosition: offsetFromTheLeft,
-      bottomElementXPosition: offsetFromTheLeft,
-    };
-  }
-
-  if (bottomElement.pitch.octave < topElement.pitch.octave) {
-    return {
-      topElementXPosition: offsetFromTheLeft,
-      bottomElementXPosition: offsetFromTheLeft,
-    };
+  const offsetFromLeft = noteOffsetFromLeft * 1.2;
+  const result = {
+    topElementXPosition: offsetFromLeft,
+    bottomElementXPosition: offsetFromLeft,
+  };
+  if (
+    !(topElement?.type === "note" && bottomElement?.type === "note") ||
+    bottomElement.pitch.octave < topElement.pitch.octave
+  ) {
+    return result;
   }
 
   const topBottomDifference =
@@ -111,10 +109,7 @@ export function calculateStaffElementsHorizontalPositions({
     notesAreNextToEachOtherInSameOctave ||
     notesAreNextToEachOtherInConsecutiveOctaves
   ) {
-    return {
-      topElementXPosition: offsetFromTheLeft,
-      bottomElementXPosition: offsetFromTheLeft + 15,
-    };
+    result.bottomElementXPosition = offsetFromLeft + 15;
   }
 
   // just in case we will allow voice crossing in the future
@@ -123,13 +118,7 @@ export function calculateStaffElementsHorizontalPositions({
       topBottomDifference < 0) ||
     topElement.pitch.octave < bottomElement.pitch.octave
   ) {
-    return {
-      topElementXPosition: offsetFromTheLeft + 13,
-      bottomElementXPosition: offsetFromTheLeft,
-    };
+    result.topElementXPosition = offsetFromLeft + 13;
   }
-  return {
-    topElementXPosition: offsetFromTheLeft,
-    bottomElementXPosition: offsetFromTheLeft,
-  };
+  return result;
 }

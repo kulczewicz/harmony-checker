@@ -11,3 +11,5 @@ export const staffWithPaddingHeight = staffHeight + 2 * staffVerticalPadding;
 export const sheetHeight = staffHeight * 2 + staffVerticalPadding * 2;
 
 export const noteElementPadding = 4;
+export const noteHeadWidth = 15;
+export const noteOffsetFromLeft = noteHeadWidth / 2;

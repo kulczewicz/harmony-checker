@@ -34,14 +34,14 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         voice: "soprano",
         duration: { value: "quarter" },
         position: 0,
-        pitch: { octave: 4, noteSymbol: "G" },
+        pitch: { octave: 4, noteSymbol: "A" },
       },
       alto: {
         type: "note",
         voice: "alto",
         duration: { value: "half" },
         position: 0,
-        pitch: { octave: 4, noteSymbol: "F" },
+        pitch: { octave: 4, noteSymbol: "C" },
       },
       tenor: {
         type: "note",

@@ -17,3 +17,21 @@ export const highestNoteInBassStaff: NotePitch = {
   noteSymbol: "G",
   octave: 4,
 };
+
+export const lowestNoteWithoutLedgerLineViolinStaff: NotePitch = {
+  noteSymbol: "E",
+  octave: 4,
+};
+export const lowestNoteWithoutLedgerLineBassStaff: NotePitch = {
+  noteSymbol: "G",
+  octave: 2,
+};
+
+export const highestNoteWithoutLedgerLineViolinStaff: NotePitch = {
+  noteSymbol: "F",
+  octave: 5,
+};
+export const highestNoteWithoutLedgerLineBassStaff: NotePitch = {
+  noteSymbol: "A",
+  octave: 4,
+};

@@ -34,7 +34,6 @@ export function ViolinStaffVoices({
         width: "100%",
         px: `${noteElementPadding}px`,
       }}
-      staffLinesProps={{ sx: { left: "0px" } }}
       {...props}
     >
       {elementSoprano ? (

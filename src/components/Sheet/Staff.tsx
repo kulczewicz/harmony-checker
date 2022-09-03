@@ -37,15 +37,8 @@ export function SheetStaffLines() {
   );
 }
 
-export interface StaffProps extends BoxProps {
-  staffLinesProps?: BoxProps;
-}
-export function StaffBox({
-  children,
-  staffLinesProps,
-  sx,
-  ...props
-}: StaffProps) {
+export interface StaffProps extends BoxProps {}
+export function StaffBox({ children, sx, ...props }: StaffProps) {
   return (
     <Box
       sx={{

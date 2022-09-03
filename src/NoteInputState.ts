@@ -4,6 +4,7 @@ import {
   DurationValue,
   NotationElementType,
   SheetData,
+  TimeSignature,
   Voice,
 } from "./types";
 
@@ -54,29 +55,54 @@ const wholeRestsOnZeroPosition: Beat[] = [
       position: 0,
     },
   },
-  // {
-  //   beatPosition: 16,
-  //   soprano: {
-  //     type: "rest",
-  //     duration: { value: "half" },
-  //     position: 16,
-  //   },
-  // },
 ];
+const defaultTimeSignature: TimeSignature = { bottomNumber: 4, topNumber: 4 };
 export const sheetState = atom<SheetData>({
   key: "sheet",
   default: [
     [
-      { barNumber: 0, beats: wholeRestsOnZeroPosition },
-      { barNumber: 1, beats: wholeRestsOnZeroPosition },
-      { barNumber: 2, beats: wholeRestsOnZeroPosition },
-      { barNumber: 3, beats: wholeRestsOnZeroPosition },
+      {
+        barNumber: 0,
+        timeSignature: defaultTimeSignature,
+        beats: wholeRestsOnZeroPosition,
+      },
+      {
+        barNumber: 1,
+        timeSignature: defaultTimeSignature,
+        beats: wholeRestsOnZeroPosition,
+      },
+      {
+        barNumber: 2,
+        timeSignature: defaultTimeSignature,
+        beats: wholeRestsOnZeroPosition,
+      },
+      {
+        barNumber: 3,
+        timeSignature: defaultTimeSignature,
+        beats: wholeRestsOnZeroPosition,
+      },
     ],
     [
-      { barNumber: 4, beats: wholeRestsOnZeroPosition },
-      { barNumber: 5, beats: wholeRestsOnZeroPosition },
-      { barNumber: 6, beats: wholeRestsOnZeroPosition },
-      { barNumber: 7, beats: wholeRestsOnZeroPosition },
+      {
+        barNumber: 4,
+        timeSignature: defaultTimeSignature,
+        beats: wholeRestsOnZeroPosition,
+      },
+      {
+        barNumber: 5,
+        timeSignature: defaultTimeSignature,
+        beats: wholeRestsOnZeroPosition,
+      },
+      {
+        barNumber: 6,
+        timeSignature: defaultTimeSignature,
+        beats: wholeRestsOnZeroPosition,
+      },
+      {
+        barNumber: 7,
+        timeSignature: defaultTimeSignature,
+        beats: wholeRestsOnZeroPosition,
+      },
     ],
   ],
 });

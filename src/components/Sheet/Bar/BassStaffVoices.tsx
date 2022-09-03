@@ -30,12 +30,7 @@ export function BassStaffVoices({
     });
 
   return (
-    <StaffBox
-      sx={{ width: "100%" }}
-      staffLinesProps={{ sx: { left: "0px" } }}
-      px={`${noteElementPadding}px`}
-      {...props}
-    >
+    <StaffBox sx={{ width: "100%" }} px={`${noteElementPadding}px`} {...props}>
       {elementTenor ? (
         <NotationElementUpper
           element={elementTenor}

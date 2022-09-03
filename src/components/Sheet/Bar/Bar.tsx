@@ -1,27 +1,21 @@
 import { Box, BoxProps, Flex } from "theme-ui";
 import { sheetHeight } from "../../../constants";
-import {
-  Bar,
-  ElementAlto,
-  ElementBass,
-  ElementSoprano,
-  ElementTenor,
-} from "../../../types";
+import { Bar, TimeSignature } from "../../../types";
 import { getBarId, getBeatId } from "../../../utils";
-import { SheetStaffLines } from "../Staff";
+import { SheetStaffLines, StaffBox } from "../Staff";
+import { TimeSignatures } from "../TimeSignatures";
 import { BassStaffVoices } from "./BassStaffVoices";
 import { ViolinStaffVoices } from "./ViolinStaffVoices";
 
-interface Beat {
-  beatPosition: number;
-  soprano?: ElementSoprano;
-  alto?: ElementAlto;
-  tenor?: ElementTenor;
-  bass?: ElementBass;
+interface BarProps extends BoxProps {
+  bar: Bar;
+  previousBarTimeSignature: TimeSignature | undefined;
 }
-
-interface BarProps extends Bar, BoxProps {}
-export function BarBlock({ barNumber, beats, ...props }: BarProps) {
+export function BarBlock({
+  bar: { barNumber, timeSignature, beats },
+  previousBarTimeSignature,
+  ...props
+}: BarProps) {
   return (
     <Flex
       id={getBarId(barNumber)}
@@ -37,17 +31,20 @@ export function BarBlock({ barNumber, beats, ...props }: BarProps) {
     >
       <SheetStaffLines />
       <Flex sx={{ width: "100%" }}>
-        {beats.map(({ beatPosition, soprano, alto, tenor, bass }) => (
-          <Box
-            sx={{ width: "100%" }}
-            id={getBeatId(barNumber, beatPosition)}
-            key={beatPosition}
-            {...props}
-          >
-            <ViolinStaffVoices elementSoprano={soprano} elementAlto={alto} />
-            <BassStaffVoices elementTenor={tenor} elementBass={bass} />
-          </Box>
-        ))}
+        <TimeSignatures timeSignature={timeSignature} />
+        <Flex sx={{ width: "100%" }}>
+          {beats.map(({ beatPosition, soprano, alto, tenor, bass }) => (
+            <Box
+              sx={{ width: "100%" }}
+              id={getBeatId(barNumber, beatPosition)}
+              key={beatPosition}
+              {...props}
+            >
+              <ViolinStaffVoices elementSoprano={soprano} elementAlto={alto} />
+              <BassStaffVoices elementTenor={tenor} elementBass={bass} />
+            </Box>
+          ))}
+        </Flex>
       </Flex>
       <Box
         sx={{

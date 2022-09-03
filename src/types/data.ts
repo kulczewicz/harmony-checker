@@ -169,7 +169,19 @@ export interface Beat {
 export type Line = Bar[];
 export type SheetData = Line[];
 
+export type TimeSignatureTopNumber = 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type TimeSignatureBottomNumber = 2 | 4 | 8;
+export type TimeSignatureNumber =
+  | TimeSignatureTopNumber
+  | TimeSignatureBottomNumber;
+export interface TimeSignature {
+  topNumber: TimeSignatureTopNumber;
+  bottomNumber: TimeSignatureBottomNumber;
+}
+
 export interface Bar {
+  timeSignature: TimeSignature;
+  timeSignatureChange?: boolean;
   barNumber: number;
   beats: Beat[];
 }

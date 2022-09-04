@@ -5,6 +5,8 @@ import {
   noteHeadWidth,
   staffHeight,
   staffVerticalPadding,
+  notePadding,
+  ledgerLineOutsideWidth,
 } from "../../../constants";
 import { CalculateNumberOfLedgerLinesReturn } from "../../../utils/calculateLedgerLines.utils";
 
@@ -20,12 +22,11 @@ export function LedgerLines({
   ...props
 }: LedgerLinesProps) {
   const offsetFromEdgeToEndOfStaff = staffVerticalPadding + staffHeight;
-  const linesWidth = noteHeadWidth * 2;
-  const linesOffsetLeft = noteHeadWidth / 2;
+  const linesWidth = noteHeadWidth + ledgerLineOutsideWidth * 2;
   const sx: SxProp["sx"] = {
     position: "absolute",
     width: `${linesWidth}px`,
-    left: `${offsetFromLeft - linesOffsetLeft}px`,
+    left: `${offsetFromLeft - ledgerLineOutsideWidth}px`,
     height: `${noteHeadHight * numberOfLines}px`,
     ...(linesPosition === "above"
       ? { bottom: `${offsetFromEdgeToEndOfStaff}px` }

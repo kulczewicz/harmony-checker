@@ -1,11 +1,11 @@
-import { noteElementPadding } from "../../../constants";
+import { barPadding } from "../../../constants";
 import { ElementBass, ElementTenor } from "../../../types";
 import {
   calculateStaffElementsHorizontalPositions,
   calculateStaffElementsVerticalPositions,
 } from "../../../utils";
 import { StaffBox, StaffProps } from "../Staff";
-import { NotationElementLower, NotationElementUpper } from "./NoteElement";
+import { NotationElement } from "./NoteElement";
 
 interface BassStaffVoicesProps extends StaffProps {
   elementTenor?: ElementTenor;
@@ -23,26 +23,28 @@ export function BassStaffVoices({
       bottomElement: elementBass,
     });
 
-  const { topElementXPosition, bottomElementXPosition } =
+  const { topElementLeftOffset, bottomElementLeftOffset } =
     calculateStaffElementsHorizontalPositions({
       topElement: elementTenor,
       bottomElement: elementBass,
     });
 
   return (
-    <StaffBox sx={{ width: "100%" }} px={`${noteElementPadding}px`} {...props}>
+    <StaffBox sx={{ width: "100%" }} {...props}>
       {elementTenor ? (
-        <NotationElementUpper
+        <NotationElement
+          direction="up"
           element={elementTenor}
           offsetFromBottom={topElementFromBottom}
-          offsetFromLeft={topElementXPosition}
+          offsetFromLeft={topElementLeftOffset}
         />
       ) : null}
       {elementBass ? (
-        <NotationElementLower
+        <NotationElement
+          direction="down"
           element={elementBass}
           offsetFromTop={bottomElementFromTop}
-          offsetFromLeft={bottomElementXPosition}
+          offsetFromLeft={bottomElementLeftOffset}
         />
       ) : null}
     </StaffBox>

@@ -99,6 +99,9 @@ export interface NoteSoprano extends BaseNote {
 }
 
 export type ElementSoprano = NoteSoprano | Rest;
+export type ElementSopranoProcessed = ElementSoprano & {
+  leftOffset: number;
+};
 
 export type NoteAltoPitch =
   | {
@@ -118,6 +121,9 @@ export interface NoteAlto extends BaseNote {
   pitch: NoteAltoPitch;
 }
 export type ElementAlto = NoteAlto | Rest;
+export type ElementAltoProcessed = ElementAlto & {
+  leftOffset: number;
+};
 
 export type NoteTenorPitch =
   | {
@@ -135,6 +141,9 @@ export interface NoteTenor extends BaseNote {
 }
 
 export type ElementTenor = NoteTenor | Rest;
+export type ElementTenorProcessed = ElementTenor & {
+  leftOffset: number;
+};
 
 export type NoteBassPitch =
   | {
@@ -153,6 +162,9 @@ export interface NoteBass extends BaseNote {
   voice: "bass";
   pitch: NoteBassPitch;
 }
+export type ElementBassProcessed = ElementBass & {
+  leftOffset: number;
+};
 
 export type ElementBass = NoteBass | Rest;
 
@@ -165,6 +177,21 @@ export interface Beat {
   tenor?: ElementTenor;
   bass?: ElementBass;
 }
+
+export interface BeatProcessed {
+  beatPosition: number;
+  width: number;
+  soprano?: ElementSopranoProcessed;
+  alto?: ElementAltoProcessed;
+  tenor?: ElementTenorProcessed;
+  bass?: ElementBassProcessed;
+}
+
+export type StaffElement =
+  | ElementSoprano
+  | ElementAlto
+  | ElementTenor
+  | ElementBass;
 
 export type Line = Bar[];
 export type SheetData = Line[];
@@ -181,7 +208,15 @@ export interface TimeSignature {
 
 export interface Bar {
   timeSignature: TimeSignature;
-  timeSignatureChange?: boolean;
   barNumber: number;
   beats: Beat[];
+}
+
+export interface BarWithTimeSignatureChange extends Bar {
+  timeSignatureChange: boolean;
+}
+
+export interface BarProcessed extends BarWithTimeSignatureChange {
+  width: number;
+  beats: BeatProcessed[];
 }

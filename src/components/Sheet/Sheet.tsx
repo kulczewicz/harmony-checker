@@ -4,6 +4,10 @@ import { Box, Flex } from "theme-ui";
 import { sheetState } from "../../NoteInputState";
 import { Bar, Line } from "../../types/data";
 import { getLineId } from "../../utils";
+// import {
+//   processBar,
+//   processTimeSignatureChanges,
+// } from "../../utils/barsPreprocession.utils";
 import { BarBlock } from "./Bar";
 import { Cursor } from "./Cursor";
 import { Keys } from "./Keys";
@@ -22,7 +26,7 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
         voice: "soprano",
         duration: { value: "quarter" },
         position: 0,
-        pitch: { octave: 4, noteSymbol: "A" },
+        pitch: { octave: 4, noteSymbol: "D" },
       },
       alto: {
         type: "note",
@@ -32,18 +36,16 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
         pitch: { octave: 4, noteSymbol: "C" },
       },
       tenor: {
-        type: "note",
-        voice: "tenor",
+        type: "rest",
         duration: { value: "quarter" },
         position: 0,
-        pitch: { octave: 3, noteSymbol: "C" },
       },
       bass: {
         type: "note",
         voice: "bass",
         duration: { value: "quarter" },
         position: 0,
-        pitch: { octave: 2, noteSymbol: "A" },
+        pitch: { octave: 3, noteSymbol: "A" },
       },
     },
     {
@@ -152,9 +154,13 @@ export function Sheet() {
     const firstLineEl = document.getElementById(getLineId(0));
     if (firstLineEl) {
       const { clientWidth } = firstLineEl;
-      console.log({ clientWidth });
+      // console.log({ clientWidth });
     }
   }, []);
+
+  // console.log(
+  //   processTimeSignatureChanges(allBars).map((bar) => processBar(bar))
+  // );
 
   return (
     <Box id="sheet" sx={{ width: "100%" }}>

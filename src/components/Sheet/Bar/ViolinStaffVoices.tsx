@@ -1,11 +1,11 @@
-import { noteElementPadding } from "../../../constants";
+import { barPadding } from "../../../constants";
 import { ElementAlto, ElementSoprano, NoteSymbolEnum } from "../../../types";
 import {
   calculateStaffElementsHorizontalPositions,
   calculateStaffElementsVerticalPositions,
 } from "../../../utils";
 import { StaffBox, StaffProps } from "../Staff";
-import { NotationElementLower, NotationElementUpper } from "./NoteElement";
+import { NotationElement } from "./NoteElement";
 
 interface ViolinStaffVoicesProps extends StaffProps {
   elementSoprano?: ElementSoprano;
@@ -22,7 +22,7 @@ export function ViolinStaffVoices({
       topElement: elementSoprano,
       bottomElement: elementAlto,
     });
-  const { topElementXPosition, bottomElementXPosition } =
+  const { topElementLeftOffset, bottomElementLeftOffset } =
     calculateStaffElementsHorizontalPositions({
       topElement: elementSoprano,
       bottomElement: elementAlto,
@@ -32,22 +32,24 @@ export function ViolinStaffVoices({
     <StaffBox
       sx={{
         width: "100%",
-        px: `${noteElementPadding}px`,
+        px: `${barPadding}px`,
       }}
       {...props}
     >
       {elementSoprano ? (
-        <NotationElementUpper
+        <NotationElement
+          direction="up"
           element={elementSoprano}
           offsetFromBottom={topElementFromBottom}
-          offsetFromLeft={topElementXPosition}
+          offsetFromLeft={topElementLeftOffset}
         />
       ) : null}
       {elementAlto ? (
-        <NotationElementLower
+        <NotationElement
+          direction="down"
           element={elementAlto}
           offsetFromTop={bottomElementFromTop}
-          offsetFromLeft={bottomElementXPosition}
+          offsetFromLeft={bottomElementLeftOffset}
         />
       ) : null}
     </StaffBox>

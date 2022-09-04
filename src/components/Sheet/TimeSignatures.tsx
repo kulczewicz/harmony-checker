@@ -1,6 +1,6 @@
 import { Box, BoxProps, Flex } from "theme-ui";
 import {
-  noteElementPadding,
+  barPadding,
   staffHeight,
   staffVerticalPadding,
   timeSignatureWidth,
@@ -47,7 +47,7 @@ export function TimeSignatures({
     <Flex
       sx={{
         width: `${timeSignatureWidth}px`,
-        px: `${noteElementPadding}px`,
+        px: `${barPadding}px`,
         flexDirection: "column",
         ...sx,
       }}

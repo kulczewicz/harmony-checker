@@ -10,8 +10,17 @@ export const staffVerticalPadding = octaveNotesDistance;
 export const staffWithPaddingHeight = staffHeight + 2 * staffVerticalPadding;
 export const sheetHeight = staffHeight * 2 + staffVerticalPadding * 2;
 
-export const noteElementPadding = 4;
+export const barPadding = 4;
+
+export const noteHeight = 45;
 export const noteHeadWidth = 15;
-export const noteOffsetFromLeft = noteHeadWidth / 2;
+export const noteOffset = 2;
+export const ledgerLineOutsideWidth = 4;
+export const notePadding = ledgerLineOutsideWidth + noteOffset;
+export const noteWidthWithPadding = noteHeadWidth + notePadding * 2;
+
+export const noteTailWidth = noteHeadWidth + 10;
+export const noteTailWidthWithPadding =
+  notePadding + noteHeadWidth + noteTailWidth + noteOffset;
 
 export const timeSignatureWidth = 25;

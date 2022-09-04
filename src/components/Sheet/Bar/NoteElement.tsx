@@ -1,5 +1,6 @@
-import { Box } from "theme-ui";
+import { SxProp } from "theme-ui";
 import {
+  DurationValue,
   ElementAlto,
   ElementBass,
   ElementSoprano,
@@ -14,70 +15,44 @@ import {
 } from "../../Notation";
 import { LedgerLines } from "./LedgerLines";
 
-const noteHeight = 46;
-interface NotationElementUpper extends SvgPropsThemeUi {
+interface NotationElementBase extends SvgPropsThemeUi {
+  offsetFromLeft: number;
+}
+interface NotationElementTopProps extends NotationElementBase {
+  direction: "up";
   element: ElementSoprano | ElementTenor;
   offsetFromBottom: number;
-  offsetFromLeft: number;
 }
-export function NotationElementUpper({
-  element,
-  offsetFromBottom,
-  offsetFromLeft,
-}: NotationElementUpper) {
-  const durationValue = element.duration.value;
-  if (element.type === "note") {
-    const { linesPosition, numberOfLines } =
-      calculateNumberOfLedgerLines(element);
-    const Note = ElementNoteSvgUp[durationValue]({
-      sx: {
-        position: "absolute",
-        bottom: `${offsetFromBottom}px`,
-        left: `${offsetFromLeft}px`,
-        height: `${noteHeight}px`,
-      },
-    });
-    if (linesPosition === "inside") {
-      return Note;
-    }
-    return (
-      <>
-        {Note}
-        <LedgerLines
-          linesPosition={linesPosition}
-          numberOfLines={numberOfLines}
-          offsetFromLeft={offsetFromLeft}
-        />
-      </>
-    );
-  }
-  return ElementRestSvg[durationValue]({
-    sx: { position: "absolute", bottom: offsetFromBottom },
-  });
-}
-
-interface NotationElementLower extends SvgPropsThemeUi {
+interface NotationElementBottomProps extends NotationElementBase {
+  direction: "down";
   element: ElementAlto | ElementBass;
   offsetFromTop: number;
-  offsetFromLeft: number;
 }
-export function NotationElementLower({
-  element,
-  offsetFromTop,
-  offsetFromLeft,
-}: NotationElementLower) {
+
+type NotationElementProps =
+  | NotationElementTopProps
+  | NotationElementBottomProps;
+export function NotationElement(notationElement: NotationElementProps) {
+  const sx: SxProp["sx"] = {
+    position: "absolute",
+    left: `${notationElement.offsetFromLeft}px`,
+    ...(notationElement.direction === "up"
+      ? { bottom: `${notationElement.offsetFromBottom}px` }
+      : { top: `${notationElement.offsetFromTop}px` }),
+  };
+
+  const { element, offsetFromLeft } = notationElement;
+
   const durationValue = element.duration.value;
+
   if (element.type === "note") {
     const { linesPosition, numberOfLines } =
       calculateNumberOfLedgerLines(element);
-    const Note = ElementNoteSvgDown[durationValue]({
-      sx: {
-        position: "absolute",
-        top: `${offsetFromTop}px`,
-        left: `${offsetFromLeft}px`,
-        height: `${noteHeight}px`,
-      },
-    });
+    const ElementNoteSvg =
+      notationElement.direction === "up"
+        ? ElementNoteSvgUp
+        : ElementNoteSvgDown;
+    const Note = ElementNoteSvg[durationValue]({ sx });
     if (linesPosition === "inside") {
       return Note;
     }
@@ -92,7 +67,5 @@ export function NotationElementLower({
       </>
     );
   }
-  return ElementRestSvg[durationValue]({
-    sx: { position: "absolute", top: offsetFromTop },
-  });
+  return ElementRestSvg[durationValue]({ sx });
 }

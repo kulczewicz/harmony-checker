@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Bar } from "../../types";
-import { getBarId, getBeatId, getNoteByCursorPositon } from "./Bar/utils";
+import { getBarId, getBeatId, getNoteByCursorPositon } from "../../utils";
 
 interface CursorProps {
   bars: Bar[];

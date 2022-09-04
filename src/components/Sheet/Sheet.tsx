@@ -1,17 +1,21 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, Flex } from "theme-ui";
-import { sheetState } from "../../NoteInputState";
-import { Bar, Line } from "../../types/data";
+import { barsState } from "../../NoteInputState";
+
+import { Bar, BarProcessed, Line } from "../../types/data";
 import { getLineId } from "../../utils";
-// import {
-//   processBar,
-//   processTimeSignatureChanges,
-// } from "../../utils/barsPreprocession.utils";
+import {
+  processBar,
+  processTimeSignatureChanges,
+} from "../../utils/barsPreprocession.utils";
+import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";
 import { BarBlock } from "./Bar";
 import { Cursor } from "./Cursor";
-import { Keys } from "./Keys";
-import { StaffLineBeginning } from "./StaffLineBeginning";
+import {
+  StaffLineBeginning,
+  staffLineBeginningWidth,
+} from "./StaffLineBeginning";
 
 const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
   timeSignature: {
@@ -124,50 +128,64 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
   ],
 };
 
-const allBars: Bar[] = new Array(10)
+const defaultBars: Bar[] = new Array(20)
   .fill(defaultBar)
   .map((bar, index) => ({ ...bar, barNumber: index }));
 
-const defaultSheetData = [
-  new Array(3)
-    .fill(defaultBar)
-    .map((bar, index) => ({ barNumber: index, ...bar })),
-  new Array(2)
-    .fill(defaultBar)
-    .map((bar, index) => ({ barNumber: index, ...bar })),
-];
-
-interface GetPreviousBarTimeSignatureParams {
-  barIndex: number;
-  lineIndex: number;
-  lines: Line[];
-}
-function getPreviousBarTimeSignature({}: GetPreviousBarTimeSignatureParams) {}
-
+const sheetElementId = "sheet";
 export function Sheet() {
-  const sheetData = useRecoilValue(sheetState);
-  const setSheetData = useSetRecoilState(sheetState);
+  const bars = useRecoilValue(barsState);
+  const setBars = useSetRecoilState(barsState);
+  const [availableSheetWidth, setAvailableSheetWidth] = useState<number>(0);
+  const [lines, setLines] = useState<Line[]>([[]]);
 
   useEffect(() => {
-    setSheetData(defaultSheetData);
-
-    const firstLineEl = document.getElementById(getLineId(0));
-    if (firstLineEl) {
-      const { clientWidth } = firstLineEl;
-      // console.log({ clientWidth });
-    }
+    updateSheetWidth();
+    setBars(defaultBars);
   }, []);
 
-  // console.log(
-  //   processTimeSignatureChanges(allBars).map((bar) => processBar(bar))
-  // );
+  const updateSheetWidth = useCallback(() => {
+    const sheetElement = document.getElementById(sheetElementId);
+    if (sheetElement?.clientWidth && sheetElement.clientWidth > 0) {
+      setAvailableSheetWidth(
+        sheetElement.clientWidth - staffLineBeginningWidth
+      );
+    }
+  }, [setAvailableSheetWidth]);
+
+  useEffect(() => {
+    const addEventListeners = () => {
+      window.addEventListener("resize", updateSheetWidth);
+    };
+    const removeEventListeners = () => {
+      window.removeEventListener("resize", updateSheetWidth);
+    };
+    addEventListeners();
+    return () => removeEventListeners();
+  }, [updateSheetWidth]);
+
+  useEffect(() => {
+    if (availableSheetWidth <= 0) return;
+
+    const barsWithTimeSignatureChanges = processTimeSignatureChanges(bars);
+    const processedBars = barsWithTimeSignatureChanges.map((bar) =>
+      processBar(bar)
+    );
+
+    setLines(
+      breakProcessedBarsIntoLines({
+        availableSheetWidth,
+        bars: processedBars,
+      })
+    );
+  }, [bars, availableSheetWidth]);
 
   return (
     <Box id="sheet" sx={{ width: "100%" }}>
-      {sheetData.map((line, lineIndex, lines) => (
+      {lines.map((line, lineIndex) => (
         <Flex id={getLineId(lineIndex)} key={lineIndex} sx={{ width: "100%" }}>
           <StaffLineBeginning />
-          {line.map((bar, barIndex, bars) => {
+          {line.map((bar) => {
             return (
               <BarBlock
                 key={bar.barNumber}

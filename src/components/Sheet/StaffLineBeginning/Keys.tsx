@@ -1,6 +1,6 @@
 import { Box, BoxProps } from "theme-ui";
-import { BassKeySvg, ViolinKeySvg } from "../Notation";
-import { SheetStaffLines, StaffBox } from "./Staff";
+import { SheetStaffLines, StaffBox } from "../Staff";
+import { BassKeySvg, ViolinKeySvg } from "./KeySvgs";
 
 const keyElementWidth = 32;
 const keyXMargin = 8;

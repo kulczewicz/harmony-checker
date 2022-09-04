@@ -31,8 +31,6 @@ import {
   TimeSignatureTwo,
 } from "./TimeSignatureSvgs";
 
-export * from "./KeySvgs";
-
 type ElementSvg = {
   [duration in DurationValue]: (props: SvgPropsThemeUi) => JSX.Element;
 };

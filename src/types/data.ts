@@ -193,7 +193,7 @@ export type StaffElement =
   | ElementTenor
   | ElementBass;
 
-export type Line = Bar[];
+export type Line = BarProcessed[];
 export type SheetData = Line[];
 
 export type TimeSignatureTopNumber = 2 | 3 | 4 | 5 | 6 | 7 | 8;

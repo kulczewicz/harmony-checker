@@ -1,6 +1,6 @@
 import { Box, BoxProps, Flex } from "theme-ui";
 import { sheetHeight } from "../../../constants";
-import { Bar, TimeSignature } from "../../../types";
+import { BarProcessed, TimeSignature } from "../../../types";
 import { getBarId, getBeatId } from "../../../utils";
 import { SheetStaffLines, StaffBox } from "../Staff";
 import { TimeSignatures } from "../TimeSignatures";
@@ -8,11 +8,11 @@ import { BassStaffVoices } from "./BassStaffVoices";
 import { ViolinStaffVoices } from "./ViolinStaffVoices";
 
 interface BarProps extends BoxProps {
-  bar: Bar;
+  bar: BarProcessed;
   previousBarTimeSignature: TimeSignature | undefined;
 }
 export function BarBlock({
-  bar: { barNumber, timeSignature, beats },
+  bar: { barNumber, timeSignature, beats, timeSignatureChange },
   previousBarTimeSignature,
   ...props
 }: BarProps) {
@@ -31,7 +31,9 @@ export function BarBlock({
     >
       <SheetStaffLines />
       <Flex sx={{ width: "100%" }}>
-        <TimeSignatures timeSignature={timeSignature} />
+        {timeSignatureChange ? (
+          <TimeSignatures timeSignature={timeSignature} />
+        ) : null}
         <Flex sx={{ width: "100%" }}>
           {beats.map(({ beatPosition, soprano, alto, tenor, bass }) => (
             <Box

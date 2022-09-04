@@ -1,5 +1,6 @@
 import { atom } from "recoil";
 import {
+  Bar,
   Beat,
   DurationValue,
   NotationElementType,
@@ -57,53 +58,50 @@ const wholeRestsOnZeroPosition: Beat[] = [
   },
 ];
 const defaultTimeSignature: TimeSignature = { bottomNumber: 4, topNumber: 4 };
-export const sheetState = atom<SheetData>({
-  key: "sheet",
+export const barsState = atom<Bar[]>({
+  key: "bars",
   default: [
-    [
-      {
-        barNumber: 0,
-        timeSignature: defaultTimeSignature,
-        beats: wholeRestsOnZeroPosition,
-      },
-      {
-        barNumber: 1,
-        timeSignature: defaultTimeSignature,
-        beats: wholeRestsOnZeroPosition,
-      },
-      {
-        barNumber: 2,
-        timeSignature: defaultTimeSignature,
-        beats: wholeRestsOnZeroPosition,
-      },
-      {
-        barNumber: 3,
-        timeSignature: defaultTimeSignature,
-        beats: wholeRestsOnZeroPosition,
-      },
-    ],
-    [
-      {
-        barNumber: 4,
-        timeSignature: defaultTimeSignature,
-        beats: wholeRestsOnZeroPosition,
-      },
-      {
-        barNumber: 5,
-        timeSignature: defaultTimeSignature,
-        beats: wholeRestsOnZeroPosition,
-      },
-      {
-        barNumber: 6,
-        timeSignature: defaultTimeSignature,
-        beats: wholeRestsOnZeroPosition,
-      },
-      {
-        barNumber: 7,
-        timeSignature: defaultTimeSignature,
-        beats: wholeRestsOnZeroPosition,
-      },
-    ],
+    {
+      barNumber: 0,
+      timeSignature: defaultTimeSignature,
+      beats: wholeRestsOnZeroPosition,
+    },
+    {
+      barNumber: 1,
+      timeSignature: defaultTimeSignature,
+      beats: wholeRestsOnZeroPosition,
+    },
+    {
+      barNumber: 2,
+      timeSignature: defaultTimeSignature,
+      beats: wholeRestsOnZeroPosition,
+    },
+    {
+      barNumber: 3,
+      timeSignature: defaultTimeSignature,
+      beats: wholeRestsOnZeroPosition,
+    },
+
+    {
+      barNumber: 4,
+      timeSignature: defaultTimeSignature,
+      beats: wholeRestsOnZeroPosition,
+    },
+    {
+      barNumber: 5,
+      timeSignature: defaultTimeSignature,
+      beats: wholeRestsOnZeroPosition,
+    },
+    {
+      barNumber: 6,
+      timeSignature: defaultTimeSignature,
+      beats: wholeRestsOnZeroPosition,
+    },
+    {
+      barNumber: 7,
+      timeSignature: defaultTimeSignature,
+      beats: wholeRestsOnZeroPosition,
+    },
   ],
 });
 

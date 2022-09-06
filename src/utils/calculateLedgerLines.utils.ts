@@ -4,7 +4,7 @@ import {
   lowestNoteWithoutLedgerLineBassStaff,
   lowestNoteWithoutLedgerLineViolinStaff,
 } from "../constants/notes.constants";
-import { Note, NoteSymbolEnum, NoteSymbolFromTopEnum } from "../types";
+import { NoteElement, NoteSymbolEnum, NoteSymbolFromTopEnum } from "../types";
 
 const linesFromStaff = (numOfLines: number) => Math.floor(numOfLines / 2);
 
@@ -15,7 +15,7 @@ export interface CalculateNumberOfLedgerLinesReturn {
 export function calculateNumberOfLedgerLines({
   pitch: { noteSymbol, octave },
   voice,
-}: Note) {
+}: NoteElement) {
   const isViolin = voice === "soprano" || voice === "alto";
   const lowestNote = isViolin
     ? lowestNoteWithoutLedgerLineViolinStaff

@@ -4,32 +4,17 @@ import {
   notePadding,
   staffWithPaddingHeight,
 } from "../constants";
-import {
-  ElementAlto,
-  ElementBass,
-  ElementSoprano,
-  ElementTenor,
-  NoteSymbolEnum,
-} from "../types";
+import { NoteSymbolEnum, StaffElements } from "../types";
 import {
   calculateNotePositionFromBottom,
   calculateNotePositionFromTop,
 } from "./calculateNotesPosition.utils";
 
-export type CalculateStaffElementsPositionsParams =
-  | {
-      topElement?: ElementSoprano;
-      bottomElement?: ElementAlto;
-    }
-  | {
-      topElement?: ElementTenor;
-      bottomElement?: ElementBass;
-    };
 // we need both values to calculate the position of rest, if the other element is the note
 export function calculateStaffElementsVerticalPositions({
   topElement,
   bottomElement,
-}: CalculateStaffElementsPositionsParams) {
+}: StaffElements) {
   // where we put rest
   const distanceFromEdgeToMiddlePlusTwoNots =
     staffWithPaddingHeight / 2 + noteHeadHight;
@@ -80,7 +65,7 @@ export function calculateStaffElementsVerticalPositions({
 export function calculateStaffElementsHorizontalPositions({
   topElement,
   bottomElement,
-}: CalculateStaffElementsPositionsParams) {
+}: StaffElements) {
   const offsetFromLeft = notePadding;
   const result = {
     topElementLeftOffset: offsetFromLeft,

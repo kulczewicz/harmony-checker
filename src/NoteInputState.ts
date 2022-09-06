@@ -38,22 +38,18 @@ const wholeRestsOnZeroPosition: Beat[] = [
     soprano: {
       type: "rest",
       duration: { value: "whole" },
-      position: 0,
     },
     alto: {
       type: "rest",
       duration: { value: "whole" },
-      position: 0,
     },
     tenor: {
       type: "rest",
       duration: { value: "whole" },
-      position: 0,
     },
     bass: {
       type: "rest",
       duration: { value: "whole" },
-      position: 0,
     },
   },
 ];

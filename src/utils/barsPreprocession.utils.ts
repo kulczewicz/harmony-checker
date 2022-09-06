@@ -13,16 +13,10 @@ import {
   Beat,
   BeatProcessed,
   DurationValue,
-  ElementAlto,
-  ElementBass,
-  ElementSoprano,
-  ElementTenor,
-  StaffElement,
+  NotationElement,
+  StaffElements,
 } from "../types";
-import {
-  calculateStaffElementsHorizontalPositions,
-  CalculateStaffElementsPositionsParams,
-} from "./calculateStaffElementsPositions.utils";
+import { calculateStaffElementsHorizontalPositions } from "./calculateStaffElementsPositions.utils";
 
 export function processTimeSignatureChanges(
   bars: Bar[]
@@ -40,7 +34,7 @@ export function processTimeSignatureChanges(
   });
 }
 
-function calculateElementWidthWithRightPadding(element: StaffElement) {
+function calculateElementWidthWithRightPadding(element: NotationElement) {
   if (element.type === "rest") {
     return restWidths[element.duration.value] + notePadding;
   }
@@ -54,9 +48,7 @@ function calculateElementWidthWithRightPadding(element: StaffElement) {
   return noteHeadWidth + notePadding;
 }
 
-function calculateBeatStaffWidth(
-  params: CalculateStaffElementsPositionsParams
-) {
+function calculateBeatStaffWidth(params: StaffElements) {
   const { topElement, bottomElement } = params;
   const topElementWidthWithRightPadding = topElement
     ? calculateElementWidthWithRightPadding(topElement)

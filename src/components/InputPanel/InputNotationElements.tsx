@@ -34,18 +34,20 @@ export function InputNotationElements() {
         {Object.entries(ElementNoteSvgUp).map(([duration, Note]) => (
           <InputPanelButton
             key={duration}
+            disabled={!isInputOn}
             isActive={
               isInputOn &&
               inputDuration.durationValue === duration &&
               inputDuration.type === "note"
             }
             sx={{ mr: 2 }}
-            onClick={() =>
+            onClick={() => {
+              console.log("setInputDuration");
               setInputDuration({
                 durationValue: duration as DurationValue,
                 type: "note",
-              })
-            }
+              });
+            }}
           >
             <Note height={duration === "whole" ? "5px" : "22px"} />
           </InputPanelButton>
@@ -53,6 +55,7 @@ export function InputNotationElements() {
         {Object.entries(ElementRestSvg).map(([duration, Rest]) => (
           <InputPanelButton
             key={duration}
+            disabled={!isInputOn}
             isActive={
               isInputOn &&
               inputDuration.durationValue === duration &&
@@ -70,6 +73,7 @@ export function InputNotationElements() {
           </InputPanelButton>
         ))}
         <InputPanelButton
+          disabled={!isInputOn}
           isActive={isInputOn && inputDotOn}
           onClick={() => setInputDotOn((currentDotOn) => !currentDotOn)}
         >

@@ -1,12 +1,5 @@
 import { SxProp } from "theme-ui";
-import {
-  DurationValue,
-  ElementAlto,
-  ElementBass,
-  ElementSoprano,
-  ElementTenor,
-  SvgPropsThemeUi,
-} from "../../../types";
+import { NotationElement } from "../../../types";
 import { calculateNumberOfLedgerLines } from "../../../utils/calculateLedgerLines.utils";
 import {
   ElementNoteSvgUp,
@@ -15,24 +8,23 @@ import {
 } from "../../Notation";
 import { LedgerLines } from "./LedgerLines";
 
-interface NotationElementBase extends SvgPropsThemeUi {
+interface NotationElementBase {
   offsetFromLeft: number;
+  element: NotationElement;
 }
 interface NotationElementTopProps extends NotationElementBase {
   direction: "up";
-  element: ElementSoprano | ElementTenor;
   offsetFromBottom: number;
 }
 interface NotationElementBottomProps extends NotationElementBase {
   direction: "down";
-  element: ElementAlto | ElementBass;
   offsetFromTop: number;
 }
 
 type NotationElementProps =
   | NotationElementTopProps
   | NotationElementBottomProps;
-export function NotationElement(notationElement: NotationElementProps) {
+export function StaffElement(notationElement: NotationElementProps) {
   const sx: SxProp["sx"] = {
     position: "absolute",
     left: `${notationElement.offsetFromLeft}px`,
@@ -52,7 +44,11 @@ export function NotationElement(notationElement: NotationElementProps) {
       notationElement.direction === "up"
         ? ElementNoteSvgUp
         : ElementNoteSvgDown;
-    const Note = ElementNoteSvg[durationValue]({ sx });
+    const Note = ElementNoteSvg[durationValue]({
+      sx,
+      cursor: "pointer",
+      onClick: () => console.log(notationElement.element),
+    });
     if (linesPosition === "inside") {
       return Note;
     }

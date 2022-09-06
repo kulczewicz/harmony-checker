@@ -10,7 +10,6 @@ export function InputPanelButton({
 }: SelectNoteVoiceButtonProps) {
   return (
     <Button
-      // disabled={!isActive}
       sx={{
         padding: "4px",
         minHeight: "32px",

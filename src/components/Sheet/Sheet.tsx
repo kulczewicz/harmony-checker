@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, Flex } from "theme-ui";
-import { barsState } from "../../NoteInputState";
+import { useCursor } from "../../hooks/useCursor";
+import { barsState, inputVoiceState } from "../../NoteInputState";
 
 import { Bar, BarProcessed, Line } from "../../types/data";
 import { getLineId } from "../../utils";
@@ -10,8 +11,7 @@ import {
   processTimeSignatureChanges,
 } from "../../utils/barsPreprocession.utils";
 import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";
-import { BarBlock } from "./Bar";
-import { Cursor } from "./Cursor";
+import { BarBlock, BarInputData } from "./Bar";
 import {
   StaffLineBeginning,
   staffLineBeginningWidth,
@@ -29,26 +29,22 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "quarter" },
-        position: 0,
         pitch: { octave: 4, noteSymbol: "D" },
       },
       alto: {
         type: "note",
         voice: "alto",
         duration: { value: "half" },
-        position: 0,
         pitch: { octave: 4, noteSymbol: "C" },
       },
       tenor: {
         type: "rest",
         duration: { value: "quarter" },
-        position: 0,
       },
       bass: {
         type: "note",
         voice: "bass",
         duration: { value: "quarter" },
-        position: 0,
         pitch: { octave: 3, noteSymbol: "A" },
       },
     },
@@ -58,21 +54,18 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "quarter" },
-        position: 8,
         pitch: { octave: 4, noteSymbol: "B" },
       },
       tenor: {
         type: "note",
         voice: "tenor",
         duration: { value: "quarter" },
-        position: 8,
         pitch: { octave: 3, noteSymbol: "B" },
       },
       bass: {
         type: "note",
         voice: "bass",
         duration: { value: "quarter" },
-        position: 8,
         pitch: { octave: 3, noteSymbol: "D" },
       },
     },
@@ -82,26 +75,22 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "eights" },
-        position: 16,
         pitch: { octave: 4, noteSymbol: "G" },
       },
       alto: {
         type: "note",
         voice: "alto",
         duration: { value: "half" },
-        position: 16,
         pitch: { octave: 4, noteSymbol: "E" },
       },
       tenor: {
         type: "rest",
         duration: { value: "half" },
-        position: 16,
       },
       bass: {
         type: "note",
         voice: "bass",
         duration: { value: "half" },
-        position: 16,
         pitch: { octave: 3, noteSymbol: "G" },
       },
     },
@@ -111,7 +100,6 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "quarter" },
-        position: 20,
         pitch: { octave: 4, noteSymbol: "A" },
       },
     },
@@ -121,14 +109,13 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "eights" },
-        position: 28,
         pitch: { octave: 5, noteSymbol: "C" },
       },
     },
   ],
 };
 
-const defaultBars: Bar[] = new Array(20)
+const defaultBars: Bar[] = new Array(5)
   .fill(defaultBar)
   .map((bar, index) => ({ ...bar, barNumber: index }));
 
@@ -138,6 +125,7 @@ export function Sheet() {
   const setBars = useSetRecoilState(barsState);
   const [availableSheetWidth, setAvailableSheetWidth] = useState<number>(0);
   const [lines, setLines] = useState<Line[]>([[]]);
+  const { currentBar, currentBeat, currentInputElement } = useCursor({ bars });
 
   useEffect(() => {
     updateSheetWidth();
@@ -186,9 +174,17 @@ export function Sheet() {
         <Flex id={getLineId(lineIndex)} key={lineIndex} sx={{ width: "100%" }}>
           <StaffLineBeginning />
           {line.map((bar) => {
+            const barInputData: BarInputData | null =
+              currentBar === bar.barNumber && currentInputElement
+                ? {
+                    currentBeat,
+                    currentInputElement,
+                  }
+                : null;
             return (
               <BarBlock
                 key={bar.barNumber}
+                inputData={barInputData}
                 bar={bar}
                 previousBarTimeSignature={undefined}
               />
@@ -196,7 +192,6 @@ export function Sheet() {
           })}
         </Flex>
       ))}
-      {/* <Cursor bars={bars} barNumber={1} beatPositions={[0, 8, 16, 24, 28]} /> */}
     </Box>
   );
 }

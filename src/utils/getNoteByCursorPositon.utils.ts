@@ -48,7 +48,7 @@ interface GetNoteByCursorPositonInBarParams {
   yPosition: number;
   voice: Voice;
 }
-export function getNoteByCursorPositon({
+export function getNotePitchByCursorPositon({
   yPosition,
   voice,
 }: GetNoteByCursorPositonInBarParams): NotePitch {

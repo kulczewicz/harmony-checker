@@ -1,19 +1,24 @@
-import { Box, BoxProps, Flex } from "theme-ui";
+import { Box, Flex, FlexProps } from "theme-ui";
 import { sheetHeight } from "../../../constants";
-import { BarProcessed, TimeSignature } from "../../../types";
-import { getBarId, getBeatId } from "../../../utils";
-import { SheetStaffLines, StaffBox } from "../Staff";
+import { BarProcessed, NotationElement, TimeSignature } from "../../../types";
+import { getBarId } from "../../../utils";
+import { SheetStaffLines } from "../Staff";
 import { TimeSignatures } from "../TimeSignatures";
-import { BassStaffVoices } from "./BassStaffVoices";
-import { ViolinStaffVoices } from "./ViolinStaffVoices";
+import { Beat } from "./Beat";
 
-interface BarProps extends BoxProps {
+export interface BarInputData {
+  currentInputElement: NotationElement;
+  currentBeat: number;
+}
+interface BarProps extends FlexProps {
   bar: BarProcessed;
   previousBarTimeSignature: TimeSignature | undefined;
+  inputData: BarInputData | null;
 }
 export function BarBlock({
   bar: { barNumber, timeSignature, beats, timeSignatureChange },
   previousBarTimeSignature,
+  inputData,
   ...props
 }: BarProps) {
   return (
@@ -28,6 +33,7 @@ export function BarBlock({
         justifyContent: "space-between",
         width: "100%",
       }}
+      {...props}
     >
       <SheetStaffLines />
       <Flex sx={{ width: "100%" }}>
@@ -35,17 +41,20 @@ export function BarBlock({
           <TimeSignatures timeSignature={timeSignature} />
         ) : null}
         <Flex sx={{ width: "100%" }}>
-          {beats.map(({ beatPosition, soprano, alto, tenor, bass }) => (
-            <Box
-              sx={{ width: "100%" }}
-              id={getBeatId(barNumber, beatPosition)}
-              key={beatPosition}
-              {...props}
-            >
-              <ViolinStaffVoices elementSoprano={soprano} elementAlto={alto} />
-              <BassStaffVoices elementTenor={tenor} elementBass={bass} />
-            </Box>
-          ))}
+          {beats.map((beat) => {
+            const beatInputElement =
+              inputData?.currentBeat === beat.beatPosition
+                ? inputData.currentInputElement
+                : null;
+            return (
+              <Beat
+                key={beat.beatPosition}
+                barNumber={barNumber}
+                beat={beat}
+                inputElement={beatInputElement}
+              />
+            );
+          })}
         </Flex>
       </Flex>
       <Box

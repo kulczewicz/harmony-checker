@@ -28,6 +28,7 @@ export function LedgerLines({
     width: `${linesWidth}px`,
     left: `${offsetFromLeft - ledgerLineOutsideWidth}px`,
     height: `${noteHeadHight * numberOfLines}px`,
+    zIndex: -1,
     ...(linesPosition === "above"
       ? { bottom: `${offsetFromEdgeToEndOfStaff}px` }
       : { top: `${offsetFromEdgeToEndOfStaff}px` }),

@@ -1,24 +1,65 @@
 import { useCallback, useEffect, useState } from "react";
-import { Bar } from "../../types";
-import { getBarId, getBeatId, getNoteByCursorPositon } from "../../utils";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  inputDotOnState,
+  inputElementState,
+  inputVoiceState,
+} from "../NoteInputState";
+import { Bar, NotationElement, NotePitch } from "../types";
+import { getBarId, getBeatId, getNotePitchByCursorPositon } from "../utils";
 
-interface CursorProps {
+interface CursorParams {
   bars: Bar[];
-  barNumber: number;
-  beatPositions: number[];
 }
-export function Cursor({ bars }: CursorProps) {
+interface CursorData {
+  currentBar: number;
+  currentBeat: number;
+  currentInputElement: NotationElement | null;
+}
+export function useCursor({ bars }: CursorParams): CursorData {
   const [yPosition, setYPosition] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
   const [currentBar, setCurrentBar] = useState(0);
   const [currentBeat, setCurrentBeat] = useState(0);
+  const inputDuration = useRecoilValue(inputElementState);
+  const voice = useRecoilValue(inputVoiceState);
+  const dotOn = useRecoilValue(inputDotOnState);
+  const [currentInputElement, setCurrentInputElement] =
+    useState<NotationElement | null>(null);
 
   const onMouseMove = useCallback(
     (e: MouseEvent) => {
-      setYPosition(e.clientY - offsetTop);
+      setYPosition(e.clientY);
     },
-    [setYPosition, offsetTop]
+    [setYPosition]
   );
+
+  useEffect(() => {
+    if (inputDuration.type === "rest") {
+      setCurrentInputElement({
+        type: "rest",
+        duration: {
+          value: inputDuration.durationValue,
+          dot: dotOn,
+        },
+      });
+    } else {
+      const relativeYPosition = yPosition - offsetTop;
+      const note = getNotePitchByCursorPositon({
+        yPosition: relativeYPosition,
+        voice,
+      });
+      setCurrentInputElement({
+        type: "note",
+        duration: {
+          value: inputDuration.durationValue,
+          dot: dotOn,
+        },
+        pitch: note,
+        voice,
+      });
+    }
+  }, [yPosition, offsetTop, voice, inputDuration, dotOn]);
 
   useEffect(() => {
     const barElement = document.getElementById(getBarId(currentBar));
@@ -27,6 +68,7 @@ export function Cursor({ bars }: CursorProps) {
   }, [setOffsetTop, currentBar]);
 
   useEffect(() => {
+    console.log("addEventListeners");
     const addEventListeners = () => {
       document.addEventListener("mousemove", onMouseMove);
     };
@@ -55,7 +97,6 @@ export function Cursor({ bars }: CursorProps) {
 
   useEffect(() => {
     const barNumbers = bars.map(({ barNumber }) => barNumber);
-    console.log(`setEventListenerForBars`);
     barNumbers.forEach((barNumber) => {
       const barElement = document.getElementById(getBarId(barNumber));
       barElement?.addEventListener("mouseenter", () => {
@@ -64,19 +105,9 @@ export function Cursor({ bars }: CursorProps) {
     });
   }, [bars, setCurrentBar]);
 
-  useEffect(() => {
-    console.log(`currentBar:${currentBar}`);
-  }, [currentBar]);
-
-  useEffect(() => {
-    console.log(`currentBeat:${currentBeat}`);
-  }, [currentBeat]);
-
-  useEffect(() => {
-    const note = getNoteByCursorPositon({ yPosition, voice: "soprano" });
-    console.log(`${note.noteSymbol}:${note.octave}`);
-    console.log(`y:${yPosition}`);
-  }, [yPosition]);
-
-  return <div id="custom_cursor" />;
+  return {
+    currentBar,
+    currentBeat,
+    currentInputElement,
+  };
 }

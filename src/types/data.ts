@@ -70,19 +70,23 @@ export type NotePitch = {
   accidental?: NoteAccidental;
 };
 
-export interface BaseElement {
+interface BaseElement {
   type: NotationElementType;
   duration: ElementDuration; // offset from the beginning of the bar
-  position: number;
 }
-export interface BaseNote extends BaseElement {
+export interface NoteElement extends BaseElement {
   type: "note";
   voice: Voice;
   pitch: NotePitch;
 }
-export interface Rest extends BaseElement {
+export interface RestElement extends BaseElement {
   type: "rest";
 }
+
+export type NotationElement = NoteElement | RestElement;
+export type NotationElementProcessed = NotationElement & {
+  leftOffset: number;
+};
 
 export type NoteSopranoPitch =
   | {
@@ -93,15 +97,6 @@ export type NoteSopranoPitch =
       octave: 5;
       noteSymbol: Exclude<NoteSymbol, "B">;
     };
-export interface NoteSoprano extends BaseNote {
-  voice: "soprano";
-  pitch: NoteSopranoPitch;
-}
-
-export type ElementSoprano = NoteSoprano | Rest;
-export type ElementSopranoProcessed = ElementSoprano & {
-  leftOffset: number;
-};
 
 export type NoteAltoPitch =
   | {
@@ -116,14 +111,6 @@ export type NoteAltoPitch =
       octave: 5;
       noteSymbol: Extract<NoteSymbol, "C" | "D">;
     };
-export interface NoteAlto extends BaseNote {
-  voice: "alto";
-  pitch: NoteAltoPitch;
-}
-export type ElementAlto = NoteAlto | Rest;
-export type ElementAltoProcessed = ElementAlto & {
-  leftOffset: number;
-};
 
 export type NoteTenorPitch =
   | {
@@ -134,16 +121,6 @@ export type NoteTenorPitch =
       octave: 4;
       noteSymbol: Exclude<NoteSymbol, "A" | "B">;
     };
-
-export interface NoteTenor extends BaseNote {
-  voice: "tenor";
-  pitch: NoteTenorPitch;
-}
-
-export type ElementTenor = NoteTenor | Rest;
-export type ElementTenorProcessed = ElementTenor & {
-  leftOffset: number;
-};
 
 export type NoteBassPitch =
   | {
@@ -158,40 +135,23 @@ export type NoteBassPitch =
       octave: 4;
       noteSymbol: Extract<NoteSymbol, "C" | "D" | "E">;
     };
-export interface NoteBass extends BaseNote {
-  voice: "bass";
-  pitch: NoteBassPitch;
-}
-export type ElementBassProcessed = ElementBass & {
-  leftOffset: number;
-};
-
-export type ElementBass = NoteBass | Rest;
-
-export type Note = NoteSoprano | NoteAlto | NoteTenor | NoteBass;
 
 export interface Beat {
   beatPosition: number;
-  soprano?: ElementSoprano;
-  alto?: ElementAlto;
-  tenor?: ElementTenor;
-  bass?: ElementBass;
+  soprano?: NotationElement;
+  alto?: NotationElement;
+  tenor?: NotationElement;
+  bass?: NotationElement;
 }
 
 export interface BeatProcessed {
   beatPosition: number;
   width: number;
-  soprano?: ElementSopranoProcessed;
-  alto?: ElementAltoProcessed;
-  tenor?: ElementTenorProcessed;
-  bass?: ElementBassProcessed;
+  soprano?: NotationElementProcessed;
+  alto?: NotationElementProcessed;
+  tenor?: NotationElementProcessed;
+  bass?: NotationElementProcessed;
 }
-
-export type StaffElement =
-  | ElementSoprano
-  | ElementAlto
-  | ElementTenor
-  | ElementBass;
 
 export type Line = BarProcessed[];
 export type SheetData = Line[];
@@ -220,3 +180,8 @@ export interface BarProcessed extends BarWithTimeSignatureChange {
   width: number;
   beats: BeatProcessed[];
 }
+
+export type StaffElements = {
+  topElement?: NotationElement;
+  bottomElement?: NotationElement;
+};

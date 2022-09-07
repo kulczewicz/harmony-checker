@@ -1,5 +1,4 @@
-import { SxProp } from "theme-ui";
-import { NotationElement } from "../../../types";
+import { NotationElement, SvgPropsThemeUi } from "../../../types";
 import { calculateNumberOfLedgerLines } from "../../../utils/calculateLedgerLines.utils";
 import {
   ElementNoteSvgUp,
@@ -7,33 +6,30 @@ import {
   ElementNoteSvgDown,
 } from "../../Notation";
 import { LedgerLines } from "./LedgerLines";
+import { StaffElementPosition } from "./types";
 
-interface NotationElementBase {
-  offsetFromLeft: number;
+interface StaffElementProps extends SvgPropsThemeUi {
   element: NotationElement;
+  position: StaffElementPosition;
 }
-interface NotationElementTopProps extends NotationElementBase {
-  direction: "up";
-  offsetFromBottom: number;
-}
-interface NotationElementBottomProps extends NotationElementBase {
-  direction: "down";
-  offsetFromTop: number;
-}
-
-type NotationElementProps =
-  | NotationElementTopProps
-  | NotationElementBottomProps;
-export function StaffElement(notationElement: NotationElementProps) {
-  const sx: SxProp["sx"] = {
-    position: "absolute",
-    left: `${notationElement.offsetFromLeft}px`,
-    ...(notationElement.direction === "up"
-      ? { bottom: `${notationElement.offsetFromBottom}px` }
-      : { top: `${notationElement.offsetFromTop}px` }),
+export function StaffElement({
+  element,
+  position,
+  sx,
+  ...props
+}: StaffElementProps) {
+  const extendedProps: SvgPropsThemeUi = {
+    ...props,
+    cursor: "pointer",
+    sx: {
+      ...sx,
+      position: "absolute",
+      left: `${position.offsetFromLeft}px`,
+      ...(position.direction === "up"
+        ? { bottom: `${position.offsetFromBottom}px` }
+        : { top: `${position.offsetFromTop}px` }),
+    },
   };
-
-  const { element, offsetFromLeft } = notationElement;
 
   const durationValue = element.duration.value;
 
@@ -41,13 +37,9 @@ export function StaffElement(notationElement: NotationElementProps) {
     const { linesPosition, numberOfLines } =
       calculateNumberOfLedgerLines(element);
     const ElementNoteSvg =
-      notationElement.direction === "up"
-        ? ElementNoteSvgUp
-        : ElementNoteSvgDown;
+      position.direction === "up" ? ElementNoteSvgUp : ElementNoteSvgDown;
     const Note = ElementNoteSvg[durationValue]({
-      sx,
-      cursor: "pointer",
-      onClick: () => console.log(notationElement.element),
+      ...extendedProps,
     });
     if (linesPosition === "inside") {
       return Note;
@@ -58,10 +50,10 @@ export function StaffElement(notationElement: NotationElementProps) {
         <LedgerLines
           linesPosition={linesPosition}
           numberOfLines={numberOfLines}
-          offsetFromLeft={offsetFromLeft}
+          offsetFromLeft={position.offsetFromLeft}
         />
       </>
     );
   }
-  return ElementRestSvg[durationValue]({ sx });
+  return ElementRestSvg[durationValue]({ ...extendedProps });
 }

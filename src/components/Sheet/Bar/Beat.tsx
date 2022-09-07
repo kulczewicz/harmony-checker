@@ -1,5 +1,6 @@
+import { memo, useEffect } from "react";
 import { Box, BoxProps } from "theme-ui";
-import { Beat, NotationElement, NotePitch, Voice } from "../../../types";
+import type { Beat, NotationElement, NoteElement } from "../../../types";
 import { getBeatId } from "../../../utils";
 import { StaffVoices } from "./StaffVoices";
 
@@ -7,14 +8,26 @@ export type BeatInputElement = NotationElement | null;
 interface BeatProps extends BoxProps {
   barNumber: number;
   beat: Beat;
-  inputElement: NotationElement | null;
+  previewElement: NoteElement | null;
+  selectedElement: NotationElement | null;
 }
-export function Beat({
+function BeatComponent({
   barNumber,
   beat: { beatPosition, soprano, alto, tenor, bass },
-  inputElement,
+  previewElement,
+  selectedElement,
   ...props
 }: BeatProps) {
+  const { voice } = selectedElement || {};
+  const selectedViolinElement =
+    voice === "soprano" || voice === "alto" ? selectedElement : null;
+  const selectedBassElement =
+    voice === "tenor" || voice === "bass" ? selectedElement : null;
+  const previewViolinElement =
+    voice === "soprano" || voice === "alto" ? previewElement : null;
+  const previewBassElement =
+    voice === "tenor" || voice === "bass" ? previewElement : null;
+
   return (
     <Box
       sx={{ width: "100%" }}
@@ -22,8 +35,24 @@ export function Beat({
       key={beatPosition}
       {...props}
     >
-      <StaffVoices topElement={soprano} bottomElement={alto} />
-      <StaffVoices topElement={tenor} bottomElement={bass} />
+      <StaffVoices
+        barNumber={barNumber}
+        beatPosition={beatPosition}
+        topElement={soprano}
+        bottomElement={alto}
+        selectedElement={selectedViolinElement}
+        previewElement={previewViolinElement}
+      />
+      <StaffVoices
+        barNumber={barNumber}
+        beatPosition={beatPosition}
+        topElement={tenor}
+        bottomElement={bass}
+        selectedElement={selectedBassElement}
+        previewElement={previewBassElement}
+      />
     </Box>
   );
 }
+
+export const BeatBlock = memo(BeatComponent);

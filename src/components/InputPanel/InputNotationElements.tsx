@@ -42,7 +42,6 @@ export function InputNotationElements() {
             }
             sx={{ mr: 2 }}
             onClick={() => {
-              console.log("setInputDuration");
               setInputDuration({
                 durationValue: duration as DurationValue,
                 type: "note",

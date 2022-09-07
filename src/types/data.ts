@@ -73,10 +73,10 @@ export type NotePitch = {
 interface BaseElement {
   type: NotationElementType;
   duration: ElementDuration; // offset from the beginning of the bar
+  voice: Voice;
 }
 export interface NoteElement extends BaseElement {
   type: "note";
-  voice: Voice;
   pitch: NotePitch;
 }
 export interface RestElement extends BaseElement {
@@ -154,7 +154,12 @@ export interface BeatProcessed {
 }
 
 export type Line = BarProcessed[];
-export type SheetData = Line[];
+
+export interface SelectedElement {
+  element: NotationElement;
+  barNumber: number;
+  beatPosition: number;
+}
 
 export type TimeSignatureTopNumber = 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type TimeSignatureBottomNumber = 2 | 4 | 8;

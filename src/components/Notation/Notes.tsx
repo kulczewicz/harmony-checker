@@ -59,7 +59,11 @@ const quarterNotePathPoints =
 export function QuarterNoteUp({ sx, ...props }: SvgPropsThemeUi) {
   return (
     <svg
-      sx={{ height: `${noteHeight}px`, width: `${noteHeadWidth}px`, ...sx }}
+      sx={{
+        height: `${noteHeight}px`,
+        width: `${noteHeadWidth}px`,
+        ...sx,
+      }}
       viewBox="0 -872 332 1016"
       {...props}
     >

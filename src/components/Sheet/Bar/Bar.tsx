@@ -1,24 +1,34 @@
+import { memo, useEffect } from "react";
 import { Box, Flex, FlexProps } from "theme-ui";
 import { sheetHeight } from "../../../constants";
-import { BarProcessed, NotationElement, TimeSignature } from "../../../types";
+import {
+  BarProcessed,
+  NotationElement,
+  NoteElement,
+  TimeSignature,
+} from "../../../types";
 import { getBarId } from "../../../utils";
 import { SheetStaffLines } from "../Staff";
 import { TimeSignatures } from "../TimeSignatures";
-import { Beat } from "./Beat";
+import { BeatBlock } from "./Beat";
 
-export interface BarInputData {
-  currentInputElement: NotationElement;
-  currentBeat: number;
+export interface SelectedInputData {
+  element: NotationElement;
+  beatPosition: number;
+}
+export interface PreviewInputData {
+  element: NoteElement;
+  beatPosition: number;
 }
 interface BarProps extends FlexProps {
   bar: BarProcessed;
-  previousBarTimeSignature: TimeSignature | undefined;
-  inputData: BarInputData | null;
+  previewInputData: PreviewInputData | null;
+  selectedInputData: SelectedInputData | null;
 }
-export function BarBlock({
+function BarBlockComponent({
   bar: { barNumber, timeSignature, beats, timeSignatureChange },
-  previousBarTimeSignature,
-  inputData,
+  previewInputData,
+  selectedInputData,
   ...props
 }: BarProps) {
   return (
@@ -42,16 +52,21 @@ export function BarBlock({
         ) : null}
         <Flex sx={{ width: "100%" }}>
           {beats.map((beat) => {
-            const beatInputElement =
-              inputData?.currentBeat === beat.beatPosition
-                ? inputData.currentInputElement
+            const beatPreviewElement =
+              previewInputData?.beatPosition === beat.beatPosition
+                ? previewInputData.element
+                : null;
+            const beatSelectedElement =
+              selectedInputData?.beatPosition === beat.beatPosition
+                ? selectedInputData.element
                 : null;
             return (
-              <Beat
+              <BeatBlock
                 key={beat.beatPosition}
                 barNumber={barNumber}
                 beat={beat}
-                inputElement={beatInputElement}
+                previewElement={beatPreviewElement}
+                selectedElement={beatSelectedElement}
               />
             );
           })}
@@ -68,3 +83,5 @@ export function BarBlock({
     </Flex>
   );
 }
+
+export const BarBlock = memo(BarBlockComponent);

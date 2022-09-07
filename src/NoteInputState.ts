@@ -3,8 +3,9 @@ import {
   Bar,
   Beat,
   DurationValue,
+  SelectedElement,
+  NotationElement,
   NotationElementType,
-  SheetData,
   TimeSignature,
   Voice,
 } from "./types";
@@ -32,23 +33,32 @@ export const inputVoiceState = atom<Voice>({
   default: "soprano",
 });
 
+export const selectedElementState = atom<SelectedElement | null>({
+  key: "selectedElement",
+  default: null,
+});
+
 const wholeRestsOnZeroPosition: Beat[] = [
   {
     beatPosition: 0,
     soprano: {
       type: "rest",
+      voice: "soprano",
       duration: { value: "whole" },
     },
     alto: {
       type: "rest",
+      voice: "alto",
       duration: { value: "whole" },
     },
     tenor: {
       type: "rest",
+      voice: "tenor",
       duration: { value: "whole" },
     },
     bass: {
       type: "rest",
+      voice: "bass",
       duration: { value: "whole" },
     },
   },

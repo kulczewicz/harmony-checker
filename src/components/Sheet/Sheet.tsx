@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Box, Flex } from "theme-ui";
+import { Box, Button, Flex } from "theme-ui";
 import { useCursor } from "../../hooks/useCursor";
-import { barsState, inputVoiceState } from "../../NoteInputState";
+import { barsState } from "../../NoteInputState";
 
-import { Bar, BarProcessed, Line } from "../../types/data";
+import { Bar, Line } from "../../types/data";
 import { getLineId } from "../../utils";
 import {
   processBar,
   processTimeSignatureChanges,
 } from "../../utils/barsPreprocession.utils";
+import { calculateNumberOfLedgerLines } from "../../utils/calculateLedgerLines.utils";
 import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";
-import { BarBlock, BarInputData } from "./Bar";
+import { BarBlock, PreviewInputData, SelectedInputData } from "./Bar";
 import {
   StaffLineBeginning,
   staffLineBeginningWidth,
@@ -39,6 +40,7 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
       },
       tenor: {
         type: "rest",
+        voice: "tenor",
         duration: { value: "quarter" },
       },
       bass: {
@@ -60,7 +62,7 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
         type: "note",
         voice: "tenor",
         duration: { value: "quarter" },
-        pitch: { octave: 3, noteSymbol: "B" },
+        pitch: { octave: 4, noteSymbol: "E" },
       },
       bass: {
         type: "note",
@@ -85,6 +87,7 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
       },
       tenor: {
         type: "rest",
+        voice: "tenor",
         duration: { value: "half" },
       },
       bass: {
@@ -115,7 +118,7 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
   ],
 };
 
-const defaultBars: Bar[] = new Array(5)
+const defaultBars: Bar[] = new Array(2)
   .fill(defaultBar)
   .map((bar, index) => ({ ...bar, barNumber: index }));
 
@@ -125,7 +128,7 @@ export function Sheet() {
   const setBars = useSetRecoilState(barsState);
   const [availableSheetWidth, setAvailableSheetWidth] = useState<number>(0);
   const [lines, setLines] = useState<Line[]>([[]]);
-  const { currentBar, currentBeat, currentInputElement } = useCursor({ bars });
+  const { previewData, selectedElement } = useCursor({ bars });
 
   useEffect(() => {
     updateSheetWidth();
@@ -168,25 +171,28 @@ export function Sheet() {
     );
   }, [bars, availableSheetWidth]);
 
+  const hmm = useCallback(() => {}, []);
+
   return (
     <Box id="sheet" sx={{ width: "100%" }}>
       {lines.map((line, lineIndex) => (
         <Flex id={getLineId(lineIndex)} key={lineIndex} sx={{ width: "100%" }}>
           <StaffLineBeginning />
           {line.map((bar) => {
-            const barInputData: BarInputData | null =
-              currentBar === bar.barNumber && currentInputElement
-                ? {
-                    currentBeat,
-                    currentInputElement,
-                  }
+            const previewInputData: PreviewInputData | null =
+              previewData?.barNumber === bar.barNumber
+                ? previewData.data
+                : null;
+            const selectedInputData: SelectedInputData | null =
+              selectedElement?.barNumber === bar.barNumber
+                ? selectedElement
                 : null;
             return (
               <BarBlock
                 key={bar.barNumber}
-                inputData={barInputData}
+                previewInputData={previewInputData}
+                selectedInputData={selectedInputData}
                 bar={bar}
-                previousBarTimeSignature={undefined}
               />
             );
           })}

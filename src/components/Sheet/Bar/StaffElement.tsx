@@ -1,3 +1,4 @@
+import { noteZIndex } from "../../../constants";
 import { NotationElement, SvgPropsThemeUi } from "../../../types";
 import { calculateNumberOfLedgerLines } from "../../../utils/calculateLedgerLines.utils";
 import {
@@ -23,6 +24,7 @@ export function StaffElement({
     cursor: "pointer",
     sx: {
       ...sx,
+      zIndex: noteZIndex,
       position: "absolute",
       left: `${position.offsetFromLeft}px`,
       ...(position.direction === "up"

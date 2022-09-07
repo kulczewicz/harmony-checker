@@ -7,6 +7,7 @@ import {
   staffVerticalPadding,
   notePadding,
   ledgerLineOutsideWidth,
+  noteZIndex,
 } from "../../../constants";
 import { CalculateNumberOfLedgerLinesReturn } from "../../../utils/calculateLedgerLines.utils";
 
@@ -28,7 +29,7 @@ export function LedgerLines({
     width: `${linesWidth}px`,
     left: `${offsetFromLeft - ledgerLineOutsideWidth}px`,
     height: `${noteHeadHight * numberOfLines}px`,
-    zIndex: -1,
+    zIndex: noteZIndex - 1,
     ...(linesPosition === "above"
       ? { bottom: `${offsetFromEdgeToEndOfStaff}px` }
       : { top: `${offsetFromEdgeToEndOfStaff}px` }),

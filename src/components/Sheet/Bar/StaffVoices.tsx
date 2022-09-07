@@ -1,6 +1,6 @@
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { notePadding } from "../../../constants";
-import { selectedElementState } from "../../../NoteInputState";
+import { barsState, selectedElementState } from "../../../NoteInputState";
 import { NotationElement, NoteElement, StaffElements } from "../../../types";
 import {
   calculateNotePositionFromBottom,
@@ -29,11 +29,51 @@ function calculatePreviewElementPosition(
       };
 }
 interface PreviewElementProps {
+  barNumber: number;
+  beatPosition: number;
   element: NoteElement;
 }
-function PreviewElement({ element }: PreviewElementProps) {
+function PreviewElement({
+  barNumber,
+  beatPosition,
+  element,
+}: PreviewElementProps) {
   const position = calculatePreviewElementPosition(element);
-  return <StaffElement element={element} position={position} />;
+  const [bars, setBars] = useRecoilState(barsState);
+  return (
+    <StaffElement
+      element={element}
+      position={position}
+      sx={{ fill: "green" }}
+      onClick={() => {
+        const barsBefore = bars.slice(0, barNumber);
+        const barsAfter = bars.slice(barNumber + 1);
+
+        const currentBar = bars[barNumber];
+        const beats = currentBar.beats || [];
+        const currentBeat = beats.find(
+          ({ beatPosition: currentBeatPosition }) =>
+            currentBeatPosition === beatPosition
+        );
+        if (!currentBeat) return;
+        const newCurrentBeat = {
+          ...currentBeat,
+          [element.voice]: element,
+        };
+        const newCurrentBar = {
+          ...currentBar,
+          beats: [
+            ...beats.filter(
+              ({ beatPosition: currentBeatPosition }) =>
+                currentBeatPosition !== beatPosition
+            ),
+            newCurrentBeat,
+          ],
+        };
+        setBars([...barsBefore, newCurrentBar, ...barsAfter]);
+      }}
+    />
+  );
 }
 
 interface StaffVoicesProps extends StaffElements {
@@ -99,7 +139,13 @@ export function StaffVoices({
           sx={{ fill: bottomElementSelected ? "blue" : "black" }}
         />
       ) : null}
-      {previewElement ? <PreviewElement element={previewElement} /> : null}
+      {previewElement ? (
+        <PreviewElement
+          barNumber={barNumber}
+          beatPosition={beatPosition}
+          element={previewElement}
+        />
+      ) : null}
     </StaffBox>
   );
 }

@@ -33,5 +33,5 @@ export const highestNoteWithoutLedgerLineViolinStaff: NotePitch = {
 };
 export const highestNoteWithoutLedgerLineBassStaff: NotePitch = {
   noteSymbol: "A",
-  octave: 3,
+  octave: 4,
 };

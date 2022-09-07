@@ -30,7 +30,10 @@ function BeatComponent({
 
   return (
     <Box
-      sx={{ width: "100%" }}
+      sx={{
+        width: "100%",
+        backgroundColor: previewElement ? "whitesmoke" : "white",
+      }}
       id={getBeatId(barNumber, beatPosition)}
       key={beatPosition}
       {...props}

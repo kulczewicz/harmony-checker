@@ -130,7 +130,7 @@ export function processBar({
     barNumber,
     timeSignature,
     timeSignatureChange,
-    beats: processedBeats,
+    beats: processedBeats.sort((a, b) => a.beatPosition - b.beatPosition),
     width: barWidth,
   };
 }

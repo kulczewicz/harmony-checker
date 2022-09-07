@@ -118,7 +118,7 @@ const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
   ],
 };
 
-const defaultBars: Bar[] = new Array(2)
+const defaultBars: Bar[] = new Array(10)
   .fill(defaultBar)
   .map((bar, index) => ({ ...bar, barNumber: index }));
 
@@ -128,7 +128,7 @@ export function Sheet() {
   const setBars = useSetRecoilState(barsState);
   const [availableSheetWidth, setAvailableSheetWidth] = useState<number>(0);
   const [lines, setLines] = useState<Line[]>([[]]);
-  const { previewData, selectedElement } = useCursor({ bars });
+  const { previewData, selectedElement } = useCursor();
 
   useEffect(() => {
     updateSheetWidth();
@@ -170,8 +170,6 @@ export function Sheet() {
       })
     );
   }, [bars, availableSheetWidth]);
-
-  const hmm = useCallback(() => {}, []);
 
   return (
     <Box id="sheet" sx={{ width: "100%" }}>

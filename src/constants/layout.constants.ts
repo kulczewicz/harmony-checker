@@ -24,3 +24,6 @@ export const noteTailWidthWithPadding =
   notePadding + noteHeadWidth + noteTailWidth + noteOffset;
 
 export const timeSignatureWidth = 25;
+
+export const noteZIndex = 2;
+export const sheetElementId = "sheet";

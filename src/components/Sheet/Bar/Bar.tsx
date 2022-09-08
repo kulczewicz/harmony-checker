@@ -1,36 +1,30 @@
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import { Box, Flex, FlexProps } from "theme-ui";
 import { sheetHeight } from "../../../constants";
-import {
-  BarProcessed,
-  NotationElement,
-  NoteElement,
-  TimeSignature,
-} from "../../../types";
+import { BarProcessed, NoteElement, Voice } from "../../../types";
 import { getBarId } from "../../../utils";
 import { SheetStaffLines } from "../Staff";
 import { TimeSignatures } from "../TimeSignatures";
 import { BeatBlock } from "./Beat";
 
-export interface SelectedInputData {
-  element: NotationElement;
-  beatPosition: number;
-}
 export interface PreviewInputData {
   element: NoteElement;
   beatPosition: number;
 }
 interface BarProps extends FlexProps {
   bar: BarProcessed;
-  previewInputData: PreviewInputData | null;
-  selectedInputData: SelectedInputData | null;
+  // previewInputData: PreviewInputData | null;
+  selectedBeatPosition: number | null;
+  selectedVoice: Voice | null;
 }
 function BarBlockComponent({
   bar: { barNumber, timeSignature, beats, timeSignatureChange },
-  previewInputData,
-  selectedInputData,
+  // previewInputData,
+  selectedBeatPosition,
+  selectedVoice,
   ...props
 }: BarProps) {
+  console.log(`rerendering bar ${barNumber}`);
   return (
     <Flex
       id={getBarId(barNumber)}
@@ -52,21 +46,19 @@ function BarBlockComponent({
         ) : null}
         <Flex sx={{ width: "100%" }}>
           {beats.map((beat) => {
-            const beatPreviewElement =
-              previewInputData?.beatPosition === beat.beatPosition
-                ? previewInputData.element
-                : null;
-            const beatSelectedElement =
-              selectedInputData?.beatPosition === beat.beatPosition
-                ? selectedInputData.element
-                : null;
+            const beatSelected = selectedBeatPosition === beat.beatPosition;
+            // const beatPreviewElement =
+            //   previewInputData?.beatPosition === beat.beatPosition
+            //     ? previewInputData.element
+            //     : null;
+            const selectedVoiceInBeat = beatSelected ? selectedVoice : null;
             return (
               <BeatBlock
                 key={beat.beatPosition}
                 barNumber={barNumber}
                 beat={beat}
-                previewElement={beatPreviewElement}
-                selectedElement={beatSelectedElement}
+                // previewElement={beatPreviewElement}
+                selectedVoice={selectedVoiceInBeat}
               />
             );
           })}

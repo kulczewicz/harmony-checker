@@ -1,4 +1,4 @@
-import { NotePitch } from "../types";
+import { NotePitch, Voice } from "../types";
 
 export const lowestNoteInViolinStaff: NotePitch = {
   noteSymbol: "F",
@@ -33,5 +33,26 @@ export const highestNoteWithoutLedgerLineViolinStaff: NotePitch = {
 };
 export const highestNoteWithoutLedgerLineBassStaff: NotePitch = {
   noteSymbol: "A",
-  octave: 4,
+  octave: 3,
+};
+
+export const voiceRange: {
+  [voice in Voice]: { lowest: NotePitch; highest: NotePitch };
+} = {
+  soprano: {
+    lowest: { octave: 4, noteSymbol: "C" },
+    highest: { octave: 5, noteSymbol: "A" },
+  },
+  alto: {
+    lowest: { octave: 3, noteSymbol: "F" },
+    highest: { octave: 5, noteSymbol: "D" },
+  },
+  tenor: {
+    lowest: { octave: 3, noteSymbol: "C" },
+    highest: { octave: 4, noteSymbol: "G" },
+  },
+  bass: {
+    lowest: { octave: 2, noteSymbol: "E" },
+    highest: { octave: 4, noteSymbol: "E" },
+  },
 };

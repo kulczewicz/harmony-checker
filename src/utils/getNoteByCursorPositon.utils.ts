@@ -6,6 +6,7 @@ import {
 import {
   highestNoteInBassStaff,
   highestNoteInViolinStaff,
+  voiceRange,
 } from "../constants/notes.constants";
 import {
   NoteOctave,
@@ -15,34 +16,6 @@ import {
   Voice,
 } from "../types";
 import { calculateNotePositionFromTop } from "./calculateNotesPosition.utils";
-
-function getRangeForVoice(voice: Voice): {
-  lowest: NotePitch;
-  highest: NotePitch;
-} {
-  if (voice === "soprano") {
-    return {
-      lowest: { octave: 4, noteSymbol: "C" },
-      highest: { octave: 5, noteSymbol: "A" },
-    };
-  }
-  if (voice === "alto") {
-    return {
-      lowest: { octave: 3, noteSymbol: "F" },
-      highest: { octave: 5, noteSymbol: "D" },
-    };
-  }
-  if (voice === "tenor") {
-    return {
-      lowest: { octave: 3, noteSymbol: "C" },
-      highest: { octave: 4, noteSymbol: "G" },
-    };
-  }
-  return {
-    lowest: { octave: 2, noteSymbol: "E" },
-    highest: { octave: 4, noteSymbol: "E" },
-  };
-}
 
 interface GetNoteByCursorPositonInBarParams {
   yPosition: number;
@@ -57,7 +30,7 @@ export function getNotePitchByCursorPositon({
       ? highestNoteInViolinStaff
       : highestNoteInBassStaff;
 
-  const { highest, lowest } = getRangeForVoice(voice);
+  const { highest, lowest } = voiceRange[voice];
 
   const initialOffset =
     (voice === "soprano" || voice === "alto" ? 0 : staffWithPaddingHeight) +

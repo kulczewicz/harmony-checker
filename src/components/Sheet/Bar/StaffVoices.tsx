@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { notePadding } from "../../../constants";
-import { barsState, selectedElementState } from "../../../NoteInputState";
-import { NotationElement, NoteElement, StaffElements } from "../../../types";
+import { barsState, inputVoiceState } from "../../../NoteInputState";
+import { NoteElement, StaffElements, Voice } from "../../../types";
 import {
   calculateNotePositionFromBottom,
   calculateNotePositionFromTop,
@@ -77,19 +78,20 @@ function PreviewElement({
 }
 
 interface StaffVoicesProps extends StaffElements {
+  type: "violin" | "bass";
   barNumber: number;
   beatPosition: number;
-  previewElement: NoteElement | null;
-  selectedElement: NotationElement | null;
+  // previewElement: NoteElement | null;
+  selectedVoice: Voice | null;
 }
-export function StaffVoices({
+function StaffVoicesComponent({
+  type,
   barNumber,
   beatPosition,
-  previewElement,
-  selectedElement,
+  selectedVoice,
   ...staffElements
 }: StaffVoicesProps) {
-  const setSelectedElement = useSetRecoilState(selectedElementState);
+  const setSelectedVoice = useSetRecoilState(inputVoiceState);
   const { topElementFromBottom, bottomElementFromTop } =
     calculateStaffElementsVerticalPositions(staffElements);
   const { topElementLeftOffset, bottomElementLeftOffset } =
@@ -97,9 +99,11 @@ export function StaffVoices({
   const { topElement, bottomElement } = staffElements;
 
   const topElementSelected =
-    selectedElement?.voice === "soprano" || selectedElement?.voice === "tenor";
+    (selectedVoice === "soprano" && type === "violin") ||
+    (selectedVoice === "tenor" && type === "bass");
   const bottomElementSelected =
-    selectedElement?.voice === "alto" || selectedElement?.voice === "bass";
+    (selectedVoice === "alto" && type === "violin") ||
+    (selectedVoice === "bass" && type === "bass");
 
   return (
     <StaffBox sx={{ width: "100%" }}>
@@ -112,13 +116,11 @@ export function StaffVoices({
           }}
           element={topElement}
           onClick={() =>
-            setSelectedElement({
-              barNumber,
-              beatPosition,
-              element: topElement,
-            })
+            setSelectedVoice(type === "violin" ? "soprano" : "tenor")
           }
-          sx={{ fill: topElementSelected ? "blue" : "black" }}
+          sx={{
+            fill: topElementSelected ? "blue" : "black",
+          }}
         />
       ) : null}
       {bottomElement ? (
@@ -129,23 +131,19 @@ export function StaffVoices({
             offsetFromLeft: bottomElementLeftOffset,
           }}
           element={bottomElement}
-          onClick={() =>
-            setSelectedElement({
-              barNumber,
-              beatPosition,
-              element: bottomElement,
-            })
-          }
+          onClick={() => setSelectedVoice(type === "violin" ? "alto" : "bass")}
           sx={{ fill: bottomElementSelected ? "blue" : "black" }}
         />
       ) : null}
-      {previewElement ? (
+      {/* {previewElement ? (
         <PreviewElement
           barNumber={barNumber}
           beatPosition={beatPosition}
           element={previewElement}
         />
-      ) : null}
+      ) : null} */}
     </StaffBox>
   );
 }
+
+export const StaffVoices = memo(StaffVoicesComponent);

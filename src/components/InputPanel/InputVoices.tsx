@@ -1,14 +1,14 @@
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { Flex } from "theme-ui";
 import { sheetHeight } from "../../constants";
-import { inputOnState, inputVoiceState } from "../../NoteInputState";
+import { inputVoiceState, selectedElementState } from "../../NoteInputState";
 import { Voice } from "../../types";
 import { InputPanelButton } from "./InputPanelButton";
 
 const voices: Voice[] = ["soprano", "alto", "tenor", "bass"];
 export function InputVoices() {
-  const isInputOn = useRecoilValue(inputOnState);
   const [inputVoice, setInputVoice] = useRecoilState(inputVoiceState);
+  const setSelectedElement = useSetRecoilState(selectedElementState);
 
   return (
     <Flex sx={{ alignItems: "center", mr: 4 }}>
@@ -22,8 +22,11 @@ export function InputVoices() {
         {voices.map((voice) => (
           <InputPanelButton
             key={voice}
-            isActive={inputVoice === voice && isInputOn}
-            onClick={() => setInputVoice(voice)}
+            isActive={inputVoice === voice}
+            onClick={() => {
+              setInputVoice(voice);
+              setSelectedElement(null);
+            }}
           >
             {voice.charAt(0).toLocaleUpperCase()}
           </InputPanelButton>

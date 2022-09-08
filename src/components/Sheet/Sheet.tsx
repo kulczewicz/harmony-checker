@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Box, Button, Flex } from "theme-ui";
+import { Box, Flex } from "theme-ui";
 import { useCursor } from "../../hooks/useCursor";
-import { barsState } from "../../NoteInputState";
+import { barsState, inputVoiceState } from "../../NoteInputState";
 
-import { Bar, Line } from "../../types/data";
+import { Bar, Line, Voice } from "../../types/data";
 import { getLineId } from "../../utils";
 import {
   processBar,
   processTimeSignatureChanges,
 } from "../../utils/barsPreprocession.utils";
-import { calculateNumberOfLedgerLines } from "../../utils/calculateLedgerLines.utils";
 import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";
-import { BarBlock, PreviewInputData, SelectedInputData } from "./Bar";
+import { BarBlock } from "./Bar";
 import {
   StaffLineBeginning,
   staffLineBeginningWidth,
@@ -128,7 +127,8 @@ export function Sheet() {
   const setBars = useSetRecoilState(barsState);
   const [availableSheetWidth, setAvailableSheetWidth] = useState<number>(0);
   const [lines, setLines] = useState<Line[]>([[]]);
-  const { previewData, selectedElement } = useCursor();
+  const voice = useRecoilValue(inputVoiceState);
+  const { selectedBarNumber, selectedBeatPosition } = useCursor();
 
   useEffect(() => {
     updateSheetWidth();
@@ -177,19 +177,21 @@ export function Sheet() {
         <Flex id={getLineId(lineIndex)} key={lineIndex} sx={{ width: "100%" }}>
           <StaffLineBeginning />
           {line.map((bar) => {
-            const previewInputData: PreviewInputData | null =
-              previewData?.barNumber === bar.barNumber
-                ? previewData.data
-                : null;
-            const selectedInputData: SelectedInputData | null =
-              selectedElement?.barNumber === bar.barNumber
-                ? selectedElement
-                : null;
+            const barSelected = selectedBarNumber === bar.barNumber;
+            // const previewInputData: PreviewInputData | null =
+            //   previewData?.barNumber === bar.barNumber
+            //     ? previewData.data
+            //     : null;
+            const selectedBeatPositionInBar: number | null = barSelected
+              ? selectedBeatPosition
+              : null;
+            const selectedVoice: Voice | null = barSelected ? voice : null;
             return (
               <BarBlock
                 key={bar.barNumber}
-                previewInputData={previewInputData}
-                selectedInputData={selectedInputData}
+                // previewInputData={previewInputData}
+                selectedBeatPosition={selectedBeatPositionInBar}
+                selectedVoice={selectedVoice}
                 bar={bar}
               />
             );

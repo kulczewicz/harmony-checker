@@ -4,16 +4,10 @@ import {
   Beat,
   DurationValue,
   SelectedElement,
-  NotationElement,
   NotationElementType,
   TimeSignature,
   Voice,
 } from "./types";
-
-export const inputOnState = atom<boolean>({
-  key: "inputOn",
-  default: false,
-});
 
 export const inputElementState = atom<{
   type: NotationElementType;
@@ -35,6 +29,16 @@ export const inputVoiceState = atom<Voice>({
 
 export const selectedElementState = atom<SelectedElement | null>({
   key: "selectedElement",
+  default: null,
+});
+
+export const selectedBarNumberState = atom<number | null>({
+  key: "selectedBarNumber",
+  default: null,
+});
+
+export const selectedBeatPositionState = atom<number | null>({
+  key: "selectedBeatPosition",
   default: null,
 });
 

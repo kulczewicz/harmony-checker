@@ -1,28 +1,16 @@
 import { useRecoilState } from "recoil";
 import { Flex } from "theme-ui";
-import {
-  inputDotOnState,
-  inputElementState,
-  inputOnState,
-} from "../../NoteInputState";
+import { inputDotOnState, inputElementState } from "../../NoteInputState";
 import { DurationValue } from "../../types";
 import { ElementNoteSvgUp, ElementRestSvg } from "../Notation";
 import { InputPanelButton } from "./InputPanelButton";
 
 export function InputNotationElements() {
-  const [isInputOn, setIsInputOn] = useRecoilState(inputOnState);
   const [inputDuration, setInputDuration] = useRecoilState(inputElementState);
   const [inputDotOn, setInputDotOn] = useRecoilState(inputDotOnState);
 
   return (
     <Flex>
-      <InputPanelButton
-        isActive={isInputOn}
-        sx={{ mr: 2 }}
-        onClick={() => setIsInputOn((currentInputOn) => !currentInputOn)}
-      >
-        In
-      </InputPanelButton>
       <Flex
         sx={{
           border: "1px solid",
@@ -34,9 +22,7 @@ export function InputNotationElements() {
         {Object.entries(ElementNoteSvgUp).map(([duration, Note]) => (
           <InputPanelButton
             key={duration}
-            disabled={!isInputOn}
             isActive={
-              isInputOn &&
               inputDuration.durationValue === duration &&
               inputDuration.type === "note"
             }
@@ -54,9 +40,7 @@ export function InputNotationElements() {
         {Object.entries(ElementRestSvg).map(([duration, Rest]) => (
           <InputPanelButton
             key={duration}
-            disabled={!isInputOn}
             isActive={
-              isInputOn &&
               inputDuration.durationValue === duration &&
               inputDuration.type === "rest"
             }
@@ -72,8 +56,7 @@ export function InputNotationElements() {
           </InputPanelButton>
         ))}
         <InputPanelButton
-          disabled={!isInputOn}
-          isActive={isInputOn && inputDotOn}
+          isActive={inputDotOn}
           onClick={() => setInputDotOn((currentDotOn) => !currentDotOn)}
         >
           .

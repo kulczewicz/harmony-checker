@@ -2,10 +2,20 @@ import { memo, useEffect } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, BoxProps } from "theme-ui";
 import {
+  inputDotOnState,
+  inputElementState,
+  mouseOverBeatState,
   selectedBarNumberState,
   selectedBeatPositionState,
 } from "../../../NoteInputState";
-import type { Beat, NotationElement, Voice } from "../../../types";
+import type {
+  Beat,
+  NotationElement,
+  NoteElement,
+  NoteOctave,
+  NoteSymbol,
+  Voice,
+} from "../../../types";
 import { getBeatId } from "../../../utils";
 import { StaffVoices } from "./StaffVoices";
 
@@ -13,22 +23,62 @@ export type BeatInputElement = NotationElement | null;
 interface BeatProps extends BoxProps {
   barNumber: number;
   beat: Beat;
-  // previewElement: NoteElement | null;
   selectedVoice: Voice | null;
+  previewNoteSymbol: NoteSymbol | null;
+  previewNoteOctave: NoteOctave | null;
 }
 function BeatComponent({
   barNumber,
   beat: { beatPosition, soprano, alto, tenor, bass },
-  // previewElement,
   selectedVoice,
+  previewNoteOctave,
+  previewNoteSymbol,
   ...props
 }: BeatProps) {
   const setSelectedBarNumber = useSetRecoilState(selectedBarNumberState);
   const setSelectedBeatPosition = useSetRecoilState(selectedBeatPositionState);
-  // const previewViolinElement =
-  //   voice === "soprano" || voice === "alto" ? previewElement : null;
-  // const previewBassElement =
-  //   voice === "tenor" || voice === "bass" ? previewElement : null;
+  const setMouseOverBeat = useSetRecoilState(mouseOverBeatState);
+  const inputDuration = useRecoilValue(inputElementState);
+  const isDotOn = useRecoilValue(inputDotOnState);
+
+  const barHtmlElementId = getBeatId(barNumber, beatPosition);
+  useEffect(() => {
+    const beatElement = document.getElementById(
+      getBeatId(barNumber, beatPosition)
+    );
+    const onBarMouseEnter = () => {
+      setMouseOverBeat({ barNumber, beatPosition });
+    };
+    beatElement?.addEventListener("mouseenter", onBarMouseEnter);
+
+    return () =>
+      beatElement?.removeEventListener("mouseenter", onBarMouseEnter);
+  }, [barHtmlElementId, barNumber, beatPosition, setMouseOverBeat]);
+
+  const previewElement: NoteElement | null =
+    previewNoteOctave && previewNoteSymbol && selectedVoice
+      ? {
+          type: "note",
+          duration: {
+            value: inputDuration.durationValue,
+            dot: isDotOn,
+          },
+          pitch: {
+            noteSymbol: previewNoteSymbol,
+            octave: previewNoteOctave,
+          },
+          voice: selectedVoice,
+        }
+      : null;
+
+  const previewElementViolin =
+    selectedVoice === "soprano" || selectedVoice === "alto"
+      ? previewElement
+      : null;
+  const previewElementBass =
+    selectedVoice === "tenor" || selectedVoice === "bass"
+      ? previewElement
+      : null;
 
   return (
     <Box
@@ -61,6 +111,7 @@ function BeatComponent({
         topElement={soprano}
         bottomElement={alto}
         selectedVoice={selectedVoice}
+        previewElement={previewElementViolin}
       />
       <StaffVoices
         type="bass"
@@ -69,6 +120,7 @@ function BeatComponent({
         topElement={tenor}
         bottomElement={bass}
         selectedVoice={selectedVoice}
+        previewElement={previewElementBass}
       />
     </Box>
   );

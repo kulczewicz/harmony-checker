@@ -1,7 +1,8 @@
 import { memo } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { notePadding } from "../../../constants";
-import { barsState, inputVoiceState } from "../../../NoteInputState";
+import { useUpdateBars } from "../../../hooks";
+import { inputVoiceState } from "../../../NoteInputState";
 import { NoteElement, StaffElements, Voice } from "../../../types";
 import {
   calculateNotePositionFromBottom,
@@ -40,39 +41,13 @@ function PreviewElement({
   element,
 }: PreviewElementProps) {
   const position = calculatePreviewElementPosition(element);
-  const [bars, setBars] = useRecoilState(barsState);
+  const { updateBars } = useUpdateBars();
   return (
     <StaffElement
       element={element}
       position={position}
       sx={{ fill: "green" }}
-      onClick={() => {
-        const barsBefore = bars.slice(0, barNumber);
-        const barsAfter = bars.slice(barNumber + 1);
-
-        const currentBar = bars[barNumber];
-        const beats = currentBar.beats || [];
-        const currentBeat = beats.find(
-          ({ beatPosition: currentBeatPosition }) =>
-            currentBeatPosition === beatPosition
-        );
-        if (!currentBeat) return;
-        const newCurrentBeat = {
-          ...currentBeat,
-          [element.voice]: element,
-        };
-        const newCurrentBar = {
-          ...currentBar,
-          beats: [
-            ...beats.filter(
-              ({ beatPosition: currentBeatPosition }) =>
-                currentBeatPosition !== beatPosition
-            ),
-            newCurrentBeat,
-          ],
-        };
-        setBars([...barsBefore, newCurrentBar, ...barsAfter]);
-      }}
+      onClick={() => updateBars({ barNumber, beatPosition, element })}
     />
   );
 }
@@ -81,14 +56,15 @@ interface StaffVoicesProps extends StaffElements {
   type: "violin" | "bass";
   barNumber: number;
   beatPosition: number;
-  // previewElement: NoteElement | null;
   selectedVoice: Voice | null;
+  previewElement: NoteElement | null;
 }
 function StaffVoicesComponent({
   type,
   barNumber,
   beatPosition,
   selectedVoice,
+  previewElement,
   ...staffElements
 }: StaffVoicesProps) {
   const setSelectedVoice = useSetRecoilState(inputVoiceState);
@@ -135,13 +111,13 @@ function StaffVoicesComponent({
           sx={{ fill: bottomElementSelected ? "blue" : "black" }}
         />
       ) : null}
-      {/* {previewElement ? (
+      {previewElement ? (
         <PreviewElement
           barNumber={barNumber}
           beatPosition={beatPosition}
           element={previewElement}
         />
-      ) : null} */}
+      ) : null}
     </StaffBox>
   );
 }

@@ -12,7 +12,6 @@ export function getSelectedElement({
   selectedBeatPosition,
   voice,
 }: GetSelectedElement): SelectedElement | null {
-  console.log("getSelectedElement");
   if (selectedBarNumber === null || selectedBeatPosition === null) return null;
 
   const currentBar = bars[selectedBarNumber];

@@ -1,7 +1,13 @@
 import { memo } from "react";
 import { Box, Flex, FlexProps } from "theme-ui";
 import { sheetHeight } from "../../../constants";
-import { BarProcessed, NoteElement, Voice } from "../../../types";
+import {
+  BarProcessed,
+  NoteElement,
+  NoteOctave,
+  NoteSymbol,
+  Voice,
+} from "../../../types";
 import { getBarId } from "../../../utils";
 import { SheetStaffLines } from "../Staff";
 import { TimeSignatures } from "../TimeSignatures";
@@ -13,18 +19,20 @@ export interface PreviewInputData {
 }
 interface BarProps extends FlexProps {
   bar: BarProcessed;
-  // previewInputData: PreviewInputData | null;
   selectedBeatPosition: number | null;
   selectedVoice: Voice | null;
+  previewNoteSymbol: NoteSymbol | null;
+  previewNoteOctave: NoteOctave | null;
 }
 function BarBlockComponent({
   bar: { barNumber, timeSignature, beats, timeSignatureChange },
-  // previewInputData,
   selectedBeatPosition,
   selectedVoice,
+  previewNoteSymbol,
+  previewNoteOctave,
   ...props
 }: BarProps) {
-  console.log(`rerendering bar ${barNumber}`);
+  // console.log(`rerendering bar ${barNumber}`);
   return (
     <Flex
       id={getBarId(barNumber)}
@@ -47,18 +55,21 @@ function BarBlockComponent({
         <Flex sx={{ width: "100%" }}>
           {beats.map((beat) => {
             const beatSelected = selectedBeatPosition === beat.beatPosition;
-            // const beatPreviewElement =
-            //   previewInputData?.beatPosition === beat.beatPosition
-            //     ? previewInputData.element
-            //     : null;
             const selectedVoiceInBeat = beatSelected ? selectedVoice : null;
+            const beatPreviewNoteSymbol = beatSelected
+              ? previewNoteSymbol
+              : null;
+            const beatPreviewNoteOctave = beatSelected
+              ? previewNoteOctave
+              : null;
             return (
               <BeatBlock
                 key={beat.beatPosition}
                 barNumber={barNumber}
                 beat={beat}
-                // previewElement={beatPreviewElement}
                 selectedVoice={selectedVoiceInBeat}
+                previewNoteSymbol={beatPreviewNoteSymbol}
+                previewNoteOctave={beatPreviewNoteOctave}
               />
             );
           })}

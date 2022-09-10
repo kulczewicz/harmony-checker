@@ -8,7 +8,6 @@ import { InputPanelButton } from "./InputPanelButton";
 const voices: Voice[] = ["soprano", "alto", "tenor", "bass"];
 export function InputVoices() {
   const [inputVoice, setInputVoice] = useRecoilState(inputVoiceState);
-  const setSelectedElement = useSetRecoilState(selectedElementState);
 
   return (
     <Flex sx={{ alignItems: "center", mr: 4 }}>
@@ -25,7 +24,6 @@ export function InputVoices() {
             isActive={inputVoice === voice}
             onClick={() => {
               setInputVoice(voice);
-              setSelectedElement(null);
             }}
           >
             {voice.charAt(0).toLocaleUpperCase()}

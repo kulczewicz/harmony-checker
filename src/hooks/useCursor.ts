@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
-import { SetterOrUpdater, useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   barsState,
   inputDotOnState,
   inputElementState,
   inputVoiceState,
+  mouseOverBeatState,
   selectedBarNumberState as selectedBarNumberState,
   selectedBeatPositionState,
 } from "../NoteInputState";
 import { NoteElement, NoteOctave, NoteSymbol, SelectedElement } from "../types";
+import { getBarId, getNotePitchByCursorPositon } from "../utils";
 import { getSelectedElement } from "../utils/getSelectedElement.utils";
 import { onKeyDownAction } from "../utils/onKeyDownAction.utils";
+import { useUpdateBars } from "./useUpdateBars";
 
 interface PreviewElement {
   barNumber: number;
@@ -35,6 +38,7 @@ export function useCursor() {
   const [inputDuration, setInputDuration] = useRecoilState(inputElementState);
   const [voice, setVoice] = useRecoilState(inputVoiceState);
   const [dotOn, setDotOn] = useRecoilState(inputDotOnState);
+  const mouseOverBeat = useRecoilValue(mouseOverBeatState);
 
   const [selectedBarNumber, setSelectedBarNumber] = useRecoilState(
     selectedBarNumberState
@@ -42,28 +46,11 @@ export function useCursor() {
   const [selectedBeatPosition, setSelectedBeatPosition] = useRecoilState(
     selectedBeatPositionState
   );
+  const { updateBars } = useUpdateBars();
 
-  const updateBars = useCallback(
-    (updatedElement: SelectedElement) => {
-      setBars((bars) => {
-        return bars.map((bar) => {
-          if (bar.barNumber !== updatedElement.barNumber) return bar;
-
-          const { beats, ...rest } = bar;
-          const newBeats = beats.map((beat) => {
-            if (beat.beatPosition !== updatedElement.beatPosition) return beat;
-
-            return {
-              ...beat,
-              [updatedElement.element.voice]: updatedElement.element,
-            };
-          });
-          return { ...rest, beats: newBeats };
-        });
-      });
-    },
-    [setBars]
-  );
+  // useEffect(() => {
+  //   console.log(mouseOverBeat);
+  // }, [mouseOverBeat]);
 
   useEffect(() => {
     if (selectedBarNumber === null || selectedBeatPosition === null) return;
@@ -82,11 +69,10 @@ export function useCursor() {
       setSelectedBeatPosition,
       updateBars,
     });
-    document.addEventListener("keydown", onKeyDown);
-    const removeKeyDownEventListeners = () => {
-      document.removeEventListener("keydown", onKeyDown);
+    addEventListener("keydown", onKeyDown);
+    return () => {
+      removeEventListener("keydown", onKeyDown);
     };
-    return removeKeyDownEventListeners;
   }, [
     bars,
     selectedBarNumber,
@@ -98,52 +84,45 @@ export function useCursor() {
   ]);
 
   // useEffect(() => {
-  //   if (
-  //     selectedElement?.barNumber === undefined ||
-  //     selectedElement?.barNumber === null
-  //   ) {
-  //     return;
-  //   }
+  //   console.log({ note: previewNoteSymbol, octave: previewNoteOctave });
+  // }, [previewNoteOctave, previewNoteSymbol]);
 
-  //   const barElement = document.getElementById(
-  //     getBarId(selectedElement.barNumber)
-  //   );
-  //   if (!barElement) {
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!selectedBarNumber) return;
 
-  //   const updateOffset = (barElement: HTMLElement) => {
-  //     const { top } = barElement.getBoundingClientRect();
-  //     // console.log({ top });
-  //     setOffsetTop(Math.round(top));
-  //   };
-  //   const onScroll = () => {
-  //     updateOffset(barElement);
-  //   };
+    const barElement = document.getElementById(getBarId(selectedBarNumber));
+    if (!barElement) return;
 
-  //   const addEventListenerOnScroll = () => addEventListener("scroll", onScroll);
-  //   const removeEventListenerOnScroll = () =>
-  //     addEventListener("scroll", onScroll);
+    const updateOffset = (barElement: HTMLElement) => {
+      const { top } = barElement.getBoundingClientRect();
+      setOffsetTop(Math.round(top));
+    };
+    const onScroll = () => {
+      updateOffset(barElement);
+    };
 
-  //   updateOffset(barElement);
-  //   addEventListenerOnScroll();
-  //   return removeEventListenerOnScroll;
-  // }, [selectedElement?.barNumber, setOffsetTop]);
+    const addEventListenerOnScroll = () => addEventListener("scroll", onScroll);
+    const removeEventListenerOnScroll = () =>
+      addEventListener("scroll", onScroll);
 
-  // const onMouseMove = useCallback(
-  //   (e: MouseEvent) => {
-  //     const relativeYPosition = e.clientY - offsetTop;
-  //     const note = getNotePitchByCursorPositon({
-  //       yPosition: relativeYPosition,
-  //       voice,
-  //     });
-  //     console.log({ relativeYPosition, note, offsetTop, voice });
+    updateOffset(barElement);
+    addEventListenerOnScroll();
+    return removeEventListenerOnScroll;
+  }, [selectedBarNumber, setOffsetTop]);
 
-  //     setPreviewNoteSymbol(note.noteSymbol);
-  //     setPreviewNoteOctave(note.octave);
-  //   },
-  //   [setPreviewNoteSymbol, setPreviewNoteOctave, offsetTop, voice]
-  // );
+  const onMouseMove = useCallback(
+    (e: MouseEvent) => {
+      const relativeYPosition = e.clientY - offsetTop;
+      const note = getNotePitchByCursorPositon({
+        yPosition: relativeYPosition,
+        voice,
+      });
+
+      setPreviewNoteSymbol(note.noteSymbol);
+      setPreviewNoteOctave(note.octave);
+    },
+    [setPreviewNoteSymbol, setPreviewNoteOctave, offsetTop, voice]
+  );
 
   // useEffect(() => {
   //   if (!previewNoteSymbol || !previewNoteOctave) {
@@ -204,30 +183,21 @@ export function useCursor() {
   //   setDotOn,
   // ]);
 
-  // useEffect(() => {
-  //   if (!selectedElement) return;
+  useEffect(() => {
+    if (
+      !(
+        mouseOverBeat?.barNumber === selectedBarNumber &&
+        mouseOverBeat?.beatPosition === selectedBeatPosition
+      )
+    ) {
+      return;
+    }
 
-  //   const addEventListeners = () => {
-  //     document.addEventListener("mousemove", onMouseMove);
-  //   };
-  //   const removeEventListeners = () => {
-  //     document.removeEventListener("mousemove", onMouseMove);
-  //   };
-  //   const { barNumber, beatPosition } = selectedElement;
-
-  //   const beatElement = document.getElementById(
-  //     getBeatId(barNumber, beatPosition)
-  //   );
-
-  //   beatElement?.addEventListener("mouseenter", () => {
-  //     addEventListeners();
-  //   });
-
-  //   beatElement?.addEventListener("mouseleave", () => {
-  //     setPreviewData(null);
-  //     removeEventListeners();
-  //   });
-  // }, [onMouseMove, setPreviewData, selectedElement]);
+    document.addEventListener("mousemove", onMouseMove);
+    return () => {
+      document.removeEventListener("mousemove", onMouseMove);
+    };
+  }, [mouseOverBeat, selectedBarNumber, selectedBeatPosition, onMouseMove]);
 
   // useEffect(() => {
   //   if (bars?.length === 0) return;
@@ -258,6 +228,7 @@ export function useCursor() {
   return {
     selectedBarNumber,
     selectedBeatPosition,
-    previewData,
+    previewNoteSymbol,
+    previewNoteOctave,
   };
 }

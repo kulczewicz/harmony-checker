@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, Flex } from "theme-ui";
-import { useCursor } from "../../hooks/useCursor";
+import { useCursor } from "../../hooks";
 import { barsState, inputVoiceState } from "../../NoteInputState";
 
-import { Bar, Line, Voice } from "../../types/data";
+import { Bar, Line, NoteOctave, NoteSymbol, Voice } from "../../types/data";
 import { getLineId } from "../../utils";
 import {
   processBar,
@@ -128,7 +128,12 @@ export function Sheet() {
   const [availableSheetWidth, setAvailableSheetWidth] = useState<number>(0);
   const [lines, setLines] = useState<Line[]>([[]]);
   const voice = useRecoilValue(inputVoiceState);
-  const { selectedBarNumber, selectedBeatPosition } = useCursor();
+  const {
+    selectedBarNumber,
+    selectedBeatPosition,
+    previewNoteSymbol,
+    previewNoteOctave,
+  } = useCursor();
 
   useEffect(() => {
     updateSheetWidth();
@@ -186,12 +191,19 @@ export function Sheet() {
               ? selectedBeatPosition
               : null;
             const selectedVoice: Voice | null = barSelected ? voice : null;
+            const barPreviewNoteSymbol: NoteSymbol | null = barSelected
+              ? previewNoteSymbol
+              : null;
+            const barPreviewNoteOctave: NoteOctave | null = barSelected
+              ? previewNoteOctave
+              : null;
             return (
               <BarBlock
                 key={bar.barNumber}
-                // previewInputData={previewInputData}
                 selectedBeatPosition={selectedBeatPositionInBar}
                 selectedVoice={selectedVoice}
+                previewNoteSymbol={barPreviewNoteSymbol}
+                previewNoteOctave={barPreviewNoteOctave}
                 bar={bar}
               />
             );

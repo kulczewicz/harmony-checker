@@ -42,6 +42,14 @@ export const selectedBeatPositionState = atom<number | null>({
   default: null,
 });
 
+export const mouseOverBeatState = atom<{
+  barNumber: number;
+  beatPosition: number;
+} | null>({
+  key: "mouseOverBeatState",
+  default: null,
+});
+
 const wholeRestsOnZeroPosition: Beat[] = [
   {
     beatPosition: 0,

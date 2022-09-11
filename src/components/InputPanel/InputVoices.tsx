@@ -1,7 +1,7 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { Flex } from "theme-ui";
 import { sheetHeight } from "../../constants";
-import { inputVoiceState, selectedElementState } from "../../NoteInputState";
+import { inputVoiceState } from "../../NoteInputState";
 import { Voice } from "../../types";
 import { InputPanelButton } from "./InputPanelButton";
 

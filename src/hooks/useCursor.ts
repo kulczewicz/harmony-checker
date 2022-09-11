@@ -15,29 +15,16 @@ import { getSelectedElement } from "../utils/getSelectedElement.utils";
 import { onKeyDownAction } from "../utils/onKeyDownAction.utils";
 import { useUpdateBars } from "./useUpdateBars";
 
-interface PreviewElement {
-  barNumber: number;
-  data: {
-    beatPosition: number;
-    element: NoteElement;
-  };
-}
-
 export function useCursor() {
   const [bars, setBars] = useRecoilState(barsState);
   const [offsetTop, setOffsetTop] = useState(0);
-  const [previewBarNumber, setPreviewBarNumber] = useState<number>(0);
-  const [previewBeatPosition, setPreviewBeatPosition] = useState<number>(0);
   const [previewNoteSymbol, setPreviewNoteSymbol] = useState<NoteSymbol | null>(
     null
   );
   const [previewNoteOctave, setPreviewNoteOctave] = useState<NoteOctave | null>(
     null
   );
-  const [previewData, setPreviewData] = useState<PreviewElement | null>(null);
-  const [inputDuration, setInputDuration] = useRecoilState(inputElementState);
-  const [voice, setVoice] = useRecoilState(inputVoiceState);
-  const [dotOn, setDotOn] = useRecoilState(inputDotOnState);
+  const [voice] = useRecoilState(inputVoiceState);
   const mouseOverBeat = useRecoilValue(mouseOverBeatState);
 
   const [selectedBarNumber, setSelectedBarNumber] = useRecoilState(
@@ -68,6 +55,7 @@ export function useCursor() {
       setSelectedBarNumber,
       setSelectedBeatPosition,
       updateBars,
+      setPreviewNoteSymbol,
     });
     addEventListener("keydown", onKeyDown);
     return () => {
@@ -79,6 +67,7 @@ export function useCursor() {
     setSelectedBarNumber,
     selectedBeatPosition,
     setSelectedBeatPosition,
+    setPreviewNoteSymbol,
     voice,
     updateBars,
   ]);

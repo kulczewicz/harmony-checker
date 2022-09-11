@@ -1,5 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
 import { SetterOrUpdater } from "recoil";
-import { Bar, SelectedElement } from "../types";
+import { Bar, NoteSymbol, SelectedElement } from "../types";
 import { getNoteAbove, getNoteBelow } from "./getNoteAboveBelow.utils";
 
 interface OnKeyDownActionParams {
@@ -8,6 +9,7 @@ interface OnKeyDownActionParams {
   updateBars: (updatedElement: SelectedElement) => void;
   setSelectedBarNumber: SetterOrUpdater<number | null>;
   setSelectedBeatPosition: SetterOrUpdater<number | null>;
+  setPreviewNoteSymbol: Dispatch<SetStateAction<NoteSymbol | null>>;
 }
 
 export const onKeyDownAction =
@@ -17,6 +19,7 @@ export const onKeyDownAction =
     updateBars,
     setSelectedBarNumber,
     setSelectedBeatPosition,
+    setPreviewNoteSymbol,
   }: OnKeyDownActionParams) =>
   (ev: KeyboardEvent) => {
     if (ev.code === "ArrowUp") {
@@ -25,6 +28,7 @@ export const onKeyDownAction =
       const noteAbove = getNoteAbove(element);
 
       if (noteAbove) {
+        setPreviewNoteSymbol(null);
         updateBars({
           barNumber,
           beatPosition,
@@ -39,6 +43,7 @@ export const onKeyDownAction =
       const noteBelow = getNoteBelow(element);
 
       if (noteBelow) {
+        setPreviewNoteSymbol(null);
         updateBars({
           barNumber,
           beatPosition,
@@ -68,6 +73,7 @@ export const onKeyDownAction =
           selectedBarBeats[currentBeatIndex - 1].beatPosition
         );
       }
+      setPreviewNoteSymbol(null);
     }
     if (ev.code === "ArrowRight") {
       ev.preventDefault();
@@ -101,5 +107,6 @@ export const onKeyDownAction =
           selectedBarBeats[currentBeatIndex + 1].beatPosition
         );
       }
+      setPreviewNoteSymbol(null);
     }
   };

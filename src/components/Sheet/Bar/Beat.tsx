@@ -1,5 +1,5 @@
 import { memo, useEffect } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, BoxProps } from "theme-ui";
 import {
   inputDotOnState,
@@ -37,7 +37,7 @@ function BeatComponent({
 }: BeatProps) {
   const setSelectedBarNumber = useSetRecoilState(selectedBarNumberState);
   const setSelectedBeatPosition = useSetRecoilState(selectedBeatPositionState);
-  const setMouseOverBeat = useSetRecoilState(mouseOverBeatState);
+  const [mouseOverBeat, setMouseOverBeat] = useRecoilState(mouseOverBeatState);
   const inputDuration = useRecoilValue(inputElementState);
   const isDotOn = useRecoilValue(inputDotOnState);
 
@@ -71,12 +71,15 @@ function BeatComponent({
         }
       : null;
 
+  const mouseOver =
+    mouseOverBeat?.barNumber === barNumber &&
+    mouseOverBeat.beatPosition === beatPosition;
   const previewElementViolin =
-    selectedVoice === "soprano" || selectedVoice === "alto"
+    mouseOver && (selectedVoice === "soprano" || selectedVoice === "alto")
       ? previewElement
       : null;
   const previewElementBass =
-    selectedVoice === "tenor" || selectedVoice === "bass"
+    mouseOver && (selectedVoice === "tenor" || selectedVoice === "bass")
       ? previewElement
       : null;
 

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { SetterOrUpdater } from "recoil";
-import { Bar, NoteSymbol, SelectedElement } from "../types";
+import { Bar, NoteOctave, NoteSymbol, SelectedElement } from "../types";
 import { getNoteAbove, getNoteBelow } from "./getNoteAboveBelow.utils";
 
 interface OnKeyDownActionParams {
@@ -10,6 +10,7 @@ interface OnKeyDownActionParams {
   setSelectedBarNumber: SetterOrUpdater<number | null>;
   setSelectedBeatPosition: SetterOrUpdater<number | null>;
   setPreviewNoteSymbol: Dispatch<SetStateAction<NoteSymbol | null>>;
+  setPreviewNoteOctave: Dispatch<SetStateAction<NoteOctave | null>>;
 }
 
 export const onKeyDownAction =
@@ -20,6 +21,7 @@ export const onKeyDownAction =
     setSelectedBarNumber,
     setSelectedBeatPosition,
     setPreviewNoteSymbol,
+    setPreviewNoteOctave,
   }: OnKeyDownActionParams) =>
   (ev: KeyboardEvent) => {
     if (ev.code === "ArrowUp") {
@@ -29,6 +31,7 @@ export const onKeyDownAction =
 
       if (noteAbove) {
         setPreviewNoteSymbol(null);
+        setPreviewNoteOctave(null);
         updateBars({
           barNumber,
           beatPosition,
@@ -44,6 +47,7 @@ export const onKeyDownAction =
 
       if (noteBelow) {
         setPreviewNoteSymbol(null);
+        setPreviewNoteOctave(null);
         updateBars({
           barNumber,
           beatPosition,
@@ -108,5 +112,6 @@ export const onKeyDownAction =
         );
       }
       setPreviewNoteSymbol(null);
+      setPreviewNoteOctave(null);
     }
   };

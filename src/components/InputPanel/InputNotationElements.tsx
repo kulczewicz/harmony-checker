@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil";
 import { Flex } from "theme-ui";
 import { inputDotOnState, inputElementState } from "../../NoteInputState";
-import { DurationValue } from "../../types";
+import { NoteValue } from "../../types";
 import { ElementNoteSvgUp, ElementRestSvg } from "../Notation";
 import { InputPanelButton } from "./InputPanelButton";
 
@@ -23,13 +23,13 @@ export function InputNotationElements() {
           <InputPanelButton
             key={duration}
             isActive={
-              inputDuration.durationValue === duration &&
+              inputDuration.noteValue === duration &&
               inputDuration.type === "note"
             }
             sx={{ mr: 2 }}
             onClick={() => {
               setInputDuration({
-                durationValue: duration as DurationValue,
+                noteValue: duration as NoteValue,
                 type: "note",
               });
             }}
@@ -41,13 +41,13 @@ export function InputNotationElements() {
           <InputPanelButton
             key={duration}
             isActive={
-              inputDuration.durationValue === duration &&
+              inputDuration.noteValue === duration &&
               inputDuration.type === "rest"
             }
             sx={{ mr: 2 }}
             onClick={() =>
               setInputDuration({
-                durationValue: duration as DurationValue,
+                noteValue: duration as NoteValue,
                 type: "rest",
               })
             }

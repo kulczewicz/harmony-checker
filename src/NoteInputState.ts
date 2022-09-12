@@ -2,19 +2,21 @@ import { atom } from "recoil";
 import {
   Bar,
   Beat,
-  DurationValue,
+  NoteValue,
   SelectedElement,
   NotationElementType,
   TimeSignature,
   Voice,
+  NoteSymbol,
+  NoteOctave,
 } from "./types";
 
 export const inputElementState = atom<{
   type: NotationElementType;
-  durationValue: DurationValue;
+  noteValue: NoteValue;
 }>({
   key: "inputElement",
-  default: { type: "note", durationValue: "quarter" },
+  default: { type: "note", noteValue: "quarter" },
 });
 
 export const inputDotOnState = atom<boolean>({
@@ -47,6 +49,16 @@ export const mouseOverBeatState = atom<{
   beatPosition: number;
 } | null>({
   key: "mouseOverBeatState",
+  default: null,
+});
+
+export const previewNoteSymbolState = atom<NoteSymbol | null>({
+  key: "previewNoteSymbol",
+  default: null,
+});
+
+export const previewNoteOctaveState = atom<NoteOctave | null>({
+  key: "previewNoteOctave",
   default: null,
 });
 

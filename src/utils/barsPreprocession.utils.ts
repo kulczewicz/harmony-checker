@@ -12,7 +12,7 @@ import {
   BarWithTimeSignatureChange,
   Beat,
   BeatProcessed,
-  DurationValue,
+  NoteValue,
   NotationElement,
   StaffElements,
 } from "../types";
@@ -39,7 +39,7 @@ function calculateElementWidthWithRightPadding(element: NotationElement) {
     return restWidths[element.duration.value] + notePadding;
   }
   if (
-    (["eights", "sixteenth", "thirtySecond"] as DurationValue[]).includes(
+    (["eights", "sixteenth", "thirtySecond"] as NoteValue[]).includes(
       element.duration.value
     )
   ) {

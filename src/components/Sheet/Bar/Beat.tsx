@@ -60,7 +60,7 @@ function BeatComponent({
       ? {
           type: "note",
           duration: {
-            value: inputDuration.durationValue,
+            value: inputDuration.noteValue,
             dot: isDotOn,
           },
           pitch: {

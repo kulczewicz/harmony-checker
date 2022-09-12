@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Box, Flex } from "theme-ui";
+import { Box, Button, Flex } from "theme-ui";
 import { useCursor } from "../../hooks";
+import { useKeyboard } from "../../hooks/useKeyboard";
 import { barsState, inputVoiceState } from "../../NoteInputState";
 
 import { Bar, Line, NoteOctave, NoteSymbol, Voice } from "../../types/data";
@@ -17,7 +18,7 @@ import {
   staffLineBeginningWidth,
 } from "./StaffLineBeginning";
 
-const defaultBar: Omit<Bar, "barNumber" | "timeSignatureChange"> = {
+const defaultBar: Omit<Bar, "barNumber"> = {
   timeSignature: {
     topNumber: 4,
     bottomNumber: 4,
@@ -124,7 +125,6 @@ const defaultBars: Bar[] = new Array(10)
 const sheetElementId = "sheet";
 export function Sheet() {
   const bars = useRecoilValue(barsState);
-  const setBars = useSetRecoilState(barsState);
   const [availableSheetWidth, setAvailableSheetWidth] = useState<number>(0);
   const [lines, setLines] = useState<Line[]>([[]]);
   const voice = useRecoilValue(inputVoiceState);
@@ -133,12 +133,8 @@ export function Sheet() {
     selectedBeatPosition,
     previewNoteSymbol,
     previewNoteOctave,
-  } = useCursor();
-
-  useEffect(() => {
-    updateSheetWidth();
-    setBars(defaultBars);
-  }, []);
+  } = useCursor({ lines });
+  useKeyboard();
 
   const updateSheetWidth = useCallback(() => {
     const sheetElement = document.getElementById(sheetElementId);
@@ -149,32 +145,37 @@ export function Sheet() {
     }
   }, [setAvailableSheetWidth]);
 
+  const processBars = useCallback(
+    (bars: Bar[], availableSheetWidth: number) => {
+      if (availableSheetWidth <= 0) return;
+
+      const barsWithTimeSignatureChanges = processTimeSignatureChanges(bars);
+      const processedBars = barsWithTimeSignatureChanges.map((bar) =>
+        processBar(bar)
+      );
+
+      setLines(
+        breakProcessedBarsIntoLines({
+          availableSheetWidth,
+          bars: processedBars,
+        })
+      );
+    },
+    [setLines]
+  );
+
   useEffect(() => {
-    const addEventListeners = () => {
-      window.addEventListener("resize", updateSheetWidth);
-    };
-    const removeEventListeners = () => {
-      window.removeEventListener("resize", updateSheetWidth);
-    };
-    addEventListeners();
-    return () => removeEventListeners();
+    updateSheetWidth();
+  }, []);
+
+  useEffect(() => {
+    addEventListener("resize", updateSheetWidth);
+    return () => removeEventListener("resize", updateSheetWidth);
   }, [updateSheetWidth]);
 
   useEffect(() => {
-    if (availableSheetWidth <= 0) return;
-
-    const barsWithTimeSignatureChanges = processTimeSignatureChanges(bars);
-    const processedBars = barsWithTimeSignatureChanges.map((bar) =>
-      processBar(bar)
-    );
-
-    setLines(
-      breakProcessedBarsIntoLines({
-        availableSheetWidth,
-        bars: processedBars,
-      })
-    );
-  }, [bars, availableSheetWidth]);
+    processBars(bars, availableSheetWidth);
+  }, [processBars, bars, availableSheetWidth]);
 
   return (
     <Box id="sheet" sx={{ width: "100%" }}>
@@ -183,10 +184,6 @@ export function Sheet() {
           <StaffLineBeginning />
           {line.map((bar) => {
             const barSelected = selectedBarNumber === bar.barNumber;
-            // const previewInputData: PreviewInputData | null =
-            //   previewData?.barNumber === bar.barNumber
-            //     ? previewData.data
-            //     : null;
             const selectedBeatPositionInBar: number | null = barSelected
               ? selectedBeatPosition
               : null;

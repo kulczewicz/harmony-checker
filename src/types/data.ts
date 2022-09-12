@@ -42,7 +42,7 @@ export type NoteDurationInThirtySeconds =
   | 48;
 
 export type NotationElementType = "note" | "rest";
-export type DurationValue =
+export type NoteValue =
   | "whole"
   | "half"
   | "quarter"
@@ -51,7 +51,7 @@ export type DurationValue =
   | "thirtySecond";
 
 export interface ElementDuration {
-  value: DurationValue;
+  value: NoteValue;
   dot?: boolean;
 }
 

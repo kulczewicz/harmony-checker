@@ -1,80 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  barsState,
-  inputDotOnState,
-  inputElementState,
   inputVoiceState,
   mouseOverBeatState,
+  previewNoteOctaveState,
+  previewNoteSymbolState,
   selectedBarNumberState as selectedBarNumberState,
   selectedBeatPositionState,
 } from "../NoteInputState";
-import { NoteElement, NoteOctave, NoteSymbol, SelectedElement } from "../types";
+import { Line } from "../types";
 import { getBarId, getNotePitchByCursorPositon } from "../utils";
-import { getSelectedElement } from "../utils/getSelectedElement.utils";
-import { onKeyDownAction } from "../utils/onKeyDownAction.utils";
-import { useUpdateBars } from "./useUpdateBars";
 
-export function useCursor() {
-  const [bars, setBars] = useRecoilState(barsState);
+interface UseCursorParams {
+  lines: Line[];
+}
+export function useCursor({ lines }: UseCursorParams) {
   const [offsetTop, setOffsetTop] = useState(0);
-  const [previewNoteSymbol, setPreviewNoteSymbol] = useState<NoteSymbol | null>(
-    null
+  const [previewNoteSymbol, setPreviewNoteSymbol] = useRecoilState(
+    previewNoteSymbolState
   );
-  const [previewNoteOctave, setPreviewNoteOctave] = useState<NoteOctave | null>(
-    null
+  const [previewNoteOctave, setPreviewNoteOctave] = useRecoilState(
+    previewNoteOctaveState
   );
-  const [voice] = useRecoilState(inputVoiceState);
   const mouseOverBeat = useRecoilValue(mouseOverBeatState);
 
-  const [selectedBarNumber, setSelectedBarNumber] = useRecoilState(
-    selectedBarNumberState
-  );
-  const [selectedBeatPosition, setSelectedBeatPosition] = useRecoilState(
-    selectedBeatPositionState
-  );
-  const { updateBars } = useUpdateBars();
-
-  // useEffect(() => {
-  //   console.log(mouseOverBeat);
-  // }, [mouseOverBeat]);
-
-  useEffect(() => {
-    if (selectedBarNumber === null || selectedBeatPosition === null) return;
-    const selectedElement = getSelectedElement({
-      bars,
-      selectedBarNumber,
-      selectedBeatPosition,
-      voice,
-    });
-    if (!selectedElement) return;
-
-    const onKeyDown = onKeyDownAction({
-      bars,
-      selectedElement,
-      setSelectedBarNumber,
-      setSelectedBeatPosition,
-      updateBars,
-      setPreviewNoteSymbol,
-    });
-    addEventListener("keydown", onKeyDown);
-    return () => {
-      removeEventListener("keydown", onKeyDown);
-    };
-  }, [
-    bars,
-    selectedBarNumber,
-    setSelectedBarNumber,
-    selectedBeatPosition,
-    setSelectedBeatPosition,
-    setPreviewNoteSymbol,
-    voice,
-    updateBars,
-  ]);
-
-  // useEffect(() => {
-  //   console.log({ note: previewNoteSymbol, octave: previewNoteOctave });
-  // }, [previewNoteOctave, previewNoteSymbol]);
+  const voice = useRecoilValue(inputVoiceState);
+  const selectedBarNumber = useRecoilValue(selectedBarNumberState);
+  const selectedBeatPosition = useRecoilValue(selectedBeatPositionState);
 
   useEffect(() => {
     if (!selectedBarNumber) return;
@@ -97,7 +49,7 @@ export function useCursor() {
     updateOffset(barElement);
     addEventListenerOnScroll();
     return removeEventListenerOnScroll;
-  }, [selectedBarNumber, setOffsetTop]);
+  }, [selectedBarNumber, lines, setOffsetTop]);
 
   const onMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -112,65 +64,6 @@ export function useCursor() {
     },
     [setPreviewNoteSymbol, setPreviewNoteOctave, offsetTop, voice]
   );
-
-  // useEffect(() => {
-  //   if (!previewNoteSymbol || !previewNoteOctave) {
-  //     setPreviewData(null);
-  //     return;
-  //   }
-  //   setPreviewData({
-  //     barNumber: previewBarNumber,
-  //     data: {
-  //       beatPosition: previewBeatPosition,
-  //       element: {
-  //         type: "note",
-  //         duration: {
-  //           value: inputDuration.durationValue,
-  //           dot: dotOn,
-  //         },
-  //         pitch: {
-  //           noteSymbol: previewNoteSymbol,
-  //           octave: previewNoteOctave,
-  //         },
-  //         voice,
-  //       },
-  //     },
-  //   });
-  // }, [
-  //   previewNoteSymbol,
-  //   previewNoteOctave,
-  //   previewBeatPosition,
-  //   inputDuration.durationValue,
-  //   dotOn,
-  //   voice,
-  //   previewBarNumber,
-  //   setPreviewData,
-  // ]);
-
-  // useEffect(() => {
-  //   if (!selectedElement) return;
-
-  //   const { barNumber, beatPosition, element } = selectedElement;
-  //   setPreviewBarNumber(barNumber);
-  //   setPreviewBeatPosition(beatPosition);
-  //   const {
-  //     type,
-  //     duration: { value: durationValue, dot },
-  //     voice,
-  //   } = element;
-  //   setVoice(voice);
-  //   setInputDuration({ type, durationValue });
-  //   if (dot) {
-  //     setDotOn(true);
-  //   }
-  // }, [
-  //   selectedElement,
-  //   setVoice,
-  //   setPreviewBarNumber,
-  //   setPreviewBeatPosition,
-  //   setInputDuration,
-  //   setDotOn,
-  // ]);
 
   useEffect(() => {
     if (
@@ -187,32 +80,6 @@ export function useCursor() {
       document.removeEventListener("mousemove", onMouseMove);
     };
   }, [mouseOverBeat, selectedBarNumber, selectedBeatPosition, onMouseMove]);
-
-  // useEffect(() => {
-  //   if (bars?.length === 0) return;
-
-  //   const beatPositions = bars[previewBarNumber].beats.map(
-  //     ({ beatPosition }) => beatPosition
-  //   );
-  //   beatPositions.forEach((beatPosition) => {
-  //     const beatElement = document.getElementById(
-  //       getBeatId(previewBarNumber, beatPosition)
-  //     );
-  //     beatElement?.addEventListener("mouseenter", () => {
-  //       setPreviewBeatNumber(beatPosition);
-  //     });
-  //   });
-  // }, [previewBarNumber, bars, setPreviewBeatNumber]);
-
-  // useEffect(() => {
-  //   const barNumbers = bars.map(({ barNumber }) => barNumber);
-  //   barNumbers.forEach((barNumber) => {
-  //     const barElement = document.getElementById(getBarId(barNumber));
-  //     barElement?.addEventListener("mouseenter", () => {
-  //       setPreviewBarNumber(barNumber);
-  //     });
-  //   });
-  // }, [bars, setPreviewBarNumber]);
 
   return {
     selectedBarNumber,

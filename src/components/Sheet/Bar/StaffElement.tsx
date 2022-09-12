@@ -33,14 +33,14 @@ export function StaffElement({
     },
   };
 
-  const durationValue = element.duration.value;
+  const noteValue = element.duration.value;
 
   if (element.type === "note") {
     const { linesPosition, numberOfLines } =
       calculateNumberOfLedgerLines(element);
     const ElementNoteSvg =
       position.direction === "up" ? ElementNoteSvgUp : ElementNoteSvgDown;
-    const Note = ElementNoteSvg[durationValue]({
+    const Note = ElementNoteSvg[noteValue]({
       ...extendedProps,
     });
     if (linesPosition === "inside") {
@@ -57,5 +57,5 @@ export function StaffElement({
       </>
     );
   }
-  return ElementRestSvg[durationValue]({ ...extendedProps });
+  return ElementRestSvg[noteValue]({ ...extendedProps });
 }

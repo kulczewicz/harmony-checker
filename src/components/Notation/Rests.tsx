@@ -1,7 +1,7 @@
 import { noteHeadHight } from "../../constants";
-import { DurationValue, SvgPropsThemeUi } from "../../types";
+import { NoteValue, SvgPropsThemeUi } from "../../types";
 
-export const restWidths: { [duration in DurationValue]: number } = {
+export const restWidths: { [duration in NoteValue]: number } = {
   whole: 24,
   half: 24,
   quarter: 10,

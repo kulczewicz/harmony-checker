@@ -1,6 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 import { SetterOrUpdater } from "recoil";
-import { Bar, NoteOctave, NoteSymbol, SelectedElement } from "../types";
+import {
+  Bar,
+  NoteOctave,
+  NoteSymbol,
+  RestElement,
+  SelectedElement,
+} from "../types";
 import { getNoteAbove, getNoteBelow } from "./getNoteAboveBelow.utils";
 
 interface OnKeyDownActionParams {
@@ -24,6 +30,26 @@ export const onKeyDownAction =
     setPreviewNoteOctave,
   }: OnKeyDownActionParams) =>
   (ev: KeyboardEvent) => {
+    if (ev.code === "Backspace") {
+      ev.preventDefault();
+
+      if (element.type === "rest") return;
+
+      setPreviewNoteSymbol(null);
+      setPreviewNoteOctave(null);
+
+      const newElement: RestElement = {
+        type: "rest",
+        duration: element.duration,
+        voice: element.voice,
+      };
+      updateBars({
+        barNumber,
+        beatPosition,
+        element: newElement,
+      });
+    }
+
     if (ev.code === "ArrowUp") {
       ev.preventDefault();
       if (element.type === "rest") return;

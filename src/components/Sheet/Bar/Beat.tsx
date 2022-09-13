@@ -1,5 +1,5 @@
 import { memo, useEffect } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, BoxProps } from "theme-ui";
 import { useUpdateBars } from "../../../hooks";
 import {
@@ -48,7 +48,6 @@ function BeatComponent({
   const isDotOn = useRecoilValue(inputDotOnState);
 
   const { beatPosition, soprano, alto, tenor, bass } = beat;
-  console.log({ beatPosition });
   const barHtmlElementId = getBeatId(barNumber, beatPosition);
   useEffect(() => {
     const beatElement = document.getElementById(
@@ -86,11 +85,15 @@ function BeatComponent({
       : null;
 
   const previewElementViolin =
-    previewVoice === "soprano" || previewVoice === "alto"
+    (previewVoice === "soprano" && soprano?.type === "rest") ||
+    (previewVoice === "alto" && alto?.type === "rest")
       ? previewElement
       : null;
   const previewElementBass =
-    previewVoice === "tenor" || previewVoice === "bass" ? previewElement : null;
+    (previewVoice === "tenor" && tenor?.type === "rest") ||
+    (previewVoice === "bass" && bass?.type === "rest")
+      ? previewElement
+      : null;
 
   const widthIncreaseFactor = getWidthIncreaseFactorForBeat(beat);
   return (
@@ -113,7 +116,10 @@ function BeatComponent({
         ? {}
         : {
             onClick: () => {
-              if (previewElement) {
+              if (
+                previewElement &&
+                (previewElementViolin || previewElementBass)
+              ) {
                 updateBars({
                   barNumber,
                   beatPosition,

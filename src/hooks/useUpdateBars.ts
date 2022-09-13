@@ -15,13 +15,13 @@ export function getUpdatedBar(
 ) {
   const { beats, barNumber, timeSignature } = bar;
   const barDuration = calculateBarDuration(timeSignature);
-  const oldElementBeatIndex = beats.findIndex(
+  const elementBeatIndex = beats.findIndex(
     ({ beatPosition }) => newBeatPosition === beatPosition
   );
-  const oldElementBeat = beats[oldElementBeatIndex];
-  if (!oldElementBeat) return bar;
+  const elementBeat = beats[elementBeatIndex];
+  if (!elementBeat) return bar;
 
-  const oldElement = oldElementBeat[newElement.voice];
+  const oldElement = elementBeat[newElement.voice];
   if (!oldElement) return bar;
 
   const newDuration = durationByNoteValue[newElement.duration.value];
@@ -39,7 +39,7 @@ export function getUpdatedBar(
     return { barNumber, timeSignature, beats: newBeats };
   }
 
-  const beatPositionOfNewElementEnd = oldElementBeat.beatPosition + newDuration;
+  const beatPositionOfNewElementEnd = elementBeat.beatPosition + newDuration;
   if (newDuration > oldDuration && beatPositionOfNewElementEnd > barDuration) {
     // new element is longer than the bar itself -> disable replacement
     return bar;
@@ -49,9 +49,9 @@ export function getUpdatedBar(
     const nextBeatAfterNewElementIndex = beats.findIndex(
       ({ beatPosition }) => beatPosition >= beatPositionOfNewElementEnd
     );
-    const beatsBeforeOldBeat = beats.slice(0, oldElementBeatIndex);
+    const beatsBeforeOldBeat = beats.slice(0, elementBeatIndex);
     const beatsToReplace = beats
-      .slice(oldElementBeatIndex, nextBeatAfterNewElementIndex)
+      .slice(elementBeatIndex, nextBeatAfterNewElementIndex)
       .map(({ ...beat }) => {
         if (beat.beatPosition !== newBeatPosition) {
           delete beat[newElement.voice];
@@ -78,22 +78,25 @@ export function getUpdatedBar(
         voice: newElement.voice,
       });
     }
+    const newBeats = [
+      ...beatsBeforeOldBeat,
+      ...beatsToReplace,
+      ...missingBeats,
+      ...beatsAfter,
+    ];
+    // .sort((a, b) => a.beatPosition - b.beatPosition),
+    console.log(newBeats);
     return {
       barNumber,
       timeSignature,
-      beats: [
-        ...beatsBeforeOldBeat,
-        ...beatsToReplace,
-        ...missingBeats,
-        ...beatsAfter,
-      ],
+      beats: newBeats,
     };
   }
   if (newDuration < oldDuration) {
-    const beatsBeforeOldBeat = beats.slice(0, oldElementBeatIndex);
+    const beatsBeforeOldBeat = beats.slice(0, elementBeatIndex);
     const missingDuration = oldDuration - newDuration;
     const updatedBeat = {
-      ...oldElementBeat,
+      ...elementBeat,
       [newElement.voice]: newElement,
     };
     const missingBeats = getMissingBeats({
@@ -102,7 +105,7 @@ export function getUpdatedBar(
       startBeatPosition: beatPositionOfNewElementEnd,
       voice: newElement.voice,
     });
-    const beatsAfter = beats.slice(oldElementBeatIndex + 1);
+    const beatsAfter = beats.slice(elementBeatIndex + 1);
     const beatsMerged = missingBeats.reduce((acc: Beat[], curr) => {
       const existingBeatOnSameBeatPosition = beatsAfter.find(
         ({ beatPosition }) => beatPosition === curr.beatPosition
@@ -132,7 +135,7 @@ export function getUpdatedBar(
         updatedBeat,
         ...beatsMerged,
         ...beatsAfterWithoutMerged,
-      ],
+      ].sort((a, b) => a.beatPosition - b.beatPosition),
     };
   }
   return bar;

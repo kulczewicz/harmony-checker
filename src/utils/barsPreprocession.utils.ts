@@ -5,6 +5,7 @@ import {
   notePadding,
   noteTailWidth,
   timeSignatureWidth,
+  widthIncreaseFactorByNoteValue,
 } from "../constants";
 import {
   Bar,
@@ -17,6 +18,7 @@ import {
   StaffElements,
 } from "../types";
 import { calculateStaffElementsHorizontalPositions } from "./calculateStaffElementsPositions.utils";
+import { getWidthIncreaseFactorForBeat } from "./timeSignature.utils";
 
 export function processTimeSignatureChanges(
   bars: Bar[]

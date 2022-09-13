@@ -1,4 +1,4 @@
-import { Box, BoxProps, Flex } from "theme-ui";
+import { BoxProps, Flex } from "theme-ui";
 import {
   barPadding,
   staffHeight,
@@ -7,7 +7,6 @@ import {
 } from "../../constants";
 import { TimeSignature } from "../../types";
 import { TimeSignatureNumberSvg } from "../Notation";
-import { StaffBox } from "./Staff";
 
 interface TimeSignatureStaffProps extends BoxProps {
   timeSignature: TimeSignature;

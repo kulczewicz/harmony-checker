@@ -13,6 +13,7 @@ import {
 } from "../../utils/barsPreprocession.utils";
 import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";
 import { BarBlock } from "./Bar";
+import { SheetStaffLines } from "./Staff";
 import {
   StaffLineBeginning,
   staffLineBeginningWidth,
@@ -180,8 +181,13 @@ export function Sheet() {
   return (
     <Box id="sheet" sx={{ width: "100%" }}>
       {lines.map((line, lineIndex) => (
-        <Flex id={getLineId(lineIndex)} key={lineIndex} sx={{ width: "100%" }}>
+        <Flex
+          id={getLineId(lineIndex)}
+          key={lineIndex}
+          sx={{ position: "relative", width: "100%" }}
+        >
           <StaffLineBeginning />
+          <SheetStaffLines />
           {line.map((bar) => {
             const barSelected = selectedBarNumber === bar.barNumber;
             const selectedBeatPositionInBar: number | null = barSelected

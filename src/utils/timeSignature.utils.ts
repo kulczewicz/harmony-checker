@@ -1,4 +1,6 @@
+import { widthIncreaseFactorByNoteValue } from "../constants";
 import {
+  durationByNoteValue,
   durationOfTimeSignatureBottom,
   noteValueByDuration,
 } from "../constants/timeSignature.constants";
@@ -64,3 +66,22 @@ export function getMissingBeats({
   }
   return beats;
 }
+
+export function getShortestDurationInBeat({
+  soprano,
+  alto,
+  tenor,
+  bass,
+}: Beat) {
+  const shortestDuration = [soprano, alto, tenor, bass]
+    .filter(Boolean)
+    .reduce((acc, curr) => {
+      const currentDuration = durationByNoteValue[curr!.duration.value];
+      if (currentDuration < acc) return currentDuration;
+      return acc;
+    }, Number.MAX_VALUE);
+  return noteValueByDuration[shortestDuration];
+}
+
+export const getWidthIncreaseFactorForBeat = (beat: Beat) =>
+  widthIncreaseFactorByNoteValue[getShortestDurationInBeat(beat)];

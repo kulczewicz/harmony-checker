@@ -17,6 +17,7 @@ import type {
   Voice,
 } from "../../../types";
 import { getBeatId } from "../../../utils";
+import { getWidthIncreaseFactorForBeat } from "../../../utils/timeSignature.utils";
 import { StaffVoices } from "./StaffVoices";
 
 export type BeatInputElement = NotationElement | null;
@@ -29,10 +30,11 @@ interface BeatProps extends BoxProps {
 }
 function BeatComponent({
   barNumber,
-  beat: { beatPosition, soprano, alto, tenor, bass },
+  beat,
   selectedVoice,
   previewNoteOctave,
   previewNoteSymbol,
+  sx,
   ...props
 }: BeatProps) {
   const setSelectedBarNumber = useSetRecoilState(selectedBarNumberState);
@@ -41,6 +43,7 @@ function BeatComponent({
   const inputDuration = useRecoilValue(inputElementState);
   const isDotOn = useRecoilValue(inputDotOnState);
 
+  const { beatPosition, soprano, alto, tenor, bass } = beat;
   const barHtmlElementId = getBeatId(barNumber, beatPosition);
   useEffect(() => {
     const beatElement = document.getElementById(
@@ -75,20 +78,22 @@ function BeatComponent({
     mouseOverBeat?.barNumber === barNumber &&
     mouseOverBeat.beatPosition === beatPosition;
   const previewElementViolin =
-    mouseOver && (selectedVoice === "soprano" || selectedVoice === "alto")
+    selectedVoice === "soprano" || selectedVoice === "alto"
       ? previewElement
       : null;
   const previewElementBass =
-    mouseOver && (selectedVoice === "tenor" || selectedVoice === "bass")
+    selectedVoice === "tenor" || selectedVoice === "bass"
       ? previewElement
       : null;
 
+  const widthIncreaseFactor = getWidthIncreaseFactorForBeat(beat);
   return (
     <Box
       key={beatPosition}
       id={getBeatId(barNumber, beatPosition)}
       sx={{
-        width: "100%",
+        flexBasis: 0,
+        flexGrow: widthIncreaseFactor,
         backgroundColor: selectedVoice ? "lightskyblue" : "white",
         ":hover": selectedVoice
           ? {}
@@ -96,6 +101,7 @@ function BeatComponent({
               backgroundColor: "lightgray",
               cursor: "pointer",
             },
+        ...sx,
       }}
       {...(selectedVoice
         ? {}

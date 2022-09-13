@@ -1,6 +1,6 @@
 import { BarProcessed, Line } from "../types";
 
-interface CalculateLineBreaksParams {
+interface BreakProcessedBarsIntoLinesParams {
   availableSheetWidth: number;
   bars: BarProcessed[];
 }
@@ -8,7 +8,7 @@ interface CalculateLineBreaksParams {
 export function breakProcessedBarsIntoLines({
   availableSheetWidth,
   bars,
-}: CalculateLineBreaksParams) {
+}: BreakProcessedBarsIntoLinesParams) {
   const lines: Line[] = [];
 
   const widthIncreaseFactor = 1.5;
@@ -24,6 +24,21 @@ export function breakProcessedBarsIntoLines({
   for (let i = 0; i < bars.length; i += barsPerLine) {
     lines.push(bars.slice(i, i + barsPerLine));
   }
+
+  // let currentLineIndex = 0;
+  // let currentLineWidth = 0;
+  // for (const bar of bars) {
+  //   if (
+  //     currentLineWidth + bar.width * widthIncreaseFactor >
+  //     availableSheetWidth
+  //   ) {
+  //     currentLineIndex++;
+  //     currentLineWidth = 0;
+  //     lines.push([]);
+  //   }
+  //   lines[currentLineIndex].push(bar);
+  //   currentLineWidth += bar.width * widthIncreaseFactor;
+  // }
 
   return lines;
 }

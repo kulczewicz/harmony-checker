@@ -9,7 +9,7 @@ import {
   selectedBeatPositionState,
 } from "../NoteInputState";
 import { Line } from "../types";
-import { getBarId, getNotePitchByCursorPositon } from "../utils";
+import { getBeatId, getNotePitchByCursorPositon } from "../utils";
 
 interface UseCursorParams {
   lines: Line[];
@@ -22,6 +22,9 @@ export function useCursor({ lines }: UseCursorParams) {
   const [previewNoteOctave, setPreviewNoteOctave] = useRecoilState(
     previewNoteOctaveState
   );
+  // const [previewNoteBar, setPreviewNoteBar] = useRecoilState(
+  //   previewNoteOctaveState
+  // );
   const mouseOverBeat = useRecoilValue(mouseOverBeatState);
 
   const voice = useRecoilValue(inputVoiceState);
@@ -29,27 +32,35 @@ export function useCursor({ lines }: UseCursorParams) {
   const selectedBeatPosition = useRecoilValue(selectedBeatPositionState);
 
   useEffect(() => {
-    if (!selectedBarNumber) return;
+    if (
+      selectedBarNumber === null ||
+      selectedBarNumber === undefined ||
+      selectedBeatPosition === null ||
+      selectedBeatPosition === undefined
+    )
+      return;
 
-    const barElement = document.getElementById(getBarId(selectedBarNumber));
-    if (!barElement) return;
+    const selectedBeatElement = document.getElementById(
+      getBeatId(selectedBarNumber, selectedBeatPosition)
+    );
+    if (!selectedBeatElement) return;
 
     const updateOffset = (barElement: HTMLElement) => {
       const { top } = barElement.getBoundingClientRect();
       setOffsetTop(Math.round(top));
     };
     const onScroll = () => {
-      updateOffset(barElement);
+      updateOffset(selectedBeatElement);
     };
 
     const addEventListenerOnScroll = () => addEventListener("scroll", onScroll);
     const removeEventListenerOnScroll = () =>
       addEventListener("scroll", onScroll);
 
-    updateOffset(barElement);
+    updateOffset(selectedBeatElement);
     addEventListenerOnScroll();
     return removeEventListenerOnScroll;
-  }, [selectedBarNumber, lines, setOffsetTop]);
+  }, [selectedBarNumber, selectedBeatPosition, lines, setOffsetTop]);
 
   const onMouseMove = useCallback(
     (e: MouseEvent) => {

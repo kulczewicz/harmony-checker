@@ -22,45 +22,35 @@ export function useCursor({ lines }: UseCursorParams) {
   const [previewNoteOctave, setPreviewNoteOctave] = useRecoilState(
     previewNoteOctaveState
   );
-  // const [previewNoteBar, setPreviewNoteBar] = useRecoilState(
-  //   previewNoteOctaveState
-  // );
   const mouseOverBeat = useRecoilValue(mouseOverBeatState);
-
   const voice = useRecoilValue(inputVoiceState);
   const selectedBarNumber = useRecoilValue(selectedBarNumberState);
   const selectedBeatPosition = useRecoilValue(selectedBeatPositionState);
 
   useEffect(() => {
-    if (
-      selectedBarNumber === null ||
-      selectedBarNumber === undefined ||
-      selectedBeatPosition === null ||
-      selectedBeatPosition === undefined
-    )
-      return;
+    if (!mouseOverBeat) return;
 
-    const selectedBeatElement = document.getElementById(
-      getBeatId(selectedBarNumber, selectedBeatPosition)
+    const previewBeatElement = document.getElementById(
+      getBeatId(mouseOverBeat.barNumber, mouseOverBeat.beatPosition)
     );
-    if (!selectedBeatElement) return;
+    if (!previewBeatElement) return;
 
     const updateOffset = (barElement: HTMLElement) => {
       const { top } = barElement.getBoundingClientRect();
       setOffsetTop(Math.round(top));
     };
     const onScroll = () => {
-      updateOffset(selectedBeatElement);
+      updateOffset(previewBeatElement);
     };
 
     const addEventListenerOnScroll = () => addEventListener("scroll", onScroll);
     const removeEventListenerOnScroll = () =>
       addEventListener("scroll", onScroll);
 
-    updateOffset(selectedBeatElement);
+    updateOffset(previewBeatElement);
     addEventListenerOnScroll();
     return removeEventListenerOnScroll;
-  }, [selectedBarNumber, selectedBeatPosition, lines, setOffsetTop]);
+  }, [mouseOverBeat, lines, setOffsetTop]);
 
   const onMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -77,25 +67,17 @@ export function useCursor({ lines }: UseCursorParams) {
   );
 
   useEffect(() => {
-    if (
-      !(
-        mouseOverBeat?.barNumber === selectedBarNumber &&
-        mouseOverBeat?.beatPosition === selectedBeatPosition
-      )
-    ) {
-      return;
-    }
-
     document.addEventListener("mousemove", onMouseMove);
     return () => {
       document.removeEventListener("mousemove", onMouseMove);
     };
-  }, [mouseOverBeat, selectedBarNumber, selectedBeatPosition, onMouseMove]);
+  }, [onMouseMove]);
 
   return {
     selectedBarNumber,
     selectedBeatPosition,
     previewNoteSymbol,
     previewNoteOctave,
+    mouseOverBeat,
   };
 }

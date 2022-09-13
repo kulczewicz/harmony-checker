@@ -114,7 +114,7 @@ export function EighthsNoteUp({ sx, ...props }: SvgPropsThemeUi) {
 export function EighthsNoteDown({ sx, ...props }: SvgPropsThemeUi) {
   return (
     <svg
-      sx={{ height: `${noteHeight}px`, width: `${noteTailWidth}px`, ...sx }}
+      sx={{ height: `${noteHeight}px`, width: `${noteHeadWidth}px`, ...sx }}
       viewBox={noteWithTailDownViewBox}
       {...props}
     >
@@ -148,7 +148,7 @@ export function SixteenthNoteUp({ sx, ...props }: SvgPropsThemeUi) {
 export function SixteenthNoteDown({ sx, ...props }: SvgPropsThemeUi) {
   return (
     <svg
-      sx={{ height: `${noteHeight}px`, width: `${noteTailWidth}px`, ...sx }}
+      sx={{ height: `${noteHeight}px`, width: `${noteHeadWidth}px`, ...sx }}
       viewBox={noteWithTailDownViewBox}
       {...props}
     >
@@ -182,7 +182,7 @@ export function ThirtySecondNoteUp({ sx, ...props }: SvgPropsThemeUi) {
 export function ThirtySecondNoteDown({ sx, ...props }: SvgPropsThemeUi) {
   return (
     <svg
-      sx={{ height: `${noteHeight}px`, width: `${noteTailWidth}px`, ...sx }}
+      sx={{ height: `${noteHeight}px`, width: `${noteHeadWidth}px`, ...sx }}
       viewBox={noteWithTailDownViewBox}
       {...props}
     >

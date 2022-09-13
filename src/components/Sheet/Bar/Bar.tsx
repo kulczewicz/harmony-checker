@@ -21,6 +21,8 @@ interface BarProps {
   selectedVoice: Voice | null;
   previewNoteSymbol: NoteSymbol | null;
   previewNoteOctave: NoteOctave | null;
+  previewBeatPosition: number | null;
+  previewVoice: Voice | null;
 }
 function BarBlockComponent({
   bar: { barNumber, timeSignature, beats, timeSignatureChange },
@@ -28,6 +30,8 @@ function BarBlockComponent({
   selectedVoice,
   previewNoteSymbol,
   previewNoteOctave,
+  previewBeatPosition,
+  previewVoice,
 }: BarProps) {
   return (
     <>
@@ -37,14 +41,17 @@ function BarBlockComponent({
       {beats.map((beat) => {
         const beatSelected = selectedBeatPosition === beat.beatPosition;
         const selectedVoiceInBeat = beatSelected ? selectedVoice : null;
-        const beatPreviewNoteSymbol = beatSelected ? previewNoteSymbol : null;
-        const beatPreviewNoteOctave = beatSelected ? previewNoteOctave : null;
+        const beatPreviewNoteSymbol =
+          previewBeatPosition === beat.beatPosition ? previewNoteSymbol : null;
+        const beatPreviewNoteOctave =
+          previewBeatPosition === beat.beatPosition ? previewNoteOctave : null;
         return (
           <BeatBlock
             key={beat.beatPosition}
             barNumber={barNumber}
             beat={beat}
             selectedVoice={selectedVoiceInBeat}
+            previewVoice={previewVoice}
             previewNoteSymbol={beatPreviewNoteSymbol}
             previewNoteOctave={beatPreviewNoteOctave}
           />

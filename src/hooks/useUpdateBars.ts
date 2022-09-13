@@ -124,7 +124,6 @@ export function getUpdatedBar(
             mergedBeatPosition === beatAfterPosition
         )
     );
-    console.log(beatsMerged);
     return {
       barNumber,
       timeSignature,
@@ -153,7 +152,6 @@ export function useUpdateBars() {
     (newElement: SelectedElement) => {
       setBars((bars) => {
         const newBars = getUpdatedBars(newElement, bars);
-        console.log(newBars);
         return newBars;
       });
     },

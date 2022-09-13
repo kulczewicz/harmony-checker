@@ -134,6 +134,7 @@ export function Sheet() {
     selectedBeatPosition,
     previewNoteSymbol,
     previewNoteOctave,
+    mouseOverBeat,
   } = useCursor({ lines });
   useKeyboard();
 
@@ -190,15 +191,19 @@ export function Sheet() {
           <SheetStaffLines />
           {line.map((bar) => {
             const barSelected = selectedBarNumber === bar.barNumber;
+            const barPreview = mouseOverBeat?.barNumber === bar.barNumber;
             const selectedBeatPositionInBar: number | null = barSelected
               ? selectedBeatPosition
               : null;
             const selectedVoice: Voice | null = barSelected ? voice : null;
-            const barPreviewNoteSymbol: NoteSymbol | null = barSelected
+            const barPreviewNoteSymbol: NoteSymbol | null = barPreview
               ? previewNoteSymbol
               : null;
-            const barPreviewNoteOctave: NoteOctave | null = barSelected
+            const barPreviewNoteOctave: NoteOctave | null = barPreview
               ? previewNoteOctave
+              : null;
+            const barPreviewBeatPosition = barPreview
+              ? mouseOverBeat?.beatPosition
               : null;
             return (
               <BarBlock
@@ -207,6 +212,8 @@ export function Sheet() {
                 selectedVoice={selectedVoice}
                 previewNoteSymbol={barPreviewNoteSymbol}
                 previewNoteOctave={barPreviewNoteOctave}
+                previewVoice={voice}
+                previewBeatPosition={barPreviewBeatPosition}
                 bar={bar}
               />
             );

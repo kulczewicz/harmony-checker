@@ -1,6 +1,7 @@
 import { memo, useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, BoxProps } from "theme-ui";
+import { useUpdateBars } from "../../../hooks";
 import {
   inputDotOnState,
   inputElementState,
@@ -25,6 +26,7 @@ interface BeatProps extends BoxProps {
   barNumber: number;
   beat: Beat;
   selectedVoice: Voice | null;
+  previewVoice: Voice | null;
   previewNoteSymbol: NoteSymbol | null;
   previewNoteOctave: NoteOctave | null;
 }
@@ -34,32 +36,41 @@ function BeatComponent({
   selectedVoice,
   previewNoteOctave,
   previewNoteSymbol,
+  previewVoice,
   sx,
   ...props
 }: BeatProps) {
+  const { updateBars } = useUpdateBars();
   const setSelectedBarNumber = useSetRecoilState(selectedBarNumberState);
   const setSelectedBeatPosition = useSetRecoilState(selectedBeatPositionState);
-  const [mouseOverBeat, setMouseOverBeat] = useRecoilState(mouseOverBeatState);
+  const setMouseOverBeat = useSetRecoilState(mouseOverBeatState);
   const inputDuration = useRecoilValue(inputElementState);
   const isDotOn = useRecoilValue(inputDotOnState);
 
   const { beatPosition, soprano, alto, tenor, bass } = beat;
+  console.log({ beatPosition });
   const barHtmlElementId = getBeatId(barNumber, beatPosition);
   useEffect(() => {
     const beatElement = document.getElementById(
       getBeatId(barNumber, beatPosition)
     );
-    const onBarMouseEnter = () => {
+    const onBeatMouseEnter = () => {
       setMouseOverBeat({ barNumber, beatPosition });
     };
-    beatElement?.addEventListener("mouseenter", onBarMouseEnter);
+    const onBeatMouseLeave = () => {
+      setMouseOverBeat(null);
+    };
+    beatElement?.addEventListener("mouseenter", onBeatMouseEnter);
+    beatElement?.addEventListener("mouseleave", onBeatMouseLeave);
 
-    return () =>
-      beatElement?.removeEventListener("mouseenter", onBarMouseEnter);
+    return () => {
+      beatElement?.removeEventListener("mouseenter", onBeatMouseEnter);
+      beatElement?.addEventListener("mouseleave", onBeatMouseLeave);
+    };
   }, [barHtmlElementId, barNumber, beatPosition, setMouseOverBeat]);
 
   const previewElement: NoteElement | null =
-    previewNoteOctave && previewNoteSymbol && selectedVoice
+    previewNoteOctave && previewNoteSymbol && previewVoice
       ? {
           type: "note",
           duration: {
@@ -70,21 +81,16 @@ function BeatComponent({
             noteSymbol: previewNoteSymbol,
             octave: previewNoteOctave,
           },
-          voice: selectedVoice,
+          voice: previewVoice,
         }
       : null;
 
-  const mouseOver =
-    mouseOverBeat?.barNumber === barNumber &&
-    mouseOverBeat.beatPosition === beatPosition;
   const previewElementViolin =
-    selectedVoice === "soprano" || selectedVoice === "alto"
+    previewVoice === "soprano" || previewVoice === "alto"
       ? previewElement
       : null;
   const previewElementBass =
-    selectedVoice === "tenor" || selectedVoice === "bass"
-      ? previewElement
-      : null;
+    previewVoice === "tenor" || previewVoice === "bass" ? previewElement : null;
 
   const widthIncreaseFactor = getWidthIncreaseFactorForBeat(beat);
   return (
@@ -107,6 +113,13 @@ function BeatComponent({
         ? {}
         : {
             onClick: () => {
+              if (previewElement) {
+                updateBars({
+                  barNumber,
+                  beatPosition,
+                  element: previewElement,
+                });
+              }
               setSelectedBarNumber(barNumber);
               setSelectedBeatPosition(beatPosition);
             },

@@ -2,7 +2,7 @@ import { noteHeadHight } from "../../constants";
 import { SvgPropsThemeUi } from "../../types";
 const signatureSignWidth = 9;
 
-export function FlatSign(props: SvgPropsThemeUi) {
+export function FlatAccidental(props: SvgPropsThemeUi) {
   return (
     <svg
       height={`${noteHeadHight * 2}px`}
@@ -20,7 +20,7 @@ export function FlatSign(props: SvgPropsThemeUi) {
   );
 }
 
-export function NaturalSign(props: SvgPropsThemeUi) {
+export function NaturalAccidental(props: SvgPropsThemeUi) {
   return (
     <svg
       height={`${noteHeadHight * 2}px`}
@@ -38,7 +38,7 @@ c1 0 2 1 4 1zM37 39v-103c0 -4 5 -6 12 -6c25 0 82 23 82 41v103c0 4 -3 5 -9 5c-24 
   );
 }
 
-export function SharpSign({ sx, ...props }: SvgPropsThemeUi) {
+export function SharpAccidental({ sx, ...props }: SvgPropsThemeUi) {
   console.log(props);
   return (
     <svg

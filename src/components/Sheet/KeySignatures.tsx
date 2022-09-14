@@ -4,38 +4,43 @@ import {
   staffVerticalPadding,
   staffWithPaddingHeight,
 } from "../../constants";
-import {
-  KeySignature,
-  KeySignatureSymbol,
-  MusicKey,
-  SvgPropsThemeUi,
-} from "../../types";
+import { KeySignature, MusicKey, NotePitch, NoteSymbol } from "../../types";
+import { calculateNotePositionFromTop } from "../../utils";
 import { getKeySignatureByMusicKey } from "../../utils/keySignatures.utils";
-import { FlatSign, SharpSign } from "../Notation";
-import { StaffBox } from "./Staff";
+import { FlatAccidental, SharpAccidental } from "../Notation";
 
-const keyMarginsTopSharp = [
-  staffVerticalPadding - noteHeadHight,
-  staffVerticalPadding + noteHeadHight * 0.5,
-  staffVerticalPadding - noteHeadHight * 1.5,
-  staffVerticalPadding,
-  staffVerticalPadding + noteHeadHight * 1.5,
-  staffVerticalPadding - noteHeadHight * 0.5,
-  staffVerticalPadding + noteHeadHight,
+const sharpKeySignatureNotesInOrder: NotePitch[] = [
+  { noteSymbol: "F", octave: 5 },
+  { noteSymbol: "C", octave: 5 },
+  { noteSymbol: "G", octave: 5 },
+  { noteSymbol: "D", octave: 5 },
+  { noteSymbol: "A", octave: 4 },
+  { noteSymbol: "E", octave: 5 },
+  { noteSymbol: "B", octave: 4 },
 ];
-const keyMarginsTopFlat = [
-  staffVerticalPadding + 8,
-  staffVerticalPadding - 11,
-  staffVerticalPadding + 13,
-  staffVerticalPadding - 5,
-  staffVerticalPadding + 19,
-  staffVerticalPadding + 1,
-  staffVerticalPadding + 25,
+const flatKeySignatureNotesInOrder: NotePitch[] = [
+  { noteSymbol: "B", octave: 4 },
+  { noteSymbol: "E", octave: 5 },
+  { noteSymbol: "A", octave: 4 },
+  { noteSymbol: "D", octave: 5 },
+  { noteSymbol: "G", octave: 4 },
+  { noteSymbol: "C", octave: 5 },
+  { noteSymbol: "F", octave: 4 },
 ];
+
+const sharpKeySignatureMarginsFromTop = sharpKeySignatureNotesInOrder.map(
+  (pitch) =>
+    calculateNotePositionFromTop({ pitch, voice: "soprano" }) -
+    noteHeadHight / 2
+);
+
+const flatKeySignatureMarginsFromTop = flatKeySignatureNotesInOrder.map(
+  (pitch) => calculateNotePositionFromTop({ pitch, voice: "soprano" }) - 11
+);
 
 const keyMarginsTop = {
-  sharp: keyMarginsTopSharp,
-  flat: keyMarginsTopFlat,
+  sharp: sharpKeySignatureMarginsFromTop,
+  flat: flatKeySignatureMarginsFromTop,
 };
 interface StaffKeySignature extends BoxProps {
   type: "violin" | "bass";
@@ -50,10 +55,9 @@ function KeySignature({
   const allMarginsTop = keyMarginsTop[signature];
   if (!allMarginsTop) return null;
 
-  // const marginsTop = allMarginsTop.slice(0, numberOfSymbols);
-  const marginsTop = allMarginsTop;
+  const marginsTop = allMarginsTop.slice(0, numberOfSymbols);
 
-  const Sign = signature === "sharp" ? SharpSign : FlatSign;
+  const Sign = signature === "sharp" ? SharpAccidental : FlatAccidental;
   return (
     <Flex sx={{ ...sx, height: `${staffWithPaddingHeight}px` }} {...props}>
       {marginsTop.map((margin, index) => {

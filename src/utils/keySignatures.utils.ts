@@ -6,7 +6,7 @@ import {
   SignaturesForNotes,
 } from "../types";
 
-export function getSignaturesForNotesByKeyMusicKey({
+export function getSignaturesForNotesByKey({
   mode,
   note,
   signature,
@@ -141,7 +141,7 @@ export function getSignaturesForNotesByKeyMusicKey({
 }
 
 export function getKeySignatureByMusicKey(key: MusicKey): KeySignature | null {
-  const signaturesForNotes = getSignaturesForNotesByKeyMusicKey(key);
+  const signaturesForNotes = getSignaturesForNotesByKey(key);
   // no key signature
   const signatures = Object.values(signaturesForNotes).filter(
     (signature) => signature !== null

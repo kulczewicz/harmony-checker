@@ -77,4 +77,4 @@ export const TimeSignatureNumberSvg: TimeSignatureNumberSvg = {
   8: TimeSignatureEight,
 };
 
-export * from "./KeySignatureSvgs";
+export * from "./AccidentalSvgs";

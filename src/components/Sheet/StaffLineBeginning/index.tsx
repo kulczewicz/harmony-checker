@@ -9,7 +9,9 @@ export function StaffLineBeginningComponent() {
     <>
       <Accolade />
       <Keys />
-      <KeySignatures musicKey={{ mode: "major", note: "A", signature: null }} />
+      <KeySignatures
+        musicKey={{ mode: "major", note: "B", signature: "flat" }}
+      />
     </>
   );
 }

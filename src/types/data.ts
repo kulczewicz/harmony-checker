@@ -64,10 +64,28 @@ type NoteAccidental =
 
 export type Voice = "soprano" | "alto" | "tenor" | "bass";
 
-export type NotePitch = {
+export interface NotePitch {
   octave: NoteOctave;
   noteSymbol: NoteSymbol;
   accidental?: NoteAccidental;
+}
+
+export type KeySignatureNumberOfSymbols = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type KeySignatureSymbol = "flat" | "sharp";
+
+export interface KeySignature {
+  signature: KeySignatureSymbol;
+  numberOfSymbols: KeySignatureNumberOfSymbols;
+}
+
+export interface MusicKey {
+  mode: "major" | "minor";
+  note: NoteSymbol;
+  signature: KeySignatureSymbol | null;
+}
+
+export type SignaturesForNotes = {
+  [note in NoteSymbol]: KeySignatureSymbol | null;
 };
 
 interface BaseElement {

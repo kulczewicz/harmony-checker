@@ -85,7 +85,7 @@ export function getUpdatedBar(
       ...beatsAfter,
     ];
     // .sort((a, b) => a.beatPosition - b.beatPosition),
-    console.log(newBeats);
+
     return {
       barNumber,
       timeSignature,

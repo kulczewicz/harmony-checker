@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { Box, Button, Flex } from "theme-ui";
 import { useCursor } from "../../hooks";
 import { useKeyboard } from "../../hooks/useKeyboard";
+import { useMusicKey } from "../../hooks/useMusicKey";
 import { barsState, inputVoiceState } from "../../NoteInputState";
 
 import { Bar, Line, NoteOctave, NoteSymbol, Voice } from "../../types/data";
@@ -17,7 +18,7 @@ import { SheetStaffLines } from "./Staff";
 import {
   StaffLineBeginning,
   staffLineBeginningWidth,
-} from "./StaffLineBeginning";
+} from "./SheetLineBeginning";
 
 const defaultBar: Omit<Bar, "barNumber"> = {
   timeSignature: {
@@ -126,6 +127,12 @@ const defaultBars: Bar[] = new Array(10)
 const sheetElementId = "sheet";
 export function Sheet() {
   const bars = useRecoilValue(barsState);
+  const {
+    keySignatureSymbols,
+    musicKey,
+    signatureSymbolsForNotesInKey,
+    updateMusicKey,
+  } = useMusicKey();
   const [availableSheetWidth, setAvailableSheetWidth] = useState<number>(0);
   const [lines, setLines] = useState<Line[]>([[]]);
   const voice = useRecoilValue(inputVoiceState);
@@ -153,7 +160,7 @@ export function Sheet() {
 
       const barsWithTimeSignatureChanges = processTimeSignatureChanges(bars);
       const processedBars = barsWithTimeSignatureChanges.map((bar) =>
-        processBar(bar)
+        processBar(bar, signatureSymbolsForNotesInKey)
       );
 
       setLines(
@@ -163,7 +170,7 @@ export function Sheet() {
         })
       );
     },
-    [setLines]
+    [setLines, signatureSymbolsForNotesInKey]
   );
 
   useEffect(() => {
@@ -187,7 +194,7 @@ export function Sheet() {
           key={lineIndex}
           sx={{ position: "relative", width: "100%" }}
         >
-          <StaffLineBeginning />
+          <StaffLineBeginning keySignatureSymbols={keySignatureSymbols} />
           <SheetStaffLines />
           {line.map((bar) => {
             const barSelected = selectedBarNumber === bar.barNumber;

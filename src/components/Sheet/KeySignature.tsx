@@ -4,9 +4,13 @@ import {
   staffVerticalPadding,
   staffWithPaddingHeight,
 } from "../../constants";
-import { KeySignature, MusicKey, NotePitch, NoteSymbol } from "../../types";
+import {
+  KeySignatureSymbols,
+  MusicKey,
+  NotePitch,
+  NoteSymbol,
+} from "../../types";
 import { calculateNotePositionFromTop } from "../../utils";
-import { getKeySignatureByMusicKey } from "../../utils/keySignatures.utils";
 import { FlatAccidental, SharpAccidental } from "../Notation";
 
 const sharpKeySignatureNotesInOrder: NotePitch[] = [
@@ -42,44 +46,48 @@ const keyMarginsTop = {
   sharp: sharpKeySignatureMarginsFromTop,
   flat: flatKeySignatureMarginsFromTop,
 };
-interface StaffKeySignature extends BoxProps {
+interface StaffKeySignatureProps extends BoxProps {
   type: "violin" | "bass";
-  keySignature: KeySignature;
+  keySignatureSymbols: KeySignatureSymbols;
 }
-function KeySignature({
+function StaffKeySignature({
   type,
-  keySignature: { signature, numberOfSymbols },
+  keySignatureSymbols: { signatureSymbol, numberOfSymbols },
   sx,
   ...props
-}: StaffKeySignature) {
-  const allMarginsTop = keyMarginsTop[signature];
+}: StaffKeySignatureProps) {
+  const allMarginsTop = keyMarginsTop[signatureSymbol];
   if (!allMarginsTop) return null;
 
   const marginsTop = allMarginsTop.slice(0, numberOfSymbols);
 
-  const Sign = signature === "sharp" ? SharpAccidental : FlatAccidental;
+  const Accidental =
+    signatureSymbol === "sharp" ? SharpAccidental : FlatAccidental;
   return (
     <Flex sx={{ ...sx, height: `${staffWithPaddingHeight}px` }} {...props}>
       {marginsTop.map((margin, index) => {
         const marginTop =
           type === "violin" ? `${margin}px` : `${margin + noteHeadHight}px`;
-        return <Sign key={index} sx={{ marginTop }} />;
+        return <Accidental key={index} sx={{ marginTop }} />;
       })}
     </Flex>
   );
 }
 
-interface KeySignaturesProps {
-  musicKey: MusicKey;
+interface KeySignatureProps {
+  keySignatureSymbols: KeySignatureSymbols;
 }
-export function KeySignatures({ musicKey }: KeySignaturesProps) {
-  const keySignature = getKeySignatureByMusicKey(musicKey);
-  if (keySignature === null) return null;
-
+export function KeySignature({ keySignatureSymbols }: KeySignatureProps) {
   return (
     <Box>
-      <KeySignature type="violin" keySignature={keySignature} />
-      <KeySignature type="bass" keySignature={keySignature} />
+      <StaffKeySignature
+        type="violin"
+        keySignatureSymbols={keySignatureSymbols}
+      />
+      <StaffKeySignature
+        type="bass"
+        keySignatureSymbols={keySignatureSymbols}
+      />
     </Box>
   );
 }

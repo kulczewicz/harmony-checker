@@ -8,7 +8,7 @@ import {
   NoteSymbol,
   Voice,
 } from "../../../types";
-import { TimeSignatures } from "../TimeSignatures";
+import { TimeSignature } from "../TimeSignature";
 import { BeatBlock } from "./Beat";
 
 export interface PreviewInputData {
@@ -36,7 +36,7 @@ function BarBlockComponent({
   return (
     <>
       {timeSignatureChange ? (
-        <TimeSignatures timeSignature={timeSignature} />
+        <TimeSignature timeSignature={timeSignature} />
       ) : null}
       {beats.map((beat) => {
         const beatSelected = selectedBeatPosition === beat.beatPosition;

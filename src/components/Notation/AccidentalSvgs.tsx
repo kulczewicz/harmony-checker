@@ -1,12 +1,12 @@
 import { noteHeadHight } from "../../constants";
 import { SvgPropsThemeUi } from "../../types";
-const signatureSignWidth = 9;
+const signatureSymbolWidth = 9;
 
 export function FlatAccidental(props: SvgPropsThemeUi) {
   return (
     <svg
       height={`${noteHeadHight * 2}px`}
-      width={`${signatureSignWidth}px`}
+      width={`${signatureSymbolWidth}px`}
       viewBox="0 -438 226 614"
       {...props}
     >
@@ -24,7 +24,7 @@ export function NaturalAccidental(props: SvgPropsThemeUi) {
   return (
     <svg
       height={`${noteHeadHight * 2}px`}
-      width={`${signatureSignWidth}px`}
+      width={`${signatureSymbolWidth}px`}
       viewBox="0 -341 168 676"
       {...props}
     >
@@ -44,7 +44,7 @@ export function SharpAccidental({ sx, ...props }: SvgPropsThemeUi) {
     <svg
       sx={{
         height: `${noteHeadHight * 2}px`,
-        width: `${signatureSignWidth}px`,
+        width: `${signatureSymbolWidth}px`,
         ...sx,
       }}
       viewBox="0 -350 249 698"

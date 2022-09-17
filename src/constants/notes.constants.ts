@@ -1,4 +1,4 @@
-import { NotePitch, Voice } from "../types";
+import { LowestNoteOctave, NotePitch, NoteSymbol, Voice } from "../types";
 
 export const lowestNoteInViolinStaff: NotePitch = {
   noteSymbol: "F",
@@ -55,4 +55,20 @@ export const voiceRange: {
     lowest: { octave: 2, noteSymbol: "E" },
     highest: { octave: 4, noteSymbol: "E" },
   },
+};
+
+export const numberOfKeysInOctave = 12 as const;
+export const contraOctaveCNoteKeyNumber = 4 as const;
+export const contraOctaveNumber: LowestNoteOctave = 1;
+
+export const distanceFromCNoteToAnotherNoteInKeys: {
+  [noteSymbol in NoteSymbol]: number;
+} = {
+  C: 0,
+  D: 2,
+  E: 4,
+  F: 5,
+  G: 7,
+  A: 9,
+  B: 11,
 };

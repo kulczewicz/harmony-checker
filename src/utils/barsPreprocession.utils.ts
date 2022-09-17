@@ -15,9 +15,13 @@ import {
   BeatProcessed,
   NoteValue,
   NotationElement,
-  StaffElements,
+  SignatureSymbolsForNotesInKey,
 } from "../types";
-import { calculateStaffElementsHorizontalPositions } from "./calculateStaffElementsPositions.utils";
+import { getKeyNumberAndShowAccidentalForNote } from "./calculateNoteKeyNumber.utils";
+import {
+  CalculateHorizontalPositionsParams,
+  calculateStaffElementsHorizontalPositions,
+} from "./calculateStaffElementsPositions.utils";
 import { getWidthIncreaseFactorForBeat } from "./timeSignature.utils";
 
 export function processTimeSignatureChanges(
@@ -50,13 +54,13 @@ function calculateElementWidthWithRightPadding(element: NotationElement) {
   return noteHeadWidth + notePadding;
 }
 
-function calculateBeatStaffWidth(params: StaffElements) {
+function calculateBeatStaffWidth(params: CalculateHorizontalPositionsParams) {
   const { topElement, bottomElement } = params;
-  const topElementWidthWithRightPadding = topElement
-    ? calculateElementWidthWithRightPadding(topElement)
+  const topElementWidthWithRightPadding = topElement.element
+    ? calculateElementWidthWithRightPadding(topElement.element)
     : 0;
-  const bottomElementWidthWithRightPadding = bottomElement
-    ? calculateElementWidthWithRightPadding(bottomElement)
+  const bottomElementWidthWithRightPadding = bottomElement.element
+    ? calculateElementWidthWithRightPadding(bottomElement.element)
     : 0;
 
   const { topElementLeftOffset, bottomElementLeftOffset } =
@@ -74,48 +78,147 @@ function calculateBeatStaffWidth(params: StaffElements) {
   };
 }
 
-function preprocessBeat({
-  beatPosition,
-  soprano,
-  alto,
-  tenor,
-  bass,
-}: Beat): BeatProcessed {
+function preprocessBeat(
+  { beatPosition, soprano, alto, tenor, bass }: Beat,
+  signatureSymbolsForNotesInKey: SignatureSymbolsForNotesInKey
+): BeatProcessed {
+  const {
+    keyNumber: sopranoKeyNumber = undefined,
+    showAccidental: sopranoShowAccidental = false,
+  } =
+    soprano?.type === "note"
+      ? getKeyNumberAndShowAccidentalForNote(
+          soprano.pitch,
+          signatureSymbolsForNotesInKey
+        )
+      : {};
+  const {
+    keyNumber: altoKeyNumber = undefined,
+    showAccidental: altoShowAccidental = false,
+  } =
+    alto?.type === "note"
+      ? getKeyNumberAndShowAccidentalForNote(
+          alto.pitch,
+          signatureSymbolsForNotesInKey
+        )
+      : {};
+  const {
+    keyNumber: tenorKeyNumber = undefined,
+    showAccidental: tenorShowAccidental = false,
+  } =
+    tenor?.type === "note"
+      ? getKeyNumberAndShowAccidentalForNote(
+          tenor.pitch,
+          signatureSymbolsForNotesInKey
+        )
+      : {};
+  const {
+    keyNumber: bassKeyNumber = undefined,
+    showAccidental: bassShowAccidental = false,
+  } =
+    bass?.type === "note"
+      ? getKeyNumberAndShowAccidentalForNote(
+          bass.pitch,
+          signatureSymbolsForNotesInKey
+        )
+      : {};
+
   const {
     topElementLeftOffset: sopranoLeftOffset,
     bottomElementLeftOffset: altoLeftOffset,
     maxWidth: violinBeatStaffMaxWidth,
   } = calculateBeatStaffWidth({
-    topElement: soprano,
-    bottomElement: alto,
+    topElement: {
+      element: soprano,
+      showAccidental: sopranoShowAccidental,
+    },
+    bottomElement: {
+      element: alto,
+      showAccidental: altoShowAccidental,
+    },
   });
   const {
     topElementLeftOffset: tenorLeftOffset,
     bottomElementLeftOffset: bassLeftOffset,
     maxWidth: bassBeatStaffMaxWidth,
   } = calculateBeatStaffWidth({
-    topElement: tenor,
-    bottomElement: bass,
+    topElement: {
+      element: tenor,
+      showAccidental: tenorShowAccidental,
+    },
+    bottomElement: {
+      element: bass,
+      showAccidental: bassShowAccidental,
+    },
   });
+
+  const sopranoElement =
+    soprano?.type === "rest"
+      ? { ...soprano, leftOffset: sopranoLeftOffset }
+      : soprano?.type === "note"
+      ? {
+          ...soprano,
+          leftOffset: sopranoLeftOffset,
+          keyNumber: sopranoKeyNumber!,
+          showAccidental: sopranoShowAccidental,
+        }
+      : undefined;
+
+  const altoElement =
+    alto?.type === "rest"
+      ? { ...alto, leftOffset: altoLeftOffset }
+      : alto?.type === "note"
+      ? {
+          ...alto,
+          leftOffset: altoLeftOffset,
+          keyNumber: altoKeyNumber!,
+          showAccidental: altoShowAccidental,
+        }
+      : undefined;
+
+  const tenorElement =
+    tenor?.type === "rest"
+      ? { ...tenor, leftOffset: tenorLeftOffset }
+      : tenor?.type === "note"
+      ? {
+          ...tenor,
+          leftOffset: tenorLeftOffset,
+          keyNumber: tenorKeyNumber!,
+          showAccidental: tenorShowAccidental,
+        }
+      : undefined;
+
+  const bassElement =
+    bass?.type === "rest"
+      ? { ...bass, leftOffset: bassLeftOffset }
+      : bass?.type === "note"
+      ? {
+          ...bass,
+          leftOffset: bassLeftOffset,
+          keyNumber: bassKeyNumber!,
+          showAccidental: bassShowAccidental,
+        }
+      : undefined;
 
   return {
     beatPosition,
     width: Math.max(violinBeatStaffMaxWidth, bassBeatStaffMaxWidth),
-    ...(soprano
-      ? { soprano: { ...soprano, leftOffset: sopranoLeftOffset } }
-      : {}),
-    ...(alto ? { alto: { ...alto, leftOffset: altoLeftOffset } } : {}),
-    ...(tenor ? { tenor: { ...tenor, leftOffset: tenorLeftOffset } } : {}),
-    ...(bass ? { bass: { ...bass, leftOffset: bassLeftOffset } } : {}),
+    soprano: sopranoElement,
+    alto: altoElement,
+    tenor: tenorElement,
+    bass: bassElement,
   };
 }
 
-export function processBar({
-  barNumber,
-  beats,
-  timeSignature,
-  timeSignatureChange,
-}: BarWithTimeSignatureChange): BarProcessed {
+export function processBar(
+  {
+    barNumber,
+    beats,
+    timeSignature,
+    timeSignatureChange,
+  }: BarWithTimeSignatureChange,
+  signatureSymbolsForNotesInKey: SignatureSymbolsForNotesInKey
+): BarProcessed {
   let barWidth = 0;
   if (timeSignatureChange) {
     barWidth += timeSignatureWidth;
@@ -123,7 +226,7 @@ export function processBar({
 
   const processedBeats: BeatProcessed[] = [];
   for (const beat of beats) {
-    const processedBeat = preprocessBeat(beat);
+    const processedBeat = preprocessBeat(beat, signatureSymbolsForNotesInKey);
     processedBeats.push(processedBeat);
     barWidth += processedBeat.width;
   }

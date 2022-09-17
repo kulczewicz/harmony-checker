@@ -37,7 +37,7 @@ function TimeSignatureStaff({
 interface TimeSignatureProps extends BoxProps {
   timeSignature: TimeSignature;
 }
-export function TimeSignatures({
+export function TimeSignature({
   timeSignature,
   sx,
   ...props

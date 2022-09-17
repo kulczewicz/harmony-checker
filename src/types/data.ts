@@ -17,7 +17,8 @@ export enum NoteSymbolFromTopEnum {
   D,
   C,
 }
-export type NoteOctave = 1 | 2 | 3 | 4 | 5 | 6; // others are out of the voice range
+export type LowestNoteOctave = 1;
+export type NoteOctave = LowestNoteOctave | 2 | 3 | 4 | 5 | 6; // others are out of the voice range
 // type NotePitch = `${NoteSymbol}${Octave}`;
 
 /* NoteDuration in thirty-second notes - we can get only following values
@@ -55,12 +56,7 @@ export interface ElementDuration {
   dot?: boolean;
 }
 
-type NoteAccidental =
-  | "natural"
-  | "flat"
-  | "sharp"
-  | "double-flat"
-  | "double-sharp";
+type NoteAccidental = "natural" | "flat" | "sharp";
 
 export type Voice = "soprano" | "alto" | "tenor" | "bass";
 
@@ -73,8 +69,8 @@ export interface NotePitch {
 export type KeySignatureNumberOfSymbols = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type KeySignatureSymbol = "flat" | "sharp";
 
-export interface KeySignature {
-  signature: KeySignatureSymbol;
+export interface KeySignatureSymbols {
+  signatureSymbol: KeySignatureSymbol;
   numberOfSymbols: KeySignatureNumberOfSymbols;
 }
 
@@ -84,7 +80,7 @@ export interface MusicKey {
   signature: KeySignatureSymbol | null;
 }
 
-export type SignaturesForNotes = {
+export type SignatureSymbolsForNotesInKey = {
   [note in NoteSymbol]: KeySignatureSymbol | null;
 };
 
@@ -102,7 +98,11 @@ export interface RestElement extends BaseElement {
 }
 
 export type NotationElement = NoteElement | RestElement;
-export type NotationElementProcessed = NotationElement & {
+export interface NoteElementProcessed extends NoteElement {
+  keyNumber: number;
+  showAccidental: boolean;
+}
+export type NotationElementProcessed = (NoteElementProcessed | RestElement) & {
   leftOffset: number;
 };
 
@@ -204,7 +204,7 @@ export interface BarProcessed extends BarWithTimeSignatureChange {
   beats: BeatProcessed[];
 }
 
-export type StaffElements = {
-  topElement?: NotationElement;
-  bottomElement?: NotationElement;
-};
+export interface StaffElements {
+  topElement?: NotationElementProcessed;
+  bottomElement?: NotationElementProcessed;
+}

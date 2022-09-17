@@ -4,7 +4,7 @@ import {
   notePadding,
   staffWithPaddingHeight,
 } from "../constants";
-import { NoteSymbolEnum, StaffElements } from "../types";
+import { NotationElement, NoteSymbolEnum, StaffElements } from "../types";
 import {
   calculateNotePositionFromBottom,
   calculateNotePositionFromTop,
@@ -62,33 +62,55 @@ export function calculateStaffElementsVerticalPositions({
   return { topElementFromBottom, bottomElementFromTop };
 }
 
+export interface CalculateHorizontalPositionsParams {
+  topElement: {
+    element?: NotationElement;
+    showAccidental?: boolean;
+  };
+  bottomElement: {
+    element?: NotationElement;
+    showAccidental?: boolean;
+  };
+}
 export function calculateStaffElementsHorizontalPositions({
   topElement,
   bottomElement,
-}: StaffElements) {
+}: CalculateHorizontalPositionsParams) {
   const offsetFromLeft = notePadding;
   const result = {
     topElementLeftOffset: offsetFromLeft,
     bottomElementLeftOffset: offsetFromLeft,
   };
   if (
-    !(topElement?.type === "note" && bottomElement?.type === "note") ||
-    bottomElement.pitch.octave < topElement.pitch.octave
+    !(
+      topElement?.element?.type === "note" &&
+      bottomElement?.element?.type === "note"
+    ) ||
+    bottomElement.element.pitch.octave < topElement.element.pitch.octave
   ) {
     return result;
   }
 
+  const {
+    element: { pitch: topPitch },
+    showAccidental: showTopAccidental,
+  } = topElement;
+  const {
+    element: { pitch: bottomPitch },
+    showAccidental: showBottomAccidental,
+  } = bottomElement;
+
   const topBottomDifference =
-    NoteSymbolEnum[topElement.pitch.noteSymbol] -
-    NoteSymbolEnum[bottomElement.pitch.noteSymbol];
+    NoteSymbolEnum[topPitch.noteSymbol] -
+    NoteSymbolEnum[bottomPitch.noteSymbol];
   const notesAreNextToEachOtherInSameOctave =
-    bottomElement.pitch.octave === topElement.pitch.octave &&
+    bottomPitch.octave === topPitch.octave &&
     (topBottomDifference === 1 || topBottomDifference === 0);
 
   const notesAreNextToEachOtherInConsecutiveOctaves =
-    topElement.pitch.octave === bottomElement.pitch.octave + 1 &&
-    topElement.pitch.noteSymbol === "B" &&
-    bottomElement.pitch.noteSymbol === "C";
+    topPitch.octave === bottomPitch.octave + 1 &&
+    topPitch.noteSymbol === "B" &&
+    bottomPitch.noteSymbol === "C";
 
   if (
     notesAreNextToEachOtherInSameOctave ||
@@ -99,9 +121,8 @@ export function calculateStaffElementsHorizontalPositions({
 
   // just in case we will allow voice crossing in the future
   if (
-    (bottomElement.pitch.octave === topElement.pitch.octave &&
-      topBottomDifference < 0) ||
-    topElement.pitch.octave < bottomElement.pitch.octave
+    (bottomPitch.octave === topPitch.octave && topBottomDifference < 0) ||
+    topPitch.octave < bottomPitch.octave
   ) {
     result.topElementLeftOffset = offsetFromLeft + 13;
   }

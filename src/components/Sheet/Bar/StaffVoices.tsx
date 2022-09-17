@@ -3,7 +3,12 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { notePadding } from "../../../constants";
 import { useUpdateBars } from "../../../hooks";
 import { inputVoiceState } from "../../../NoteInputState";
-import { NoteElement, StaffElements, Voice } from "../../../types";
+import {
+  NotationElementProcessed,
+  NoteElement,
+  StaffElements,
+  Voice,
+} from "../../../types";
 import {
   calculateNotePositionFromBottom,
   calculateNotePositionFromTop,
@@ -52,12 +57,14 @@ function PreviewElement({
   );
 }
 
-interface StaffVoicesProps extends StaffElements {
+interface StaffVoicesProps {
   type: "violin" | "bass";
   barNumber: number;
   beatPosition: number;
   selectedVoice: Voice | null;
   previewElement: NoteElement | null;
+  topElement: NotationElementProcessed | undefined;
+  bottomElement: NotationElementProcessed | undefined;
 }
 function StaffVoicesComponent({
   type,
@@ -71,7 +78,22 @@ function StaffVoicesComponent({
   const { topElementFromBottom, bottomElementFromTop } =
     calculateStaffElementsVerticalPositions(staffElements);
   const { topElementLeftOffset, bottomElementLeftOffset } =
-    calculateStaffElementsHorizontalPositions(staffElements);
+    calculateStaffElementsHorizontalPositions({
+      topElement: {
+        element: staffElements.topElement,
+        showAccidental:
+          staffElements.topElement?.type === "note"
+            ? staffElements.topElement?.showAccidental
+            : undefined,
+      },
+      bottomElement: {
+        element: staffElements.bottomElement,
+        showAccidental:
+          staffElements.bottomElement?.type === "note"
+            ? staffElements.bottomElement?.showAccidental
+            : undefined,
+      },
+    });
   const { topElement, bottomElement } = staffElements;
 
   const topElementSelected =

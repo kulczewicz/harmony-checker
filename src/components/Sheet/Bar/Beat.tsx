@@ -10,7 +10,7 @@ import {
   selectedBeatPositionState,
 } from "../../../NoteInputState";
 import type {
-  Beat,
+  BeatProcessed,
   NotationElement,
   NoteElement,
   NoteOctave,
@@ -24,7 +24,7 @@ import { StaffVoices } from "./StaffVoices";
 export type BeatInputElement = NotationElement | null;
 interface BeatProps extends BoxProps {
   barNumber: number;
-  beat: Beat;
+  beat: BeatProcessed;
   selectedVoice: Voice | null;
   previewVoice: Voice | null;
   previewNoteSymbol: NoteSymbol | null;

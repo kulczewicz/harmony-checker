@@ -1,17 +1,17 @@
 import {
-  KeySignature,
+  KeySignatureSymbols,
   KeySignatureNumberOfSymbols,
   KeySignatureSymbol,
   MusicKey,
-  SignaturesForNotes,
+  SignatureSymbolsForNotesInKey,
 } from "../types";
 
-export function getSignaturesForNotesByKey({
+export function getSignatureSymbolsForNotesInKey({
   mode,
   note,
   signature,
 }: MusicKey) {
-  const signaturesForNotes: SignaturesForNotes = {
+  const signatureSymbolsForNotesInKey: SignatureSymbolsForNotesInKey = {
     C: null,
     D: null,
     E: null,
@@ -27,133 +27,134 @@ export function getSignaturesForNotesByKey({
       (mode === "minor" && note === "A")) &&
     signature === null
   ) {
-    return signaturesForNotes;
+    return signatureSymbolsForNotesInKey;
   }
 
-  const sharpSignaturesForNotes = { ...signaturesForNotes };
+  const sharpSignatureSymbolsForNotes = { ...signatureSymbolsForNotesInKey };
 
-  sharpSignaturesForNotes.F = "sharp";
+  sharpSignatureSymbolsForNotes.F = "sharp";
   if (
     ((mode === "major" && note === "G") ||
       (mode === "minor" && note === "E")) &&
     signature === null
   ) {
-    return sharpSignaturesForNotes;
+    return sharpSignatureSymbolsForNotes;
   }
-  sharpSignaturesForNotes.C = "sharp";
+  sharpSignatureSymbolsForNotes.C = "sharp";
   if (
     ((mode === "major" && note === "D") ||
       (mode === "minor" && note === "B")) &&
     signature === null
   ) {
-    return sharpSignaturesForNotes;
+    return sharpSignatureSymbolsForNotes;
   }
-  sharpSignaturesForNotes.G = "sharp";
+  sharpSignatureSymbolsForNotes.G = "sharp";
   if (
     (mode === "major" && note === "A" && signature === null) ||
     (mode === "minor" && note === "F" && signature === "sharp")
   ) {
-    return sharpSignaturesForNotes;
+    return sharpSignatureSymbolsForNotes;
   }
-  sharpSignaturesForNotes.D = "sharp";
+  sharpSignatureSymbolsForNotes.D = "sharp";
   if (
     (mode === "major" && note === "E" && signature === null) ||
     (mode === "minor" && note === "C" && signature === "sharp")
   ) {
-    return sharpSignaturesForNotes;
+    return sharpSignatureSymbolsForNotes;
   }
-  sharpSignaturesForNotes.A = "sharp";
+  sharpSignatureSymbolsForNotes.A = "sharp";
   if (
     (mode === "major" && note === "B" && signature === null) ||
     (mode === "minor" && note === "G" && signature === "sharp")
   ) {
-    return sharpSignaturesForNotes;
+    return sharpSignatureSymbolsForNotes;
   }
-  sharpSignaturesForNotes.E = "sharp";
+  sharpSignatureSymbolsForNotes.E = "sharp";
   if (
     (mode === "major" && note === "F" && signature === "sharp") ||
     (mode === "minor" && note === "D" && signature === "sharp")
   ) {
-    return sharpSignaturesForNotes;
+    return sharpSignatureSymbolsForNotes;
   }
-  sharpSignaturesForNotes.B = "sharp";
+  sharpSignatureSymbolsForNotes.B = "sharp";
   if (
     (mode === "major" && note === "C" && signature === "sharp") ||
     (mode === "minor" && note === "A" && signature === "sharp")
   ) {
-    return sharpSignaturesForNotes;
+    return sharpSignatureSymbolsForNotes;
   }
 
-  const flatSignaturesForNotes = { ...signaturesForNotes };
+  const flatSignatureSymbolsForNotes = { ...signatureSymbolsForNotesInKey };
 
-  flatSignaturesForNotes.B = "flat";
+  flatSignatureSymbolsForNotes.B = "flat";
   if (
     ((mode === "major" && note === "F") ||
       (mode === "minor" && note === "D")) &&
     signature === null
   ) {
-    return flatSignaturesForNotes;
+    return flatSignatureSymbolsForNotes;
   }
-  flatSignaturesForNotes.E = "flat";
+  flatSignatureSymbolsForNotes.E = "flat";
   if (
     (mode === "major" && note === "B" && signature === "flat") ||
     (mode === "minor" && note === "G" && signature === null)
   ) {
-    return flatSignaturesForNotes;
+    return flatSignatureSymbolsForNotes;
   }
-  flatSignaturesForNotes.A = "flat";
+  flatSignatureSymbolsForNotes.A = "flat";
   if (
     (mode === "major" && note === "E" && signature === "flat") ||
     (mode === "minor" && note === "C" && signature === null)
   ) {
-    return flatSignaturesForNotes;
+    return flatSignatureSymbolsForNotes;
   }
-  flatSignaturesForNotes.D = "flat";
+  flatSignatureSymbolsForNotes.D = "flat";
   if (
     (mode === "major" && note === "A" && signature === "flat") ||
     (mode === "minor" && note === "F" && signature === null)
   ) {
-    return flatSignaturesForNotes;
+    return flatSignatureSymbolsForNotes;
   }
-  flatSignaturesForNotes.G = "flat";
+  flatSignatureSymbolsForNotes.G = "flat";
   if (
     (mode === "major" && note === "D" && signature === "flat") ||
     (mode === "minor" && note === "B" && signature === "flat")
   ) {
-    return flatSignaturesForNotes;
+    return flatSignatureSymbolsForNotes;
   }
-  flatSignaturesForNotes.C = "flat";
+  flatSignatureSymbolsForNotes.C = "flat";
   if (
     (mode === "major" && note === "G" && signature === "flat") ||
     (mode === "minor" && note === "E" && signature === "flat")
   ) {
-    return flatSignaturesForNotes;
+    return flatSignatureSymbolsForNotes;
   }
-  flatSignaturesForNotes.F = "flat";
+  flatSignatureSymbolsForNotes.F = "flat";
   if (
     (mode === "major" && note === "C" && signature === "flat") ||
     (mode === "minor" && note === "A" && signature === "flat")
   ) {
-    return flatSignaturesForNotes;
+    return flatSignatureSymbolsForNotes;
   }
 
-  return signaturesForNotes;
+  return signatureSymbolsForNotesInKey;
 }
 
-export function getKeySignatureByMusicKey(key: MusicKey): KeySignature | null {
-  const signaturesForNotes = getSignaturesForNotesByKey(key);
-  // no key signature
-  const signatures = Object.values(signaturesForNotes).filter(
+export function getKeySignatureSymbols(
+  signatureSymbolsForNotes: SignatureSymbolsForNotesInKey
+): KeySignatureSymbols | null {
+  const signatureSymbols = Object.values(signatureSymbolsForNotes).filter(
     (signature) => signature !== null
   );
-  if (signatures.length === 0) {
+
+  if (signatureSymbols.length === 0) {
     return null;
   }
 
-  const [signature] = signatures;
+  const [signatureSymbol] = signatureSymbols;
 
   return {
-    signature: signature as KeySignatureSymbol,
-    numberOfSymbols: signatures.length as KeySignatureNumberOfSymbols,
+    signatureSymbol: signatureSymbol as KeySignatureSymbol,
+    numberOfSymbols: signatureSymbols.length as KeySignatureNumberOfSymbols,
   };
 }

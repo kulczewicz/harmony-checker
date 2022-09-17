@@ -56,14 +56,14 @@ export interface ElementDuration {
   dot?: boolean;
 }
 
-type NoteAccidental = "natural" | "flat" | "sharp";
+export type NoteAccidental = "natural" | "flat" | "sharp";
 
 export type Voice = "soprano" | "alto" | "tenor" | "bass";
 
 export interface NotePitch {
   octave: NoteOctave;
   noteSymbol: NoteSymbol;
-  accidental?: NoteAccidental;
+  accidental?: NoteAccidental | null;
 }
 
 export type KeySignatureNumberOfSymbols = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -96,15 +96,24 @@ export interface NoteElement extends BaseElement {
 export interface RestElement extends BaseElement {
   type: "rest";
 }
-
 export type NotationElement = NoteElement | RestElement;
-export interface NoteElementProcessed extends NoteElement {
+
+interface BaseElementProcessed extends BaseElement {
+  leftOffset: number;
+}
+export interface NoteElementProcessed extends BaseElementProcessed {
+  type: "note";
+  pitch: NotePitch;
   keyNumber: number;
   showAccidental: boolean;
+  accidentalLeftOffset?: number;
 }
-export type NotationElementProcessed = (NoteElementProcessed | RestElement) & {
-  leftOffset: number;
-};
+export interface RestElementProcessed extends BaseElementProcessed {
+  type: "rest";
+}
+export type NotationElementProcessed =
+  | NoteElementProcessed
+  | RestElementProcessed;
 
 export type NoteSopranoPitch =
   | {

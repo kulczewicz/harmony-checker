@@ -1,36 +1,44 @@
 import { memo } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { notePadding } from "../../../constants";
 import { useUpdateBars } from "../../../hooks";
 import { inputVoiceState } from "../../../NoteInputState";
 import {
   NotationElementProcessed,
+  NoteAccidental,
   NoteElement,
-  StaffElements,
+  NoteElementProcessed,
   Voice,
 } from "../../../types";
 import {
+  BeatStaffPositions,
   calculateNotePositionFromBottom,
   calculateNotePositionFromTop,
-  calculateStaffElementsHorizontalPositions,
   calculateStaffElementsVerticalPositions,
 } from "../../../utils";
+import { accidentalWidth } from "../../Notation";
 import { StaffBox } from "../Staff";
-import { StaffElement } from "./StaffElement";
+import { StaffElementWithAccidental } from "./StaffElement";
 import { StaffElementPosition } from "./types";
 
 function calculatePreviewElementPosition(
-  element: NoteElement
+  element: NoteElement,
+  showAccidental: boolean
 ): StaffElementPosition {
-  const offsetFromLeft = notePadding;
+  const accidentalOffsetFromLeft = showAccidental ? notePadding : undefined;
+  const offsetFromLeft = showAccidental
+    ? notePadding + accidentalWidth
+    : notePadding;
   return element.voice === "soprano" || element.voice === "tenor"
     ? {
         offsetFromLeft,
+        accidentalOffsetFromLeft,
         direction: "up",
         offsetFromBottom: calculateNotePositionFromBottom(element),
       }
     : {
         offsetFromLeft,
+        accidentalOffsetFromLeft,
         direction: "down",
         offsetFromTop: calculateNotePositionFromTop(element),
       };
@@ -39,20 +47,23 @@ interface PreviewElementProps {
   barNumber: number;
   beatPosition: number;
   element: NoteElement;
+  showAccidental: boolean;
 }
 function PreviewElement({
   barNumber,
   beatPosition,
   element,
+  showAccidental,
 }: PreviewElementProps) {
-  const position = calculatePreviewElementPosition(element);
+  const position = calculatePreviewElementPosition(element, showAccidental);
   const { updateBars } = useUpdateBars();
   return (
-    <StaffElement
-      element={element}
+    <StaffElementWithAccidental
       position={position}
-      sx={{ fill: "green" }}
-      onClick={() => updateBars({ barNumber, beatPosition, element })}
+      element={element}
+      isSelected={true}
+      setSelected={() => updateBars({ barNumber, beatPosition, element })}
+      showAccidental={showAccidental}
     />
   );
 }
@@ -63,6 +74,7 @@ interface StaffVoicesProps {
   beatPosition: number;
   selectedVoice: Voice | null;
   previewElement: NoteElement | null;
+  showPreviewAccidental: boolean;
   topElement: NotationElementProcessed | undefined;
   bottomElement: NotationElementProcessed | undefined;
 }
@@ -72,28 +84,12 @@ function StaffVoicesComponent({
   beatPosition,
   selectedVoice,
   previewElement,
+  showPreviewAccidental,
   ...staffElements
 }: StaffVoicesProps) {
   const setSelectedVoice = useSetRecoilState(inputVoiceState);
   const { topElementFromBottom, bottomElementFromTop } =
     calculateStaffElementsVerticalPositions(staffElements);
-  const { topElementLeftOffset, bottomElementLeftOffset } =
-    calculateStaffElementsHorizontalPositions({
-      topElement: {
-        element: staffElements.topElement,
-        showAccidental:
-          staffElements.topElement?.type === "note"
-            ? staffElements.topElement?.showAccidental
-            : undefined,
-      },
-      bottomElement: {
-        element: staffElements.bottomElement,
-        showAccidental:
-          staffElements.bottomElement?.type === "note"
-            ? staffElements.bottomElement?.showAccidental
-            : undefined,
-      },
-    });
   const { topElement, bottomElement } = staffElements;
 
   const topElementSelected =
@@ -106,31 +102,44 @@ function StaffVoicesComponent({
   return (
     <StaffBox sx={{ width: "100%" }}>
       {topElement ? (
-        <StaffElement
+        <StaffElementWithAccidental
           position={{
             direction: "up",
             offsetFromBottom: topElementFromBottom,
-            offsetFromLeft: topElementLeftOffset,
+            offsetFromLeft: topElement.leftOffset,
+            accidentalOffsetFromLeft:
+              (topElement.type === "note" && topElement.accidentalLeftOffset) ||
+              undefined,
           }}
           element={topElement}
-          onClick={() =>
+          showAccidental={
+            topElement.type === "note" && topElement.showAccidental
+          }
+          isSelected={topElementSelected}
+          setSelected={() =>
             setSelectedVoice(type === "violin" ? "soprano" : "tenor")
           }
-          sx={{
-            fill: topElementSelected ? "blue" : "black",
-          }}
         />
       ) : null}
       {bottomElement ? (
-        <StaffElement
+        <StaffElementWithAccidental
           position={{
             direction: "down",
             offsetFromTop: bottomElementFromTop,
-            offsetFromLeft: bottomElementLeftOffset,
+            offsetFromLeft: bottomElement.leftOffset,
+            accidentalOffsetFromLeft:
+              (bottomElement.type === "note" &&
+                bottomElement.accidentalLeftOffset) ||
+              undefined,
           }}
           element={bottomElement}
-          onClick={() => setSelectedVoice(type === "violin" ? "alto" : "bass")}
-          sx={{ fill: bottomElementSelected ? "blue" : "black" }}
+          showAccidental={
+            bottomElement.type === "note" && bottomElement.showAccidental
+          }
+          isSelected={bottomElementSelected}
+          setSelected={() =>
+            setSelectedVoice(type === "violin" ? "alto" : "bass")
+          }
         />
       ) : null}
       {previewElement ? (
@@ -138,6 +147,7 @@ function StaffVoicesComponent({
           barNumber={barNumber}
           beatPosition={beatPosition}
           element={previewElement}
+          showAccidental={showPreviewAccidental}
         />
       ) : null}
     </StaffBox>

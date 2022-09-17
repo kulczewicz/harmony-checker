@@ -1,5 +1,14 @@
 import { SvgPropsThemeUi } from "../../types";
-import { NoteValue, TimeSignatureNumber } from "../../types/data";
+import {
+  NoteAccidental,
+  NoteValue,
+  TimeSignatureNumber,
+} from "../../types/data";
+import {
+  FlatAccidental,
+  NaturalAccidental,
+  SharpAccidental,
+} from "./AccidentalSvgs";
 import {
   EighthsNoteDown,
   EighthsNoteUp,
@@ -75,6 +84,14 @@ export const TimeSignatureNumberSvg: TimeSignatureNumberSvg = {
   6: TimeSignatureSix,
   7: TimeSignatureSeven,
   8: TimeSignatureEight,
+};
+
+export const AccidentalSvg: {
+  [accidental in NoteAccidental]: (props: SvgPropsThemeUi) => JSX.Element;
+} = {
+  flat: FlatAccidental,
+  sharp: SharpAccidental,
+  natural: NaturalAccidental,
 };
 
 export * from "./AccidentalSvgs";

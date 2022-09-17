@@ -84,7 +84,6 @@ export function getUpdatedBar(
       ...missingBeats,
       ...beatsAfter,
     ];
-    // .sort((a, b) => a.beatPosition - b.beatPosition),
 
     return {
       barNumber,

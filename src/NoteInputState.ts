@@ -9,13 +9,14 @@ import {
   Voice,
   NoteSymbol,
   NoteOctave,
+  NoteAccidental,
 } from "./types";
 
-export const inputElementState = atom<{
+export const inputElementTypeState = atom<{
   type: NotationElementType;
   noteValue: NoteValue;
 }>({
-  key: "inputElement",
+  key: "inputElementType",
   default: { type: "note", noteValue: "quarter" },
 });
 
@@ -29,8 +30,8 @@ export const inputVoiceState = atom<Voice>({
   default: "soprano",
 });
 
-export const selectedElementState = atom<SelectedElement | null>({
-  key: "selectedElement",
+export const selectedAccidentalState = atom<NoteAccidental | null>({
+  key: "selectedAccidental",
   default: null,
 });
 

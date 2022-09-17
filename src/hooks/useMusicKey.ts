@@ -12,7 +12,7 @@ import {
 export function useMusicKey() {
   const [musicKey, setMusicKey] = useState<MusicKey>({
     mode: "major",
-    note: "D",
+    note: "C",
     signature: null,
   });
   const [keySignatureSymbols, setKeySignatureSymbols] =

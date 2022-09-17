@@ -1,4 +1,8 @@
-import { consecutiveNotesDistance, octaveNotesDistance } from "../constants";
+import {
+  consecutiveNotesDistance,
+  noteHeadHight,
+  octaveNotesDistance,
+} from "../constants";
 import {
   highestNoteInBassStaff,
   highestNoteInViolinStaff,
@@ -74,3 +78,7 @@ export function calculateNotePositionFromTop({
 
   return highestOctaveOffset + octaveOffset + noteOffSet;
 }
+
+export const adjustSharpPosition = (position: number) =>
+  position - noteHeadHight / 2;
+export const adjustFlatPositionFromTop = (position: number) => position - 11;

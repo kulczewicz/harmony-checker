@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   barsState,
+  inputElementTypeState,
   inputVoiceState,
   previewNoteOctaveState,
   previewNoteSymbolState,
+  selectedAccidentalState,
   selectedBarNumberState,
   selectedBeatPositionState,
 } from "../NoteInputState";
@@ -20,6 +22,8 @@ export function useKeyboard() {
   const [selectedBeatPosition, setSelectedBeatPosition] = useRecoilState(
     selectedBeatPositionState
   );
+  const setInputElementType = useSetRecoilState(inputElementTypeState);
+  const setSelectedAccidental = useSetRecoilState(selectedAccidentalState);
   const setPreviewNoteSymbol = useSetRecoilState(previewNoteSymbolState);
   const setPreviewNoteOctave = useSetRecoilState(previewNoteOctaveState);
   const voice = useRecoilValue(inputVoiceState);
@@ -33,6 +37,19 @@ export function useKeyboard() {
       voice,
     });
     if (!selectedElement) return;
+
+    setInputElementType({
+      type: selectedElement?.element.type,
+      noteValue: selectedElement?.element.duration.value,
+    });
+    if (
+      selectedElement?.element.type === "note" &&
+      selectedElement?.element.pitch.accidental
+    ) {
+      setSelectedAccidental(selectedElement?.element.pitch.accidental ?? null);
+    } else {
+      setSelectedAccidental(null);
+    }
 
     const onKeyDown = onKeyDownAction({
       bars,
@@ -57,5 +74,7 @@ export function useKeyboard() {
     updateBars,
     setPreviewNoteSymbol,
     setPreviewNoteOctave,
+    setInputElementType,
+    setSelectedAccidental,
   ]);
 }

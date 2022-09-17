@@ -1,13 +1,26 @@
 import { useRecoilState } from "recoil";
-import { Flex } from "theme-ui";
-import { inputDotOnState, inputElementState } from "../../NoteInputState";
-import { NoteValue } from "../../types";
-import { ElementNoteSvgUp, ElementRestSvg } from "../Notation";
+import { Flex, ThemeUIStyleObject } from "theme-ui";
+import {
+  inputDotOnState,
+  inputElementTypeState,
+  selectedAccidentalState,
+} from "../../NoteInputState";
+import { NoteAccidental, NoteValue } from "../../types";
+import { AccidentalSvg, ElementNoteSvgUp, ElementRestSvg } from "../Notation";
 import { InputPanelButton } from "./InputPanelButton";
 
+const inputButtonStyle: ThemeUIStyleObject = {
+  mr: 2,
+  mt: 2,
+};
 export function InputNotationElements() {
-  const [inputDuration, setInputDuration] = useRecoilState(inputElementState);
+  const [inputDuration, setInputDuration] = useRecoilState(
+    inputElementTypeState
+  );
   const [inputDotOn, setInputDotOn] = useRecoilState(inputDotOnState);
+  const [selectedAccidental, setSelectedAccidental] = useRecoilState(
+    selectedAccidentalState
+  );
 
   return (
     <Flex>
@@ -15,8 +28,10 @@ export function InputNotationElements() {
         sx={{
           border: "1px solid",
           borderColor: "orange",
-          p: 2,
+          pl: 2,
+          pb: 2,
           borderRadius: "4px",
+          flexWrap: "wrap",
         }}
       >
         {Object.entries(ElementNoteSvgUp).map(([duration, Note]) => (
@@ -26,7 +41,7 @@ export function InputNotationElements() {
               inputDuration.noteValue === duration &&
               inputDuration.type === "note"
             }
-            sx={{ mr: 2 }}
+            sx={inputButtonStyle}
             onClick={() => {
               setInputDuration({
                 noteValue: duration as NoteValue,
@@ -44,7 +59,7 @@ export function InputNotationElements() {
               inputDuration.noteValue === duration &&
               inputDuration.type === "rest"
             }
-            sx={{ mr: 2 }}
+            sx={inputButtonStyle}
             onClick={() =>
               setInputDuration({
                 noteValue: duration as NoteValue,
@@ -58,9 +73,26 @@ export function InputNotationElements() {
         <InputPanelButton
           isActive={inputDotOn}
           onClick={() => setInputDotOn((currentDotOn) => !currentDotOn)}
+          sx={inputButtonStyle}
         >
           .
         </InputPanelButton>
+        {Object.entries(AccidentalSvg).map(([accidental, Accidental]) => (
+          <InputPanelButton
+            key={accidental}
+            isActive={selectedAccidental === accidental}
+            sx={inputButtonStyle}
+            onClick={() => {
+              if (selectedAccidental === accidental) {
+                setSelectedAccidental(null);
+              } else {
+                setSelectedAccidental(accidental as NoteAccidental);
+              }
+            }}
+          >
+            <Accidental height="22px" />
+          </InputPanelButton>
+        ))}
       </Flex>
       <InputPanelButton
         sx={{ ml: 2 }}

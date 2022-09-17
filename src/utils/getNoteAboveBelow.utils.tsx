@@ -1,4 +1,4 @@
-import { voiceRange } from "../constants/notes.constants";
+import { voiceRange } from "../constants";
 import { NoteElement, NoteOctave, NoteSymbol, NoteSymbolEnum } from "../types";
 
 export function getNoteAbove({

@@ -1,28 +1,15 @@
-import { restWidths } from "../components/Notation/Rests";
-import {
-  noteHeadWidth,
-  noteOffset,
-  notePadding,
-  noteTailWidth,
-  timeSignatureWidth,
-  widthIncreaseFactorByNoteValue,
-} from "../constants";
+import { timeSignatureWidth } from "../constants";
 import {
   Bar,
   BarProcessed,
   BarWithTimeSignatureChange,
   Beat,
   BeatProcessed,
-  NoteValue,
-  NotationElement,
+  NotationElementProcessed,
   SignatureSymbolsForNotesInKey,
 } from "../types";
 import { getKeyNumberAndShowAccidentalForNote } from "./calculateNoteKeyNumber.utils";
-import {
-  CalculateHorizontalPositionsParams,
-  calculateStaffElementsHorizontalPositions,
-} from "./calculateStaffElementsPositions.utils";
-import { getWidthIncreaseFactorForBeat } from "./timeSignature.utils";
+import { calculateBeatStaffPositions } from "./calculateStaffElementsPositions.utils";
 
 export function processTimeSignatureChanges(
   bars: Bar[]
@@ -38,44 +25,6 @@ export function processTimeSignatureChanges(
     }
     return { ...bar, timeSignature, timeSignatureChange: false };
   });
-}
-
-function calculateElementWidthWithRightPadding(element: NotationElement) {
-  if (element.type === "rest") {
-    return restWidths[element.duration.value] + notePadding;
-  }
-  if (
-    (["eights", "sixteenth", "thirtySecond"] as NoteValue[]).includes(
-      element.duration.value
-    )
-  ) {
-    return noteTailWidth + noteOffset;
-  }
-  return noteHeadWidth + notePadding;
-}
-
-function calculateBeatStaffWidth(params: CalculateHorizontalPositionsParams) {
-  const { topElement, bottomElement } = params;
-  const topElementWidthWithRightPadding = topElement.element
-    ? calculateElementWidthWithRightPadding(topElement.element)
-    : 0;
-  const bottomElementWidthWithRightPadding = bottomElement.element
-    ? calculateElementWidthWithRightPadding(bottomElement.element)
-    : 0;
-
-  const { topElementLeftOffset, bottomElementLeftOffset } =
-    calculateStaffElementsHorizontalPositions(params);
-
-  const topElementWidth =
-    topElementLeftOffset + topElementWidthWithRightPadding;
-  const bottomElementWidth =
-    bottomElementLeftOffset + bottomElementWidthWithRightPadding;
-
-  return {
-    topElementLeftOffset,
-    bottomElementLeftOffset,
-    maxWidth: Math.max(topElementWidth, bottomElementWidth),
-  };
 }
 
 function preprocessBeat(
@@ -125,76 +74,76 @@ function preprocessBeat(
 
   const {
     topElementLeftOffset: sopranoLeftOffset,
+    topAccidentalLeftOffset: sopranoAccidentalLeftOffset,
     bottomElementLeftOffset: altoLeftOffset,
-    maxWidth: violinBeatStaffMaxWidth,
-  } = calculateBeatStaffWidth({
-    topElement: {
-      element: soprano,
-      showAccidental: sopranoShowAccidental,
-    },
-    bottomElement: {
-      element: alto,
-      showAccidental: altoShowAccidental,
-    },
+    bottomAccidentalLeftOffset: altoAccidentalLeftOffset,
+    beatStaffWidth: violinBeatStaffWidth,
+  } = calculateBeatStaffPositions({
+    topElement: soprano,
+    showTopAccidental: sopranoShowAccidental,
+    bottomElement: alto,
+    showBottomAccidental: altoShowAccidental,
   });
   const {
     topElementLeftOffset: tenorLeftOffset,
+    topAccidentalLeftOffset: tenorAccidentalLeftOffset,
     bottomElementLeftOffset: bassLeftOffset,
-    maxWidth: bassBeatStaffMaxWidth,
-  } = calculateBeatStaffWidth({
-    topElement: {
-      element: tenor,
-      showAccidental: tenorShowAccidental,
-    },
-    bottomElement: {
-      element: bass,
-      showAccidental: bassShowAccidental,
-    },
+    bottomAccidentalLeftOffset: bassAccidentalLeftOffset,
+    beatStaffWidth: bassBeatStaffWidth,
+  } = calculateBeatStaffPositions({
+    topElement: alto,
+    showTopAccidental: altoShowAccidental,
+    bottomElement: bass,
+    showBottomAccidental: bassShowAccidental,
   });
 
-  const sopranoElement =
+  const sopranoElement: NotationElementProcessed | undefined =
     soprano?.type === "rest"
       ? { ...soprano, leftOffset: sopranoLeftOffset }
       : soprano?.type === "note"
       ? {
           ...soprano,
           leftOffset: sopranoLeftOffset,
+          accidentalLeftOffset: sopranoAccidentalLeftOffset,
           keyNumber: sopranoKeyNumber!,
           showAccidental: sopranoShowAccidental,
         }
       : undefined;
 
-  const altoElement =
+  const altoElement: NotationElementProcessed | undefined =
     alto?.type === "rest"
       ? { ...alto, leftOffset: altoLeftOffset }
       : alto?.type === "note"
       ? {
           ...alto,
           leftOffset: altoLeftOffset,
+          accidentalLeftOffset: altoAccidentalLeftOffset,
           keyNumber: altoKeyNumber!,
           showAccidental: altoShowAccidental,
         }
       : undefined;
 
-  const tenorElement =
+  const tenorElement: NotationElementProcessed | undefined =
     tenor?.type === "rest"
       ? { ...tenor, leftOffset: tenorLeftOffset }
       : tenor?.type === "note"
       ? {
           ...tenor,
           leftOffset: tenorLeftOffset,
+          accidentalLeftOffset: tenorAccidentalLeftOffset,
           keyNumber: tenorKeyNumber!,
           showAccidental: tenorShowAccidental,
         }
       : undefined;
 
-  const bassElement =
+  const bassElement: NotationElementProcessed | undefined =
     bass?.type === "rest"
       ? { ...bass, leftOffset: bassLeftOffset }
       : bass?.type === "note"
       ? {
           ...bass,
           leftOffset: bassLeftOffset,
+          accidentalLeftOffset: bassAccidentalLeftOffset,
           keyNumber: bassKeyNumber!,
           showAccidental: bassShowAccidental,
         }
@@ -202,7 +151,7 @@ function preprocessBeat(
 
   return {
     beatPosition,
-    width: Math.max(violinBeatStaffMaxWidth, bassBeatStaffMaxWidth),
+    width: Math.max(violinBeatStaffWidth, bassBeatStaffWidth),
     soprano: sopranoElement,
     alto: altoElement,
     tenor: tenorElement,

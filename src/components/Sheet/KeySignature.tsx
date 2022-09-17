@@ -10,7 +10,11 @@ import {
   NotePitch,
   NoteSymbol,
 } from "../../types";
-import { calculateNotePositionFromTop } from "../../utils";
+import {
+  adjustFlatPositionFromTop,
+  adjustSharpPosition,
+  calculateNotePositionFromTop,
+} from "../../utils";
 import { FlatAccidental, SharpAccidental } from "../Notation";
 
 const sharpKeySignatureNotesInOrder: NotePitch[] = [
@@ -34,12 +38,16 @@ const flatKeySignatureNotesInOrder: NotePitch[] = [
 
 const sharpKeySignatureMarginsFromTop = sharpKeySignatureNotesInOrder.map(
   (pitch) =>
-    calculateNotePositionFromTop({ pitch, voice: "soprano" }) -
-    noteHeadHight / 2
+    adjustSharpPosition(
+      calculateNotePositionFromTop({ pitch, voice: "soprano" })
+    )
 );
 
 const flatKeySignatureMarginsFromTop = flatKeySignatureNotesInOrder.map(
-  (pitch) => calculateNotePositionFromTop({ pitch, voice: "soprano" }) - 11
+  (pitch) =>
+    adjustFlatPositionFromTop(
+      calculateNotePositionFromTop({ pitch, voice: "soprano" })
+    )
 );
 
 const keyMarginsTop = {

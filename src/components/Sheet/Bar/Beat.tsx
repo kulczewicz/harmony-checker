@@ -4,8 +4,9 @@ import { Box, BoxProps } from "theme-ui";
 import { useUpdateBars } from "../../../hooks";
 import {
   inputDotOnState,
-  inputElementState,
+  inputElementTypeState,
   mouseOverBeatState,
+  selectedAccidentalState,
   selectedBarNumberState,
   selectedBeatPositionState,
 } from "../../../NoteInputState";
@@ -17,7 +18,7 @@ import type {
   NoteSymbol,
   Voice,
 } from "../../../types";
-import { getBeatId } from "../../../utils";
+import { calculateBeatStaffPositions, getBeatId } from "../../../utils";
 import { getWidthIncreaseFactorForBeat } from "../../../utils/timeSignature.utils";
 import { StaffVoices } from "./StaffVoices";
 
@@ -44,10 +45,11 @@ function BeatComponent({
   const setSelectedBarNumber = useSetRecoilState(selectedBarNumberState);
   const setSelectedBeatPosition = useSetRecoilState(selectedBeatPositionState);
   const setMouseOverBeat = useSetRecoilState(mouseOverBeatState);
-  const inputDuration = useRecoilValue(inputElementState);
+  const inputDuration = useRecoilValue(inputElementTypeState);
+  const selectedAccidental = useRecoilValue(selectedAccidentalState);
   const isDotOn = useRecoilValue(inputDotOnState);
 
-  const { beatPosition, soprano, alto, tenor, bass } = beat;
+  const { beatPosition, soprano, alto, tenor, bass, width } = beat;
   const barHtmlElementId = getBeatId(barNumber, beatPosition);
   useEffect(() => {
     const beatElement = document.getElementById(
@@ -79,6 +81,7 @@ function BeatComponent({
           pitch: {
             noteSymbol: previewNoteSymbol,
             octave: previewNoteOctave,
+            accidental: selectedAccidental,
           },
           voice: previewVoice,
         }
@@ -110,6 +113,7 @@ function BeatComponent({
               backgroundColor: "lightgray",
               cursor: "pointer",
             },
+        minWidth: width,
         ...sx,
       }}
       {...(selectedVoice
@@ -140,6 +144,7 @@ function BeatComponent({
         bottomElement={alto}
         selectedVoice={selectedVoice}
         previewElement={previewElementViolin}
+        showPreviewAccidental={Boolean(selectedAccidental)}
       />
       <StaffVoices
         type="bass"
@@ -149,6 +154,7 @@ function BeatComponent({
         bottomElement={bass}
         selectedVoice={selectedVoice}
         previewElement={previewElementBass}
+        showPreviewAccidental={Boolean(selectedAccidental)}
       />
     </Box>
   );

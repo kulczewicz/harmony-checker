@@ -18,22 +18,22 @@ import {
 import { FlatAccidental, SharpAccidental } from "../Notation";
 
 const sharpKeySignatureNotesInOrder: NotePitch[] = [
-  { noteSymbol: "F", octave: 5 },
-  { noteSymbol: "C", octave: 5 },
-  { noteSymbol: "G", octave: 5 },
-  { noteSymbol: "D", octave: 5 },
-  { noteSymbol: "A", octave: 4 },
-  { noteSymbol: "E", octave: 5 },
-  { noteSymbol: "B", octave: 4 },
+  { noteSymbol: "F", octave: 5, accidental: null },
+  { noteSymbol: "C", octave: 5, accidental: null },
+  { noteSymbol: "G", octave: 5, accidental: null },
+  { noteSymbol: "D", octave: 5, accidental: null },
+  { noteSymbol: "A", octave: 4, accidental: null },
+  { noteSymbol: "E", octave: 5, accidental: null },
+  { noteSymbol: "B", octave: 4, accidental: null },
 ];
 const flatKeySignatureNotesInOrder: NotePitch[] = [
-  { noteSymbol: "B", octave: 4 },
-  { noteSymbol: "E", octave: 5 },
-  { noteSymbol: "A", octave: 4 },
-  { noteSymbol: "D", octave: 5 },
-  { noteSymbol: "G", octave: 4 },
-  { noteSymbol: "C", octave: 5 },
-  { noteSymbol: "F", octave: 4 },
+  { noteSymbol: "B", octave: 4, accidental: null },
+  { noteSymbol: "E", octave: 5, accidental: null },
+  { noteSymbol: "A", octave: 4, accidental: null },
+  { noteSymbol: "D", octave: 5, accidental: null },
+  { noteSymbol: "G", octave: 4, accidental: null },
+  { noteSymbol: "C", octave: 5, accidental: null },
+  { noteSymbol: "F", octave: 4, accidental: null },
 ];
 
 const sharpKeySignatureMarginsFromTop = sharpKeySignatureNotesInOrder.map(

@@ -15,7 +15,7 @@ import {
   NotePitch,
   NoteSymbolEnum,
   NoteSymbolFromTopEnum,
-  NoteValue,
+  DurationValue,
   StaffElements,
 } from "../types";
 import {
@@ -219,7 +219,7 @@ function calculateElementWidthWithRightPadding(element: NotationElement) {
     return restWidths[element.duration.value] + notePadding;
   }
   if (
-    (["eights", "sixteenth", "thirtySecond"] as NoteValue[]).includes(
+    (["eights", "sixteenth", "thirtySecond"] as DurationValue[]).includes(
       element.duration.value
     )
   ) {

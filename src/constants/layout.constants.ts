@@ -1,4 +1,4 @@
-import { NoteValue } from "../types";
+import { DurationValue } from "../types";
 
 export const distanceBetweenTheLines = 11;
 export const lineThickness = 1;
@@ -31,7 +31,7 @@ export const noteZIndex = 2;
 export const sheetElementId = "sheet";
 
 export const widthIncreaseFactorByNoteValue: {
-  [value in NoteValue]: number;
+  [value in DurationValue]: number;
 } = {
   whole: 4,
   half: 3.5,

@@ -1,32 +1,23 @@
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import {
-  KeySignatureSymbols,
-  MusicKey,
-  SignatureSymbolsForNotesInKey,
-} from "../types";
+  keySignatureSymbolsState,
+  musicKeyState,
+  signatureSymbolsForNotesInKeyState,
+} from "../NoteInputState";
+import { MusicKey } from "../types";
 import {
   getKeySignatureSymbols,
   getSignatureSymbolsForNotesInKey,
 } from "../utils/keySignature.utils";
 
 export function useMusicKey() {
-  const [musicKey, setMusicKey] = useState<MusicKey>({
-    mode: "major",
-    note: "C",
-    signature: null,
-  });
-  const [keySignatureSymbols, setKeySignatureSymbols] =
-    useState<KeySignatureSymbols | null>(null);
+  const [musicKey, setMusicKey] = useRecoilState(musicKeyState);
+  const [keySignatureSymbols, setKeySignatureSymbols] = useRecoilState(
+    keySignatureSymbolsState
+  );
   const [signatureSymbolsForNotesInKey, setSignatureSymbolsForNotesInKey] =
-    useState<SignatureSymbolsForNotesInKey>({
-      C: null,
-      D: null,
-      E: null,
-      F: null,
-      G: null,
-      A: null,
-      B: null,
-    });
+    useRecoilState(signatureSymbolsForNotesInKeyState);
 
   const updateMusicKey = (newKey: MusicKey) => {
     const signatureSymbolsForNotes = getSignatureSymbolsForNotesInKey(newKey);

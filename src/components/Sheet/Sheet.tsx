@@ -32,13 +32,13 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "quarter" },
-        pitch: { octave: 4, noteSymbol: "D" },
+        pitch: { octave: 4, noteSymbol: "D", accidental: null },
       },
       alto: {
         type: "note",
         voice: "alto",
         duration: { value: "half" },
-        pitch: { octave: 4, noteSymbol: "C" },
+        pitch: { octave: 4, noteSymbol: "C", accidental: null },
       },
       tenor: {
         type: "rest",
@@ -49,7 +49,7 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         type: "note",
         voice: "bass",
         duration: { value: "quarter" },
-        pitch: { octave: 3, noteSymbol: "A" },
+        pitch: { octave: 3, noteSymbol: "A", accidental: null },
       },
     },
     {
@@ -58,19 +58,19 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "quarter" },
-        pitch: { octave: 4, noteSymbol: "B" },
+        pitch: { octave: 4, noteSymbol: "B", accidental: null },
       },
       tenor: {
         type: "note",
         voice: "tenor",
         duration: { value: "quarter" },
-        pitch: { octave: 4, noteSymbol: "E" },
+        pitch: { octave: 4, noteSymbol: "E", accidental: null },
       },
       bass: {
         type: "note",
         voice: "bass",
         duration: { value: "quarter" },
-        pitch: { octave: 3, noteSymbol: "D" },
+        pitch: { octave: 3, noteSymbol: "D", accidental: null },
       },
     },
     {
@@ -79,13 +79,13 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "eights" },
-        pitch: { octave: 4, noteSymbol: "G" },
+        pitch: { octave: 4, noteSymbol: "G", accidental: null },
       },
       alto: {
         type: "note",
         voice: "alto",
         duration: { value: "half" },
-        pitch: { octave: 4, noteSymbol: "E" },
+        pitch: { octave: 4, noteSymbol: "E", accidental: null },
       },
       tenor: {
         type: "rest",
@@ -96,7 +96,7 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         type: "note",
         voice: "bass",
         duration: { value: "half" },
-        pitch: { octave: 3, noteSymbol: "G" },
+        pitch: { octave: 3, noteSymbol: "G", accidental: null },
       },
     },
     {
@@ -105,7 +105,7 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "quarter" },
-        pitch: { octave: 4, noteSymbol: "A" },
+        pitch: { octave: 4, noteSymbol: "A", accidental: null },
       },
     },
     {
@@ -114,7 +114,7 @@ const defaultBar: Omit<Bar, "barNumber"> = {
         type: "note",
         voice: "soprano",
         duration: { value: "eights" },
-        pitch: { octave: 5, noteSymbol: "C" },
+        pitch: { octave: 5, noteSymbol: "C", accidental: null },
       },
     },
   ],
@@ -175,6 +175,7 @@ export function Sheet() {
 
   useEffect(() => {
     updateSheetWidth();
+    updateMusicKey({ mode: "major", note: "D", signature: null });
   }, []);
 
   useEffect(() => {

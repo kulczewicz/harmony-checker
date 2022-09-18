@@ -1,7 +1,7 @@
 import { SvgPropsThemeUi } from "../../types";
 import {
   NoteAccidental,
-  NoteValue,
+  DurationValue,
   TimeSignatureNumber,
 } from "../../types/data";
 import {
@@ -41,7 +41,7 @@ import {
 } from "./TimeSignatureSvgs";
 
 type ElementSvg = {
-  [duration in NoteValue]: (props: SvgPropsThemeUi) => JSX.Element;
+  [duration in DurationValue]: (props: SvgPropsThemeUi) => JSX.Element;
 };
 
 export const ElementNoteSvgUp: ElementSvg = {

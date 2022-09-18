@@ -1,11 +1,19 @@
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { Flex, ThemeUIStyleObject } from "theme-ui";
+import { useUpdateBars } from "../../hooks";
 import {
+  barsState,
   inputDotOnState,
   inputElementTypeState,
+  inputVoiceState,
   selectedAccidentalState,
+  selectedBarNumberState,
+  selectedBeatPositionState,
+  signatureSymbolsForNotesInKeyState,
 } from "../../NoteInputState";
-import { NoteAccidental, NoteValue } from "../../types";
+import { NotationElement, NoteAccidental, DurationValue } from "../../types";
+import { getKeyNumberAndShowAccidentalForNote } from "../../utils";
+import { getSelectedElement } from "../../utils/getSelectedElement.utils";
 import { AccidentalSvg, ElementNoteSvgUp, ElementRestSvg } from "../Notation";
 import { InputPanelButton } from "./InputPanelButton";
 
@@ -21,6 +29,17 @@ export function InputNotationElements() {
   const [selectedAccidental, setSelectedAccidental] = useRecoilState(
     selectedAccidentalState
   );
+  const voice = useRecoilValue(inputVoiceState);
+  const [selectedBarNumber, setSelectedBarNumber] = useRecoilState(
+    selectedBarNumberState
+  );
+  const [selectedBeatPosition, setSelectedBeatPosition] = useRecoilState(
+    selectedBeatPositionState
+  );
+  const signatureSymbolsForNotes = useRecoilValue(
+    signatureSymbolsForNotesInKeyState
+  );
+  const { bars, updateBars } = useUpdateBars();
 
   return (
     <Flex>
@@ -43,10 +62,30 @@ export function InputNotationElements() {
             }
             sx={inputButtonStyle}
             onClick={() => {
+              const newDurationNoteValue = duration as DurationValue;
               setInputDuration({
-                noteValue: duration as NoteValue,
+                noteValue: newDurationNoteValue,
                 type: "note",
               });
+              if (selectedBarNumber !== null && selectedBeatPosition !== null) {
+                const selectedElement = getSelectedElement({
+                  bars,
+                  selectedBarNumber,
+                  selectedBeatPosition,
+                  voice,
+                });
+
+                if (selectedElement?.element.type === "note") {
+                  const newElement: NotationElement = {
+                    ...selectedElement.element,
+                    duration: {
+                      ...selectedElement.element.duration,
+                      value: newDurationNoteValue,
+                    },
+                  };
+                  updateBars({ ...selectedElement, element: newElement });
+                }
+              }
             }}
           >
             <Note height={duration === "whole" ? "5px" : "22px"} />
@@ -60,12 +99,38 @@ export function InputNotationElements() {
               inputDuration.type === "rest"
             }
             sx={inputButtonStyle}
-            onClick={() =>
-              setInputDuration({
-                noteValue: duration as NoteValue,
-                type: "rest",
-              })
-            }
+            onClick={() => {
+              if (selectedBarNumber !== null && selectedBeatPosition !== null) {
+                const selectedElement = getSelectedElement({
+                  bars,
+                  selectedBarNumber,
+                  selectedBeatPosition,
+                  voice,
+                });
+
+                if (selectedElement) {
+                  const newDurationNoteValue = duration as DurationValue;
+                  setInputDuration({
+                    noteValue: newDurationNoteValue,
+                    type: "rest",
+                  });
+                  const newElement: NotationElement = {
+                    ...selectedElement.element,
+                    type: "rest",
+                    duration: {
+                      ...selectedElement.element.duration,
+                      value: newDurationNoteValue,
+                    },
+                  };
+                  updateBars({ ...selectedElement, element: newElement });
+                }
+              } else {
+                setInputDuration({
+                  noteValue: duration as DurationValue,
+                  type: "rest",
+                });
+              }
+            }}
           >
             <Rest height="22px" />
           </InputPanelButton>
@@ -83,11 +148,45 @@ export function InputNotationElements() {
             isActive={selectedAccidental === accidental}
             sx={inputButtonStyle}
             onClick={() => {
+              let newAccidental: NoteAccidental | null;
+
               if (selectedAccidental === accidental) {
-                setSelectedAccidental(null);
+                newAccidental = null;
               } else {
-                setSelectedAccidental(accidental as NoteAccidental);
+                newAccidental = accidental as NoteAccidental;
               }
+
+              if (selectedBarNumber === null || selectedBeatPosition === null) {
+                setSelectedAccidental(newAccidental);
+                return;
+              }
+
+              const selectedElement = getSelectedElement({
+                bars,
+                selectedBarNumber,
+                selectedBeatPosition,
+                voice,
+              });
+
+              if (selectedElement?.element.type == "note") {
+                console.log("note");
+                const newElement: NotationElement = {
+                  ...selectedElement.element,
+                  pitch: {
+                    ...selectedElement.element.pitch,
+                    accidental: newAccidental,
+                  },
+                };
+                const { showAccidental } = getKeyNumberAndShowAccidentalForNote(
+                  newElement.pitch,
+                  signatureSymbolsForNotes
+                );
+                if (!showAccidental && newAccidental !== null) {
+                  return;
+                }
+                updateBars({ ...selectedElement, element: newElement });
+              }
+              setSelectedAccidental(newAccidental);
             }}
           >
             <Accidental height="22px" />

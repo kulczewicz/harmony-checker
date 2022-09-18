@@ -1,4 +1,4 @@
-import { NoteValue, TimeSignatureBottomNumber } from "../types";
+import { DurationValue, TimeSignatureBottomNumber } from "../types";
 
 export const baseDurationUnit = 32;
 
@@ -11,7 +11,7 @@ export const durationOfTimeSignatureBottom: {
 };
 
 export const durationByNoteValue: {
-  [duration in NoteValue]: number;
+  [duration in DurationValue]: number;
 } = {
   whole: 32,
   half: 16,
@@ -22,7 +22,7 @@ export const durationByNoteValue: {
 };
 
 export const noteValueByDuration: {
-  [duration in number]: NoteValue;
+  [duration in number]: DurationValue;
 } = {
   32: "whole",
   16: "half",

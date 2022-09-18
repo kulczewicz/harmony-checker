@@ -15,7 +15,11 @@ export function getNoteAbove({
     return {
       ...note,
       voice,
-      pitch: { noteSymbol: "C", octave: (octave + 1) as NoteOctave },
+      pitch: {
+        noteSymbol: "C",
+        octave: (octave + 1) as NoteOctave,
+        accidental: null,
+      },
     };
   }
 
@@ -25,6 +29,7 @@ export function getNoteAbove({
     pitch: {
       octave,
       noteSymbol: NoteSymbolEnum[NoteSymbolEnum[noteSymbol] + 1] as NoteSymbol,
+      accidental: null,
     },
   };
 }
@@ -42,7 +47,11 @@ export function getNoteBelow({
     return {
       ...note,
       voice,
-      pitch: { noteSymbol: "B", octave: (octave - 1) as NoteOctave },
+      pitch: {
+        noteSymbol: "B",
+        octave: (octave - 1) as NoteOctave,
+        accidental: null,
+      },
     };
   }
 
@@ -52,6 +61,7 @@ export function getNoteBelow({
     pitch: {
       octave,
       noteSymbol: NoteSymbolEnum[NoteSymbolEnum[noteSymbol] - 1] as NoteSymbol,
+      accidental: null,
     },
   };
 }

@@ -36,7 +36,7 @@ export function getNotePitchByCursorPositon({
     (voice === "soprano" || voice === "alto" ? 0 : staffWithPaddingHeight) +
     consecutiveNotesDistance / 2 +
     calculateNotePositionFromTop({
-      pitch: { octave: highest.octave, noteSymbol: "B" },
+      pitch: { octave: highest.octave, noteSymbol: "B", accidental: null },
       voice,
     });
 
@@ -71,6 +71,7 @@ export function getNotePitchByCursorPositon({
       return {
         octave,
         noteSymbol: NoteSymbolFromTopEnum[noteNumberFromTheTop] as NoteSymbol,
+        accidental: null,
       };
     }
     octave--;

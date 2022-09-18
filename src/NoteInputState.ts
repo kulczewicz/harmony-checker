@@ -2,7 +2,7 @@ import { atom } from "recoil";
 import {
   Bar,
   Beat,
-  NoteValue,
+  DurationValue,
   SelectedElement,
   NotationElementType,
   TimeSignature,
@@ -10,11 +10,14 @@ import {
   NoteSymbol,
   NoteOctave,
   NoteAccidental,
+  MusicKey,
+  KeySignatureSymbols,
+  SignatureSymbolsForNotesInKey,
 } from "./types";
 
 export const inputElementTypeState = atom<{
   type: NotationElementType;
-  noteValue: NoteValue;
+  noteValue: DurationValue;
 }>({
   key: "inputElementType",
   default: { type: "note", noteValue: "quarter" },
@@ -62,6 +65,34 @@ export const previewNoteOctaveState = atom<NoteOctave | null>({
   key: "previewNoteOctave",
   default: null,
 });
+
+export const musicKeyState = atom<MusicKey>({
+  key: "musicKeyState",
+  default: {
+    mode: "major",
+    note: "C",
+    signature: null,
+  },
+});
+
+export const keySignatureSymbolsState = atom<KeySignatureSymbols | null>({
+  key: "keySignatureSymbolsState",
+  default: null,
+});
+
+export const signatureSymbolsForNotesInKeyState =
+  atom<SignatureSymbolsForNotesInKey>({
+    key: "signatureSymbolsForNotesInKeyState",
+    default: {
+      C: null,
+      D: null,
+      E: null,
+      F: null,
+      G: null,
+      A: null,
+      B: null,
+    },
+  });
 
 const wholeRestsOnZeroPosition: Beat[] = [
   {

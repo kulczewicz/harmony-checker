@@ -43,7 +43,7 @@ export type NoteDurationInThirtySeconds =
   | 48;
 
 export type NotationElementType = "note" | "rest";
-export type NoteValue =
+export type DurationValue =
   | "whole"
   | "half"
   | "quarter"
@@ -52,7 +52,7 @@ export type NoteValue =
   | "thirtySecond";
 
 export interface ElementDuration {
-  value: NoteValue;
+  value: DurationValue;
   dot?: boolean;
 }
 
@@ -63,7 +63,7 @@ export type Voice = "soprano" | "alto" | "tenor" | "bass";
 export interface NotePitch {
   octave: NoteOctave;
   noteSymbol: NoteSymbol;
-  accidental?: NoteAccidental | null;
+  accidental: NoteAccidental | null;
 }
 
 export type KeySignatureNumberOfSymbols = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;

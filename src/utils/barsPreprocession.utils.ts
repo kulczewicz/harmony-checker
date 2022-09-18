@@ -92,7 +92,7 @@ function preprocessBeat(
     beatStaffWidth: bassBeatStaffWidth,
   } = calculateBeatStaffPositions({
     topElement: alto,
-    showTopAccidental: altoShowAccidental,
+    showTopAccidental: tenorShowAccidental,
     bottomElement: bass,
     showBottomAccidental: bassShowAccidental,
   });

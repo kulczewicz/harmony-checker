@@ -5,7 +5,6 @@ import {
   numberOfKeysInOctave,
 } from "../constants";
 import {
-  NotationElementProcessed,
   NoteElementProcessed,
   NotePitch,
   SignatureSymbolsForNotesInKey,

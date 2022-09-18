@@ -46,9 +46,12 @@ export function getUpdatedBar(
   }
 
   if (newDuration > oldDuration) {
-    const nextBeatAfterNewElementIndex = beats.findIndex(
+    let nextBeatAfterNewElementIndex = beats.findIndex(
       ({ beatPosition }) => beatPosition >= beatPositionOfNewElementEnd
     );
+    if (nextBeatAfterNewElementIndex < 0) {
+      nextBeatAfterNewElementIndex = barDuration;
+    }
     const beatsBeforeOldBeat = beats.slice(0, elementBeatIndex);
     const beatsToReplace = beats
       .slice(elementBeatIndex, nextBeatAfterNewElementIndex)
@@ -63,10 +66,7 @@ export function getUpdatedBar(
         };
       })
       .filter((beat) => beat.soprano || beat.alto || beat.tenor || beat.bass);
-    const beatsAfter =
-      nextBeatAfterNewElementIndex < 0
-        ? []
-        : beats.slice(nextBeatAfterNewElementIndex);
+    const beatsAfter = beats.slice(nextBeatAfterNewElementIndex);
 
     const nextBeatAfterNewElement = beats[nextBeatAfterNewElementIndex];
 
@@ -155,6 +155,7 @@ export function useUpdateBars() {
   const [bars, setBars] = useRecoilState(barsState);
   const updateBars = useCallback(
     (newElement: SelectedElement) => {
+      console.log(newElement);
       setBars((bars) => {
         const newBars = getUpdatedBars(newElement, bars);
         return newBars;

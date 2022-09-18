@@ -12,7 +12,7 @@ import {
   signatureSymbolsForNotesInKeyState,
 } from "../../NoteInputState";
 import { NotationElement, NoteAccidental, DurationValue } from "../../types";
-import { getKeyNumberAndShowAccidentalForNote } from "../../utils";
+import { getSignatureForNote } from "../../utils";
 import { getSelectedElement } from "../../utils/getSelectedElement.utils";
 import { AccidentalSvg, ElementNoteSvgUp, ElementRestSvg } from "../Notation";
 import { InputPanelButton } from "./InputPanelButton";
@@ -30,12 +30,8 @@ export function InputNotationElements() {
     selectedAccidentalState
   );
   const voice = useRecoilValue(inputVoiceState);
-  const [selectedBarNumber, setSelectedBarNumber] = useRecoilState(
-    selectedBarNumberState
-  );
-  const [selectedBeatPosition, setSelectedBeatPosition] = useRecoilState(
-    selectedBeatPositionState
-  );
+  const selectedBarNumber = useRecoilValue(selectedBarNumberState);
+  const selectedBeatPosition = useRecoilValue(selectedBeatPositionState);
   const signatureSymbolsForNotes = useRecoilValue(
     signatureSymbolsForNotesInKeyState
   );
@@ -177,7 +173,7 @@ export function InputNotationElements() {
                     accidental: newAccidental,
                   },
                 };
-                const { showAccidental } = getKeyNumberAndShowAccidentalForNote(
+                const { showAccidental } = getSignatureForNote(
                   newElement.pitch,
                   signatureSymbolsForNotes
                 );

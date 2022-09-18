@@ -155,7 +155,6 @@ export function useUpdateBars() {
   const [bars, setBars] = useRecoilState(barsState);
   const updateBars = useCallback(
     (newElement: SelectedElement) => {
-      console.log(newElement);
       setBars((bars) => {
         const newBars = getUpdatedBars(newElement, bars);
         return newBars;

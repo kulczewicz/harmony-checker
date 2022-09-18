@@ -10,43 +10,46 @@ import {
   SignatureSymbolsForNotesInKey,
 } from "../types";
 
-export function getKeyNumberAndShowAccidentalForNote(
-  { noteSymbol, octave, accidental }: NotePitch,
-  signatureSymbolsForNotes: SignatureSymbolsForNotesInKey
-): Pick<NoteElementProcessed, "keyNumber" | "showAccidental"> {
+function getKeyNumberFromPitch({ octave, noteSymbol }: NotePitch) {
   const octaveOffset = (octave - contraOctaveNumber) * numberOfKeysInOctave;
-
-  const signatureSymbol = signatureSymbolsForNotes[noteSymbol];
-  const keyNumber =
+  return (
     contraOctaveCNoteKeyNumber +
     octaveOffset +
-    distanceFromCNoteToAnotherNoteInKeys[noteSymbol];
+    distanceFromCNoteToAnotherNoteInKeys[noteSymbol]
+  );
+}
+
+export function getSignatureForNote(
+  { noteSymbol, accidental }: NotePitch,
+  signatureSymbolsForNotes: SignatureSymbolsForNotesInKey
+): Pick<NoteElementProcessed, "showAccidental" | "absoluteSignature"> {
+  const signatureSymbol = signatureSymbolsForNotes[noteSymbol];
 
   if (signatureSymbol === "flat") {
     if (accidental === "sharp") {
-      return { keyNumber: keyNumber + 1, showAccidental: true };
+      return { showAccidental: true, absoluteSignature: "sharp" };
     }
     if (accidental === "natural") {
-      return { keyNumber, showAccidental: true };
+      return { showAccidental: true, absoluteSignature: null };
     }
-    return { keyNumber: keyNumber - 1, showAccidental: false };
+    return { showAccidental: false, absoluteSignature: "flat" };
   }
 
   if (signatureSymbol === "sharp") {
     if (accidental === "flat") {
-      return { keyNumber: keyNumber - 1, showAccidental: true };
+      return { showAccidental: true, absoluteSignature: "flat" };
     }
     if (accidental === "natural") {
-      return { keyNumber, showAccidental: true };
+      return { showAccidental: true, absoluteSignature: null };
     }
-    return { keyNumber: keyNumber + 1, showAccidental: false };
+    return { showAccidental: false, absoluteSignature: "sharp" };
   }
 
   if (accidental === "flat") {
-    return { keyNumber: keyNumber - 1, showAccidental: true };
+    return { showAccidental: true, absoluteSignature: "flat" };
   }
   if (accidental === "sharp") {
-    return { keyNumber: keyNumber + 1, showAccidental: true };
+    return { showAccidental: true, absoluteSignature: "sharp" };
   }
-  return { keyNumber, showAccidental: false };
+  return { showAccidental: false, absoluteSignature: null };
 }

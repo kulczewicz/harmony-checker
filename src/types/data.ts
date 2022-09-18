@@ -104,7 +104,7 @@ interface BaseElementProcessed extends BaseElement {
 export interface NoteElementProcessed extends BaseElementProcessed {
   type: "note";
   pitch: NotePitch;
-  keyNumber: number;
+  absoluteSignature: KeySignatureSymbol | null;
   showAccidental: boolean;
   accidentalLeftOffset?: number;
 }

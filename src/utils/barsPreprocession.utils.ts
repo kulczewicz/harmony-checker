@@ -8,7 +8,7 @@ import {
   NotationElementProcessed,
   SignatureSymbolsForNotesInKey,
 } from "../types";
-import { getKeyNumberAndShowAccidentalForNote } from "./calculateNoteKeyNumber.utils";
+import { getSignatureForNote } from "./calculateNoteKeyNumber.utils";
 import { calculateBeatStaffPositions } from "./calculateStaffElementsPositions.utils";
 
 export function processTimeSignatureChanges(
@@ -32,44 +32,32 @@ function preprocessBeat(
   signatureSymbolsForNotesInKey: SignatureSymbolsForNotesInKey
 ): BeatProcessed {
   const {
-    keyNumber: sopranoKeyNumber = undefined,
+    absoluteSignature: sopranoAbsoluteSignature = undefined,
     showAccidental: sopranoShowAccidental = false,
   } =
     soprano?.type === "note"
-      ? getKeyNumberAndShowAccidentalForNote(
-          soprano.pitch,
-          signatureSymbolsForNotesInKey
-        )
+      ? getSignatureForNote(soprano.pitch, signatureSymbolsForNotesInKey)
       : {};
   const {
-    keyNumber: altoKeyNumber = undefined,
+    absoluteSignature: altoAbsoluteSignature = undefined,
     showAccidental: altoShowAccidental = false,
   } =
     alto?.type === "note"
-      ? getKeyNumberAndShowAccidentalForNote(
-          alto.pitch,
-          signatureSymbolsForNotesInKey
-        )
+      ? getSignatureForNote(alto.pitch, signatureSymbolsForNotesInKey)
       : {};
   const {
-    keyNumber: tenorKeyNumber = undefined,
+    absoluteSignature: tenorAbsoluteSignature = undefined,
     showAccidental: tenorShowAccidental = false,
   } =
     tenor?.type === "note"
-      ? getKeyNumberAndShowAccidentalForNote(
-          tenor.pitch,
-          signatureSymbolsForNotesInKey
-        )
+      ? getSignatureForNote(tenor.pitch, signatureSymbolsForNotesInKey)
       : {};
   const {
-    keyNumber: bassKeyNumber = undefined,
+    absoluteSignature: bassAbsoluteSignature = undefined,
     showAccidental: bassShowAccidental = false,
   } =
     bass?.type === "note"
-      ? getKeyNumberAndShowAccidentalForNote(
-          bass.pitch,
-          signatureSymbolsForNotesInKey
-        )
+      ? getSignatureForNote(bass.pitch, signatureSymbolsForNotesInKey)
       : {};
 
   const {
@@ -105,7 +93,7 @@ function preprocessBeat(
           ...soprano,
           leftOffset: sopranoLeftOffset,
           accidentalLeftOffset: sopranoAccidentalLeftOffset,
-          keyNumber: sopranoKeyNumber!,
+          absoluteSignature: sopranoAbsoluteSignature!,
           showAccidental: sopranoShowAccidental,
         }
       : undefined;
@@ -118,7 +106,7 @@ function preprocessBeat(
           ...alto,
           leftOffset: altoLeftOffset,
           accidentalLeftOffset: altoAccidentalLeftOffset,
-          keyNumber: altoKeyNumber!,
+          absoluteSignature: altoAbsoluteSignature!,
           showAccidental: altoShowAccidental,
         }
       : undefined;
@@ -131,7 +119,7 @@ function preprocessBeat(
           ...tenor,
           leftOffset: tenorLeftOffset,
           accidentalLeftOffset: tenorAccidentalLeftOffset,
-          keyNumber: tenorKeyNumber!,
+          absoluteSignature: tenorAbsoluteSignature!,
           showAccidental: tenorShowAccidental,
         }
       : undefined;
@@ -144,7 +132,7 @@ function preprocessBeat(
           ...bass,
           leftOffset: bassLeftOffset,
           accidentalLeftOffset: bassAccidentalLeftOffset,
-          keyNumber: bassKeyNumber!,
+          absoluteSignature: bassAbsoluteSignature!,
           showAccidental: bassShowAccidental,
         }
       : undefined;

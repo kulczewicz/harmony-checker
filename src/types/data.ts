@@ -180,6 +180,10 @@ export interface BeatProcessed {
   bass?: NotationElementProcessed;
 }
 
+export interface BeatProcessedWithBarNumber extends BeatProcessed {
+  barNumber: number;
+}
+
 export type Line = BarProcessed[];
 
 export interface SelectedElement {
@@ -217,3 +221,12 @@ export interface StaffElements {
   topElement?: NotationElementProcessed;
   bottomElement?: NotationElementProcessed;
 }
+
+export interface BeatHarmonyError {
+  type: "voiceCrossing" | "voiceDistance";
+  barNumber: number;
+  beatPosition: number;
+  topVoice: Voice;
+  bottomVoice: Voice;
+}
+export type HarmonyError = BeatHarmonyError;

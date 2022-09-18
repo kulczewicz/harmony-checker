@@ -23,7 +23,7 @@ import {
   calculateNotePositionFromTop,
 } from "./calculateNotesPosition.utils";
 
-function calculateTwoNotesDistance(
+export function calculateTwoNoteSymbolsDistance(
   { noteSymbol: topNoteSymbol, octave: topOctave }: NotePitch,
   { noteSymbol: bottomNoteSymbol, octave: bottomOctave }: NotePitch
 ) {
@@ -183,7 +183,10 @@ function calculateStaffElementsHorizontalPositions({
   const { pitch: topPitch } = topElement;
   const { pitch: bottomPitch } = bottomElement;
 
-  const topBottomDistance = calculateTwoNotesDistance(topPitch, bottomPitch);
+  const topBottomDistance = calculateTwoNoteSymbolsDistance(
+    topPitch,
+    bottomPitch
+  );
 
   // bottom element on the right
   if (topBottomDistance === 0 || topBottomDistance === 1) {

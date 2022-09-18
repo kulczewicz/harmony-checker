@@ -4,14 +4,18 @@ import {
   BarProcessed,
   BarWithTimeSignatureChange,
   Beat,
+  BeatHarmonyError,
   BeatProcessed,
+  BeatProcessedWithBarNumber,
+  HarmonyError,
   NotationElementProcessed,
   SignatureSymbolsForNotesInKey,
 } from "../types";
 import { getSignatureForNote } from "./calculateNoteKeyNumber.utils";
 import { calculateBeatStaffPositions } from "./calculateStaffElementsPositions.utils";
+import { checkBeat } from "./checker";
 
-export function processTimeSignatureChanges(
+export function preprocessTimeSignatureChanges(
   bars: Bar[]
 ): BarWithTimeSignatureChange[] {
   return bars.map(({ timeSignature, ...bar }, index, bars) => {
@@ -147,7 +151,7 @@ function preprocessBeat(
   };
 }
 
-export function processBar(
+export function preprocessBar(
   {
     barNumber,
     beats,
@@ -175,4 +179,32 @@ export function processBar(
     beats: processedBeats,
     width: barWidth,
   };
+}
+
+export function preprocessBars(
+  bars: Bar[],
+  signatureSymbolsForNotesInKey: SignatureSymbolsForNotesInKey
+) {
+  const barsWithTimeSignatureChanges = preprocessTimeSignatureChanges(bars);
+  const processedBars = barsWithTimeSignatureChanges.map((bar) =>
+    preprocessBar(bar, signatureSymbolsForNotesInKey)
+  );
+
+  const allBeats = processedBars.reduce((acc, curr) => {
+    const currentBeatsWithBarNumber = curr.beats.map((beat) => ({
+      ...beat,
+      barNumber: curr.barNumber,
+    }));
+    acc.push(...currentBeatsWithBarNumber);
+    return acc;
+  }, [] as BeatProcessedWithBarNumber[]);
+
+  const harmonyErrors: HarmonyError[] = [];
+  // for (let beatIndex = 0; beatIndex < allBeats.length - 1; beatIndex++) {
+  for (let beatIndex = 0; beatIndex < allBeats.length; beatIndex++) {
+    const currentBeat = allBeats[beatIndex];
+    // const nextBeat = allBeats[beatIndex + 1];
+    harmonyErrors.push(...checkBeat(currentBeat));
+  }
+  return { processedBars, harmonyErrors };
 }

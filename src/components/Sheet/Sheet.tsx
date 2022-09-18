@@ -8,10 +8,7 @@ import { barsState, inputVoiceState } from "../../NoteInputState";
 
 import { Bar, Line, NoteOctave, NoteSymbol, Voice } from "../../types/data";
 import { getLineId } from "../../utils";
-import {
-  processBar,
-  processTimeSignatureChanges,
-} from "../../utils/barsPreprocession.utils";
+import { preprocessBars } from "../../utils/barsPreprocession.utils";
 import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";
 import { BarBlock } from "./Bar";
 import { SheetStaffLines } from "./Staff";
@@ -158,11 +155,12 @@ export function Sheet() {
     (bars: Bar[], availableSheetWidth: number) => {
       if (availableSheetWidth <= 0) return;
 
-      const barsWithTimeSignatureChanges = processTimeSignatureChanges(bars);
-      const processedBars = barsWithTimeSignatureChanges.map((bar) =>
-        processBar(bar, signatureSymbolsForNotesInKey)
+      const { processedBars, harmonyErrors } = preprocessBars(
+        bars,
+        signatureSymbolsForNotesInKey
       );
 
+      console.log(harmonyErrors);
       setLines(
         breakProcessedBarsIntoLines({
           availableSheetWidth,

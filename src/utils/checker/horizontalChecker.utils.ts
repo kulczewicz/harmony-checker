@@ -1,10 +1,51 @@
 import {
   BeatProcessedWithBarNumber,
   NoteElementProcessed,
-  TwoBeatsHarmonyError,
+  HorizontalHarmonyError,
   Voice,
 } from "../../types";
 import { calculateTwoNoteSymbolsDistance } from "../calculateStaffElementsPositions.utils";
+
+const FIFTH_NOTES_DISTANCE = 4;
+const OCTAVE_NOTES_DISTANCE = 6;
+const TWELFTH_NOTES_DISTANCE = 11;
+
+type ParallelVulnerableInterval = "octave" | "fifth" | "twelfth";
+function checkParallelVulnerableInterval(
+  {
+    pitch: topPitch,
+    absoluteSignature: topAbsoluteSignature,
+  }: NoteElementProcessed,
+  {
+    pitch: bottomPitch,
+    absoluteSignature: bottomAbsoluteSignature,
+  }: NoteElementProcessed
+): ParallelVulnerableInterval | null {
+  const distance = calculateTwoNoteSymbolsDistance(topPitch, bottomPitch);
+  if (
+    distance === OCTAVE_NOTES_DISTANCE &&
+    topAbsoluteSignature === bottomAbsoluteSignature
+  ) {
+    return "octave";
+  }
+
+  if (distance !== FIFTH_NOTES_DISTANCE && distance !== TWELFTH_NOTES_DISTANCE)
+    return null;
+
+  const fifthOrTwelfthBasedOnB =
+    (bottomPitch.noteSymbol === "B" &&
+      bottomAbsoluteSignature === "flat" &&
+      topAbsoluteSignature === null) ||
+    (bottomAbsoluteSignature === null && topAbsoluteSignature === "sharp");
+
+  if (
+    fifthOrTwelfthBasedOnB ||
+    topAbsoluteSignature === bottomAbsoluteSignature
+  ) {
+    return distance === FIFTH_NOTES_DISTANCE ? "fifth" : "twelfth";
+  }
+  return null;
+}
 
 interface CheckNotesErrorsParams {
   barNumber: number;
@@ -18,75 +59,22 @@ interface VoicesDistances {
   distance: number;
   signaturesSame: boolean;
 }
-function getAllVoicesDistances({
+function getAllVoicesParallelIntervals({
   soprano,
   alto,
   tenor,
   bass,
-}: Pick<CheckNotesErrorsParams, "soprano" | "alto" | "tenor" | "bass">): {
-  sopranoAlto: VoicesDistances;
-  sopranoTenor: VoicesDistances;
-  sopranoBass: VoicesDistances;
-  altoTenor: VoicesDistances;
-  altoBass: VoicesDistances;
-  tenorBass: VoicesDistances;
-} {
-  const sopranoAltoDistance = calculateTwoNoteSymbolsDistance(
-    soprano.pitch,
-    alto.pitch
-  );
-  const sopranoTenorDistance = calculateTwoNoteSymbolsDistance(
-    soprano.pitch,
-    tenor.pitch
-  );
-  const sopranoBassDistance = calculateTwoNoteSymbolsDistance(
-    soprano.pitch,
-    bass.pitch
-  );
-  const altoTenorDistance = calculateTwoNoteSymbolsDistance(
-    alto.pitch,
-    tenor.pitch
-  );
-  const altoBassDistance = calculateTwoNoteSymbolsDistance(
-    alto.pitch,
-    bass.pitch
-  );
-  const tenorBassDistance = calculateTwoNoteSymbolsDistance(
-    tenor.pitch,
-    bass.pitch
-  );
-
+}: Pick<CheckNotesErrorsParams, "soprano" | "alto" | "tenor" | "bass">) {
   return {
-    sopranoAlto: {
-      distance: sopranoAltoDistance,
-      signaturesSame: soprano.absoluteSignature === alto.absoluteSignature,
-    },
-    sopranoTenor: {
-      distance: sopranoTenorDistance,
-      signaturesSame: soprano.absoluteSignature === tenor.absoluteSignature,
-    },
-    sopranoBass: {
-      distance: sopranoBassDistance,
-      signaturesSame: soprano.absoluteSignature === bass.absoluteSignature,
-    },
-    altoTenor: {
-      distance: altoTenorDistance,
-      signaturesSame: alto.absoluteSignature === tenor.absoluteSignature,
-    },
-    altoBass: {
-      distance: altoBassDistance,
-      signaturesSame: alto.absoluteSignature === bass.absoluteSignature,
-    },
-    tenorBass: {
-      distance: tenorBassDistance,
-      signaturesSame: tenor.absoluteSignature === bass.absoluteSignature,
-    },
+    sopranoAlto: checkParallelVulnerableInterval(soprano, alto),
+    sopranoTenor: checkParallelVulnerableInterval(soprano, tenor),
+    sopranoBass: checkParallelVulnerableInterval(soprano, bass),
+    altoTenor: checkParallelVulnerableInterval(alto, tenor),
+    altoBass: checkParallelVulnerableInterval(alto, bass),
+    tenorBass: checkParallelVulnerableInterval(tenor, bass),
   };
 }
 
-const FIFTH_NOTES_DISTANCE = 4;
-const OCTAVE_NOTES_DISTANCE = 6;
-const TWELFTH_NOTES_DISTANCE = 11;
 function getParallelIntervalsErrors(
   {
     barNumber: firstBarNumber,
@@ -105,150 +93,93 @@ function getParallelIntervalsErrors(
     bass: secondBass,
   }: CheckNotesErrorsParams
 ) {
-  const firstBeatVoicesDistance = getAllVoicesDistances({
+  const firstBeatVoicesParallelIntervals = getAllVoicesParallelIntervals({
     soprano: firstSoprano,
     alto: firstAlto,
     tenor: firstTenor,
     bass: firstBass,
   });
-  const secondBeatVoicesDistance = getAllVoicesDistances({
+  const secondBeatVoicesParallelIntervals = getAllVoicesParallelIntervals({
     soprano: secondSoprano,
     alto: secondAlto,
     tenor: secondTenor,
     bass: secondBass,
   });
 
-  const twoBeatsDistances: {
+  const consecutiveBeatsParallelVulnerableIntervals: {
     voices: { topVoice: Voice; bottomVoice: Voice };
-    first: VoicesDistances;
-    second: VoicesDistances;
-    firstTop: NoteElementProcessed;
-    firstBottom: NoteElementProcessed;
-    secondTop: NoteElementProcessed;
-    secondBottom: NoteElementProcessed;
+    first: ParallelVulnerableInterval | null;
+    second: ParallelVulnerableInterval | null;
   }[] = [
     {
       voices: { topVoice: "soprano", bottomVoice: "alto" },
-      first: firstBeatVoicesDistance.sopranoAlto,
-      second: secondBeatVoicesDistance.sopranoAlto,
-      firstTop: firstSoprano,
-      firstBottom: firstAlto,
-      secondTop: secondSoprano,
-      secondBottom: secondAlto,
+      first: firstBeatVoicesParallelIntervals.sopranoAlto,
+      second: secondBeatVoicesParallelIntervals.sopranoAlto,
     },
     {
       voices: { topVoice: "soprano", bottomVoice: "tenor" },
-      first: firstBeatVoicesDistance.sopranoTenor,
-      second: secondBeatVoicesDistance.sopranoTenor,
-      firstTop: firstSoprano,
-      firstBottom: firstAlto,
-      secondTop: secondSoprano,
-      secondBottom: secondAlto,
+      first: firstBeatVoicesParallelIntervals.sopranoTenor,
+      second: secondBeatVoicesParallelIntervals.sopranoTenor,
     },
     {
       voices: { topVoice: "soprano", bottomVoice: "bass" },
-      first: firstBeatVoicesDistance.sopranoBass,
-      second: secondBeatVoicesDistance.sopranoBass,
-      firstTop: firstSoprano,
-      firstBottom: firstBass,
-      secondTop: secondSoprano,
-      secondBottom: secondBass,
+      first: firstBeatVoicesParallelIntervals.sopranoBass,
+      second: secondBeatVoicesParallelIntervals.sopranoBass,
     },
     {
       voices: { topVoice: "alto", bottomVoice: "tenor" },
-      first: firstBeatVoicesDistance.altoTenor,
-      second: secondBeatVoicesDistance.altoTenor,
-      firstTop: firstAlto,
-      firstBottom: firstTenor,
-      secondTop: secondAlto,
-      secondBottom: secondTenor,
+      first: firstBeatVoicesParallelIntervals.altoTenor,
+      second: secondBeatVoicesParallelIntervals.altoTenor,
     },
     {
       voices: { topVoice: "alto", bottomVoice: "bass" },
-      first: firstBeatVoicesDistance.altoBass,
-      second: secondBeatVoicesDistance.altoBass,
-      firstTop: firstAlto,
-      firstBottom: firstBass,
-      secondTop: secondAlto,
-      secondBottom: secondBass,
+      first: firstBeatVoicesParallelIntervals.altoBass,
+      second: secondBeatVoicesParallelIntervals.altoBass,
     },
     {
       voices: { topVoice: "tenor", bottomVoice: "bass" },
-      first: firstBeatVoicesDistance.tenorBass,
-      second: secondBeatVoicesDistance.tenorBass,
-      firstTop: firstTenor,
-      firstBottom: firstBass,
-      secondTop: secondTenor,
-      secondBottom: secondBass,
+      first: firstBeatVoicesParallelIntervals.tenorBass,
+      second: secondBeatVoicesParallelIntervals.tenorBass,
     },
   ];
 
-  const errors: TwoBeatsHarmonyError[] = [];
+  const errors: HorizontalHarmonyError[] = [];
 
   for (const {
     voices: { topVoice, bottomVoice },
     first,
     second,
-    firstTop: {
-      pitch: firstTopPitch,
-      absoluteSignature: firstTopAbsoluteSignature,
-    },
-    firstBottom: {
-      pitch: firstBottomPitch,
-      absoluteSignature: firstBottomAbsoluteSignature,
-    },
-    secondTop: {
-      pitch: secondTopPitch,
-      absoluteSignature: secondTopAbsoluteSignature,
-    },
-    secondBottom: {
-      pitch: secondBottomPitch,
-      absoluteSignature: secondBottomAbsoluteSignature,
-    },
-  } of twoBeatsDistances) {
-    if (
-      firstTopPitch.noteSymbol === secondTopPitch.noteSymbol &&
-      firstTopPitch.octave === secondTopPitch.octave &&
-      firstTopAbsoluteSignature === secondTopAbsoluteSignature &&
-      firstBottomPitch.noteSymbol === secondBottomPitch.noteSymbol &&
-      firstBottomPitch.octave === secondBottomPitch.octave &&
-      firstBottomAbsoluteSignature === secondBottomAbsoluteSignature
-    ) {
+  } of consecutiveBeatsParallelVulnerableIntervals) {
+    if (first === null || second === null) {
       continue;
     }
-    if (first.signaturesSame && second.signaturesSame) {
-      if (
-        (first.distance === FIFTH_NOTES_DISTANCE &&
-          second.distance === FIFTH_NOTES_DISTANCE) ||
-        (first.distance === FIFTH_NOTES_DISTANCE &&
-          second.distance === TWELFTH_NOTES_DISTANCE) ||
-        (first.distance === TWELFTH_NOTES_DISTANCE &&
-          second.distance === FIFTH_NOTES_DISTANCE)
-      ) {
-        errors.push({
-          type: "parallelFifths",
-          topVoice,
-          bottomVoice,
-          firstBarNumber,
-          firstBeatPosition,
-          secondBarNumber,
-          secondBeatPosition,
-        });
-      }
-      if (
-        first.distance === OCTAVE_NOTES_DISTANCE &&
-        second.distance === OCTAVE_NOTES_DISTANCE
-      ) {
-        errors.push({
-          type: "parallelOctaves",
-          topVoice,
-          bottomVoice,
-          firstBarNumber,
-          firstBeatPosition,
-          secondBarNumber,
-          secondBeatPosition,
-        });
-      }
+
+    if (
+      (first === "fifth" && second === "fifth") ||
+      (first === "fifth" && second === "twelfth") ||
+      (first === "twelfth" && second === "fifth")
+    ) {
+      errors.push({
+        type: "parallelFifths",
+        topVoice,
+        bottomVoice,
+        firstBarNumber,
+        firstBeatPosition,
+        secondBarNumber,
+        secondBeatPosition,
+      });
+    }
+
+    if (first === "octave" && second === "octave") {
+      errors.push({
+        type: "parallelOctaves",
+        topVoice,
+        bottomVoice,
+        firstBarNumber,
+        firstBeatPosition,
+        secondBarNumber,
+        secondBeatPosition,
+      });
     }
   }
   return errors;

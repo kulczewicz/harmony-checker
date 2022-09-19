@@ -155,14 +155,11 @@ export function Sheet() {
     (bars: Bar[], availableSheetWidth: number) => {
       if (availableSheetWidth <= 0) return;
 
-      const { processedBars, harmonyErrors } = preprocessBars(
+      const { processedBars } = preprocessBars(
         bars,
         signatureSymbolsForNotesInKey
       );
 
-      if (harmonyErrors.length > 0) {
-        console.log(harmonyErrors);
-      }
       setLines(
         breakProcessedBarsIntoLines({
           availableSheetWidth,

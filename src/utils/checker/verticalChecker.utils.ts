@@ -1,5 +1,5 @@
 import {
-  BeatHarmonyError,
+  VerticalHarmonyError,
   BeatProcessedWithBarNumber,
   NoteElementProcessed,
   Voice,
@@ -18,7 +18,7 @@ function getVoiceCrossingErrors({
   tenor,
   bass,
 }: CheckNotesErrorsParams) {
-  const errors: Pick<BeatHarmonyError, "topVoice" | "bottomVoice">[] = [];
+  const errors: Pick<VerticalHarmonyError, "topVoice" | "bottomVoice">[] = [];
   const elementsTopBottom: { voice: Voice; element: NoteElementProcessed }[] = [
     { voice: "soprano", element: soprano },
     { voice: "alto", element: alto },
@@ -56,7 +56,7 @@ function getVoiceDistanceErrors({
   tenor,
   bass,
 }: CheckNotesErrorsParams) {
-  const errors: Pick<BeatHarmonyError, "topVoice" | "bottomVoice">[] = [];
+  const errors: Pick<VerticalHarmonyError, "topVoice" | "bottomVoice">[] = [];
   const sopranoAltoDistance = calculateTwoNoteSymbolsDistance(
     soprano.pitch,
     alto.pitch
@@ -97,7 +97,7 @@ export function checkBeat({
   ) {
     return [];
   }
-  const voiceCrossingErrors: BeatHarmonyError[] = getVoiceCrossingErrors({
+  const voiceCrossingErrors: VerticalHarmonyError[] = getVoiceCrossingErrors({
     soprano,
     alto,
     tenor,
@@ -109,7 +109,7 @@ export function checkBeat({
     beatPosition,
   }));
 
-  const voiceDistanceErrors: BeatHarmonyError[] = getVoiceDistanceErrors({
+  const voiceDistanceErrors: VerticalHarmonyError[] = getVoiceDistanceErrors({
     soprano,
     alto,
     tenor,

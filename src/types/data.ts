@@ -174,6 +174,7 @@ export interface Beat {
 export interface BeatProcessed {
   beatPosition: number;
   width: number;
+  errors: BeatHarmonyError[];
   soprano?: NotationElementProcessed;
   alto?: NotationElementProcessed;
   tenor?: NotationElementProcessed;
@@ -222,16 +223,18 @@ export interface StaffElements {
   bottomElement?: NotationElementProcessed;
 }
 
-export interface BeatHarmonyError {
-  type: "voiceCrossing" | "voiceDistance";
+type VerticalHarmonyErrorType = "voiceCrossing" | "voiceDistance";
+export interface VerticalHarmonyError {
+  type: VerticalHarmonyErrorType;
   barNumber: number;
   beatPosition: number;
   topVoice: Voice;
   bottomVoice: Voice;
 }
 
-export interface TwoBeatsHarmonyError {
-  type: "parallelFifths" | "parallelOctaves";
+type HorizontalHarmonyErrorType = "parallelFifths" | "parallelOctaves";
+export interface HorizontalHarmonyError {
+  type: HorizontalHarmonyErrorType;
   firstBarNumber: number;
   firstBeatPosition: number;
   secondBarNumber: number;
@@ -239,4 +242,10 @@ export interface TwoBeatsHarmonyError {
   topVoice: Voice;
   bottomVoice: Voice;
 }
-export type HarmonyError = BeatHarmonyError | TwoBeatsHarmonyError;
+
+export interface BeatHarmonyError {
+  type: VerticalHarmonyErrorType | HorizontalHarmonyErrorType;
+  topVoice: Voice;
+  bottomVoice: Voice;
+}
+export type HarmonyError = VerticalHarmonyError | HorizontalHarmonyError;

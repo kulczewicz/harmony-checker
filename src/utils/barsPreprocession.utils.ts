@@ -4,10 +4,8 @@ import {
   BarProcessed,
   BarWithTimeSignatureChange,
   Beat,
-  BeatHarmonyError,
   BeatProcessed,
   BeatProcessedWithBarNumber,
-  HarmonyError,
   NotationElementProcessed,
   SignatureSymbolsForNotesInKey,
 } from "../types";
@@ -145,6 +143,7 @@ function preprocessBeat(
   return {
     beatPosition,
     width: Math.max(violinBeatStaffWidth, bassBeatStaffWidth),
+    errors: [],
     soprano: sopranoElement,
     alto: altoElement,
     tenor: tenorElement,
@@ -200,17 +199,73 @@ export function preprocessBars(
     return acc;
   }, [] as BeatProcessedWithBarNumber[]);
 
-  const harmonyErrors: HarmonyError[] = [];
-  // for (let beatIndex = 0; beatIndex < allBeats.length - 1; beatIndex++) {
   for (let beatIndex = 0; beatIndex < allBeats.length; beatIndex++) {
     const currentBeat = allBeats[beatIndex];
     const nextBeat = allBeats[beatIndex + 1];
     if (currentBeat) {
-      harmonyErrors.push(...checkBeat(currentBeat));
-    }
-    if (currentBeat && nextBeat) {
-      harmonyErrors.push(...checkTwoConsecutiveBeats(currentBeat, nextBeat));
+      const beatErrors = checkBeat(currentBeat);
+      beatErrors.forEach(
+        ({ barNumber, beatPosition, type, topVoice, bottomVoice }) => {
+          const beatIndex = processedBars[barNumber].beats.findIndex(
+            (beat) => beat.beatPosition === beatPosition
+          );
+          if (beatIndex < -1) {
+            return;
+          }
+
+          processedBars[barNumber].beats[beatIndex].errors.push({
+            type,
+            topVoice,
+            bottomVoice,
+          });
+        }
+      );
+
+      if (nextBeat) {
+        const consecutiveBeatsErrors = checkTwoConsecutiveBeats(
+          currentBeat,
+          nextBeat
+        );
+        consecutiveBeatsErrors.forEach(
+          ({
+            type,
+            topVoice,
+            bottomVoice,
+            firstBarNumber,
+            firstBeatPosition,
+            secondBarNumber,
+            secondBeatPosition,
+          }) => {
+            const firstBeatIndex = processedBars[
+              firstBarNumber
+            ].beats.findIndex(
+              ({ beatPosition }) => beatPosition === firstBeatPosition
+            );
+
+            const secondBeatIndex = processedBars[
+              secondBarNumber
+            ].beats.findIndex(
+              ({ beatPosition }) => beatPosition === secondBeatPosition
+            );
+
+            if (firstBeatIndex < -1 || secondBeatIndex < -1) {
+              return;
+            }
+
+            processedBars[firstBarNumber].beats[firstBeatIndex].errors.push({
+              type,
+              topVoice,
+              bottomVoice,
+            });
+            processedBars[secondBarNumber].beats[secondBeatIndex].errors.push({
+              type,
+              topVoice,
+              bottomVoice,
+            });
+          }
+        );
+      }
     }
   }
-  return { processedBars, harmonyErrors };
+  return { processedBars };
 }

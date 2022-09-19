@@ -103,6 +103,7 @@ interface StaffElementWithAccidentalProps {
   showAccidental: boolean;
   position: StaffElementPosition;
   isSelected: boolean;
+  isCausingError: boolean;
   setSelected: () => void;
 }
 export function StaffElementWithAccidental({
@@ -110,6 +111,7 @@ export function StaffElementWithAccidental({
   showAccidental,
   position,
   isSelected,
+  isCausingError,
   setSelected,
 }: StaffElementWithAccidentalProps) {
   return (
@@ -118,7 +120,7 @@ export function StaffElementWithAccidental({
         position={position}
         element={element}
         onClick={setSelected}
-        sx={{ fill: isSelected ? "blue" : "black" }}
+        sx={{ fill: isSelected ? "blue" : isCausingError ? "red" : "black" }}
       />
       {element.type === "note" &&
       showAccidental &&

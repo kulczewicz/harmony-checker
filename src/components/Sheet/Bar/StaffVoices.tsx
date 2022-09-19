@@ -62,6 +62,7 @@ function PreviewElement({
       position={position}
       element={element}
       isSelected={true}
+      isCausingError={false}
       setSelected={() => updateBars({ barNumber, beatPosition, element })}
       showAccidental={showAccidental}
     />
@@ -76,7 +77,9 @@ interface StaffVoicesProps {
   previewElement: NoteElement | null;
   showPreviewAccidental: boolean;
   topElement: NotationElementProcessed | undefined;
+  topElementCausingError: boolean;
   bottomElement: NotationElementProcessed | undefined;
+  bottomElementCausingError: boolean;
 }
 function StaffVoicesComponent({
   type,
@@ -85,6 +88,8 @@ function StaffVoicesComponent({
   selectedVoice,
   previewElement,
   showPreviewAccidental,
+  topElementCausingError,
+  bottomElementCausingError,
   ...staffElements
 }: StaffVoicesProps) {
   const setSelectedVoice = useSetRecoilState(inputVoiceState);
@@ -116,6 +121,7 @@ function StaffVoicesComponent({
             topElement.type === "note" && topElement.showAccidental
           }
           isSelected={topElementSelected}
+          isCausingError={topElementCausingError}
           setSelected={() =>
             setSelectedVoice(type === "violin" ? "soprano" : "tenor")
           }
@@ -137,6 +143,7 @@ function StaffVoicesComponent({
             bottomElement.type === "note" && bottomElement.showAccidental
           }
           isSelected={bottomElementSelected}
+          isCausingError={bottomElementCausingError}
           setSelected={() =>
             setSelectedVoice(type === "violin" ? "alto" : "bass")
           }

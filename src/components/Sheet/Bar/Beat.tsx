@@ -11,6 +11,7 @@ import {
   selectedBeatPositionState,
 } from "../../../NoteInputState";
 import type {
+  BeatHarmonyError,
   BeatProcessed,
   NotationElement,
   NoteElement,
@@ -18,9 +19,25 @@ import type {
   NoteSymbol,
   Voice,
 } from "../../../types";
-import { calculateBeatStaffPositions, getBeatId } from "../../../utils";
+import { getBeatId } from "../../../utils";
 import { getWidthIncreaseFactorForBeat } from "../../../utils/timeSignature.utils";
 import { StaffVoices } from "./StaffVoices";
+
+function getErrorObjectForBeat(errors: BeatHarmonyError[]) {
+  const error = {
+    errorMessages: [] as string[],
+    soprano: false,
+    alto: false,
+    tenor: false,
+    bass: false,
+  };
+  for (const { type, topVoice, bottomVoice } of errors) {
+    error.errorMessages.push(type);
+    error[topVoice] = true;
+    error[bottomVoice] = true;
+  }
+  return error;
+}
 
 export type BeatInputElement = NotationElement | null;
 interface BeatProps extends BoxProps {
@@ -49,7 +66,15 @@ function BeatComponent({
   const selectedAccidental = useRecoilValue(selectedAccidentalState);
   const isDotOn = useRecoilValue(inputDotOnState);
 
-  const { beatPosition, soprano, alto, tenor, bass, width } = beat;
+  const { beatPosition, soprano, alto, tenor, bass, width, errors } = beat;
+  const {
+    errorMessages,
+    soprano: sopranoCausingError,
+    alto: altoCausingError,
+    tenor: tenorCausingError,
+    bass: bassCausingError,
+  } = getErrorObjectForBeat(errors);
+
   const barHtmlElementId = getBeatId(barNumber, beatPosition);
   useEffect(() => {
     const beatElement = document.getElementById(
@@ -142,6 +167,8 @@ function BeatComponent({
         beatPosition={beatPosition}
         topElement={soprano}
         bottomElement={alto}
+        topElementCausingError={sopranoCausingError}
+        bottomElementCausingError={altoCausingError}
         selectedVoice={selectedVoice}
         previewElement={previewElementViolin}
         showPreviewAccidental={Boolean(selectedAccidental)}
@@ -152,6 +179,8 @@ function BeatComponent({
         beatPosition={beatPosition}
         topElement={tenor}
         bottomElement={bass}
+        topElementCausingError={tenorCausingError}
+        bottomElementCausingError={bassCausingError}
         selectedVoice={selectedVoice}
         previewElement={previewElementBass}
         showPreviewAccidental={Boolean(selectedAccidental)}

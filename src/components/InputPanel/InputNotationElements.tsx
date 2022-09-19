@@ -165,7 +165,6 @@ export function InputNotationElements() {
               });
 
               if (selectedElement?.element.type == "note") {
-                console.log("note");
                 const newElement: NotationElement = {
                   ...selectedElement.element,
                   pitch: {

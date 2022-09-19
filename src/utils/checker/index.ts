@@ -1,1 +1,1 @@
-export * from "./beatChecker.utils";
+export * from "./verticalChecker.utils";

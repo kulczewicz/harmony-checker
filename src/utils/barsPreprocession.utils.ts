@@ -14,6 +14,7 @@ import {
 import { getSignatureForNote } from "./calculateNoteKeyNumber.utils";
 import { calculateBeatStaffPositions } from "./calculateStaffElementsPositions.utils";
 import { checkBeat } from "./checker";
+import { checkTwoConsecutiveBeats } from "./checker/horizontalChecker.utils";
 
 export function preprocessTimeSignatureChanges(
   bars: Bar[]
@@ -203,8 +204,13 @@ export function preprocessBars(
   // for (let beatIndex = 0; beatIndex < allBeats.length - 1; beatIndex++) {
   for (let beatIndex = 0; beatIndex < allBeats.length; beatIndex++) {
     const currentBeat = allBeats[beatIndex];
-    // const nextBeat = allBeats[beatIndex + 1];
-    harmonyErrors.push(...checkBeat(currentBeat));
+    const nextBeat = allBeats[beatIndex + 1];
+    if (currentBeat) {
+      harmonyErrors.push(...checkBeat(currentBeat));
+    }
+    if (currentBeat && nextBeat) {
+      harmonyErrors.push(...checkTwoConsecutiveBeats(currentBeat, nextBeat));
+    }
   }
   return { processedBars, harmonyErrors };
 }

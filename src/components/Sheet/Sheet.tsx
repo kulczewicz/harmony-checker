@@ -160,7 +160,9 @@ export function Sheet() {
         signatureSymbolsForNotesInKey
       );
 
-      console.log(harmonyErrors);
+      if (harmonyErrors.length > 0) {
+        console.log(harmonyErrors);
+      }
       setLines(
         breakProcessedBarsIntoLines({
           availableSheetWidth,

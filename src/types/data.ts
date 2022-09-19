@@ -229,4 +229,14 @@ export interface BeatHarmonyError {
   topVoice: Voice;
   bottomVoice: Voice;
 }
-export type HarmonyError = BeatHarmonyError;
+
+export interface TwoBeatsHarmonyError {
+  type: "parallelFifths" | "parallelOctaves";
+  firstBarNumber: number;
+  firstBeatPosition: number;
+  secondBarNumber: number;
+  secondBeatPosition: number;
+  topVoice: Voice;
+  bottomVoice: Voice;
+}
+export type HarmonyError = BeatHarmonyError | TwoBeatsHarmonyError;

@@ -11,6 +11,7 @@ import { getLineId } from "../../utils";
 import { preprocessBars } from "../../utils/barsPreprocession.utils";
 import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";
 import { BarBlock } from "./Bar";
+import { EndBarLine } from "./Bar/BarLine";
 import {
   StaffLineBeginning,
   staffLineBeginningWidth,
@@ -127,6 +128,7 @@ export function Sheet() {
               />
             );
           })}
+          {lineIndex === lines.length - 1 ? <EndBarLine /> : null}
         </Flex>
       ))}
     </Box>

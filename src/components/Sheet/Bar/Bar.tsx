@@ -9,6 +9,7 @@ import {
   Voice,
 } from "../../../types";
 import { TimeSignature } from "../TimeSignature";
+import { BarLine } from "./BarLine";
 import { BeatBlock } from "./Beat";
 
 export interface PreviewInputData {
@@ -57,15 +58,7 @@ function BarBlockComponent({
           />
         );
       })}
-      <Box
-        sx={{
-          my: `${staffVerticalPadding}px`,
-          height: `${sheetHeight}px`,
-          width: "1px",
-          borderRight: "1px solid",
-          borderColor: "black",
-        }}
-      />
+      <BarLine />
     </>
   );
 }

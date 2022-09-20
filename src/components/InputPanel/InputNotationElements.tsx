@@ -2,6 +2,8 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { Flex, ThemeUIStyleObject } from "theme-ui";
 import { useUpdateBars } from "../../hooks";
 import {
+  barsState,
+  defaultBarWithoutBarNumber,
   inputDotOnState,
   inputElementTypeState,
   inputVoiceState,
@@ -30,12 +32,17 @@ export function InputNotationElements() {
     selectedAccidentalState
   );
   const voice = useRecoilValue(inputVoiceState);
-  const selectedBarNumber = useRecoilValue(selectedBarNumberState);
-  const selectedBeatPosition = useRecoilValue(selectedBeatPositionState);
+  const [selectedBarNumber, setSelectedBarNumber] = useRecoilState(
+    selectedBarNumberState
+  );
+  const [selectedBeatPosition, setSelectedBeatPosition] = useRecoilState(
+    selectedBeatPositionState
+  );
   const signatureSymbolsForNotes = useRecoilValue(
     signatureSymbolsForNotesInKeyState
   );
-  const { bars, updateBars } = useUpdateBars();
+  const [bars, setBars] = useRecoilState(barsState);
+  const { updateBars } = useUpdateBars();
 
   return (
     <Flex>
@@ -188,13 +195,71 @@ export function InputNotationElements() {
           </InputPanelButton>
         ))}
       </Flex>
-      <InputPanelButton
-        sx={{ ml: 2 }}
-        isActive={false}
-        onClick={() => console.log("TODO: add new bar")}
+      <Flex
+        sx={{ ml: 2, flexDirection: "column", justifyContent: "space-between" }}
       >
-        Add bar
-      </InputPanelButton>
+        <InputPanelButton
+          isActive={false}
+          onClick={() => {
+            if (selectedBarNumber === null || selectedBarNumber === undefined)
+              return;
+
+            setBars((bars) => {
+              const newBarNumber = selectedBarNumber + 1;
+              const barsBefore = bars.slice(0, newBarNumber);
+              const barsAfter = bars
+                .slice(newBarNumber)
+                .map(({ barNumber, ...bar }) => ({
+                  barNumber: barNumber + 1,
+                  ...bar,
+                }));
+              console.log([
+                ...barsBefore,
+                { barNumber: newBarNumber, ...defaultBarWithoutBarNumber },
+                ...barsAfter,
+              ]);
+              return [
+                ...barsBefore,
+                { barNumber: newBarNumber, ...defaultBarWithoutBarNumber },
+                ...barsAfter,
+              ];
+            });
+          }}
+        >
+          Add bar
+        </InputPanelButton>
+        <InputPanelButton
+          isActive={false}
+          onClick={() => {
+            if (
+              selectedBarNumber === null ||
+              selectedBarNumber === undefined ||
+              bars.length < 2
+            )
+              return;
+
+            const barsBefore = bars.slice(0, selectedBarNumber);
+            const barsAfter = bars
+              .slice(selectedBarNumber + 1)
+              .map(({ barNumber, ...bar }) => ({
+                barNumber: barNumber - 1,
+                ...bar,
+              }));
+
+            if (barsAfter.length === 0) {
+              const newSelectedBarNumber = selectedBarNumber - 1;
+              if (newSelectedBarNumber < 0) {
+                return;
+              }
+              setSelectedBarNumber(newSelectedBarNumber);
+            }
+            setSelectedBeatPosition(0);
+            setBars([...barsBefore, ...barsAfter]);
+          }}
+        >
+          Remove bar
+        </InputPanelButton>
+      </Flex>
       <SheetDataHandler />
     </Flex>
   );

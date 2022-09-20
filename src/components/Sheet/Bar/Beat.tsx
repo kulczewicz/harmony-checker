@@ -1,7 +1,7 @@
 import { memo, useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, BoxProps } from "theme-ui";
-import { staffWithPaddingHeight } from "../../../constants";
+import { noteZIndex, staffWithPaddingHeight } from "../../../constants";
 import { useUpdateBars } from "../../../hooks";
 import {
   inputDotOnState,
@@ -65,6 +65,7 @@ function BeatErrorTooltip({
         width: showError ? "300px" : 0,
         opacity: showError ? 1 : 0,
         transition: "opacity 0.2s",
+        zIndex: noteZIndex + 1,
         ...sx,
       }}
       {...props}

@@ -121,47 +121,43 @@ const wholeRestsOnZeroPosition: Beat[] = [
 ];
 
 const defaultTimeSignature: TimeSignature = { bottomNumber: 4, topNumber: 4 };
+export const defaultBarWithoutBarNumber = {
+  timeSignature: defaultTimeSignature,
+  beats: wholeRestsOnZeroPosition,
+};
 export const defaultBarsState = [
   {
     barNumber: 0,
-    timeSignature: defaultTimeSignature,
-    beats: wholeRestsOnZeroPosition,
+    ...defaultBarWithoutBarNumber,
   },
   {
     barNumber: 1,
-    timeSignature: defaultTimeSignature,
-    beats: wholeRestsOnZeroPosition,
+    ...defaultBarWithoutBarNumber,
   },
   {
     barNumber: 2,
-    timeSignature: defaultTimeSignature,
-    beats: wholeRestsOnZeroPosition,
+    ...defaultBarWithoutBarNumber,
   },
   {
     barNumber: 3,
-    timeSignature: defaultTimeSignature,
-    beats: wholeRestsOnZeroPosition,
+    ...defaultBarWithoutBarNumber,
   },
 
   {
     barNumber: 4,
-    timeSignature: defaultTimeSignature,
-    beats: wholeRestsOnZeroPosition,
+    ...defaultBarWithoutBarNumber,
   },
   {
     barNumber: 5,
-    timeSignature: defaultTimeSignature,
-    beats: wholeRestsOnZeroPosition,
+    ...defaultBarWithoutBarNumber,
   },
   {
     barNumber: 6,
-    timeSignature: defaultTimeSignature,
-    beats: wholeRestsOnZeroPosition,
+    ...defaultBarWithoutBarNumber,
   },
   {
     barNumber: 7,
-    timeSignature: defaultTimeSignature,
-    beats: wholeRestsOnZeroPosition,
+    ...defaultBarWithoutBarNumber,
   },
 ];
 export const barsState = atom<Bar[]>({

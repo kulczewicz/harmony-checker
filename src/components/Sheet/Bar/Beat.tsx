@@ -62,9 +62,9 @@ function BeatErrorTooltip({
         borderRadius: "8px",
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
         p: "12px",
-        minWidth: "300px",
+        width: showError ? "300px" : 0,
         opacity: showError ? 1 : 0,
-        transition: "all 0.2s",
+        transition: "opacity 0.2s",
         ...sx,
       }}
       {...props}

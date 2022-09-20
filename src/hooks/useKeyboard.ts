@@ -36,24 +36,11 @@ export function useKeyboard() {
       selectedBeatPosition,
       voice,
     });
-    if (!selectedElement) return;
-
-    setInputElementType({
-      type: selectedElement?.element.type,
-      noteValue: selectedElement?.element.duration.value,
-    });
-    if (
-      selectedElement?.element.type === "note" &&
-      selectedElement?.element.pitch.accidental
-    ) {
-      setSelectedAccidental(selectedElement?.element.pitch.accidental ?? null);
-    } else {
-      setSelectedAccidental(null);
-    }
-
     const onKeyDown = onKeyDownAction({
       bars,
-      selectedElement,
+      currentElement: selectedElement?.element,
+      selectedBarNumber,
+      selectedBeatPosition,
       setSelectedBarNumber,
       setSelectedBeatPosition,
       updateBars,
@@ -61,6 +48,24 @@ export function useKeyboard() {
       setPreviewNoteOctave,
     });
     addEventListener("keydown", onKeyDown);
+
+    if (selectedElement) {
+      setInputElementType({
+        type: selectedElement?.element.type,
+        noteValue: selectedElement?.element.duration.value,
+      });
+      if (
+        selectedElement?.element.type === "note" &&
+        selectedElement?.element.pitch.accidental
+      ) {
+        setSelectedAccidental(
+          selectedElement?.element.pitch.accidental ?? null
+        );
+      } else {
+        setSelectedAccidental(null);
+      }
+    }
+
     return () => {
       removeEventListener("keydown", onKeyDown);
     };

@@ -3,6 +3,7 @@ import {
   NoteElementProcessed,
   HorizontalHarmonyError,
   Voice,
+  NotationElementProcessed,
 } from "../../types";
 import { calculateTwoNoteSymbolsDistance } from "../calculateStaffElementsPositions.utils";
 
@@ -50,14 +51,10 @@ function checkParallelVulnerableInterval(
 interface CheckNotesErrorsParams {
   barNumber: number;
   beatPosition: number;
-  soprano: NoteElementProcessed;
-  alto: NoteElementProcessed;
-  tenor: NoteElementProcessed;
-  bass: NoteElementProcessed;
-}
-interface VoicesDistances {
-  distance: number;
-  signaturesSame: boolean;
+  soprano: NotationElementProcessed | undefined;
+  alto: NotationElementProcessed | undefined;
+  tenor: NotationElementProcessed | undefined;
+  bass: NotationElementProcessed | undefined;
 }
 function getAllVoicesParallelIntervals({
   soprano,
@@ -66,12 +63,30 @@ function getAllVoicesParallelIntervals({
   bass,
 }: Pick<CheckNotesErrorsParams, "soprano" | "alto" | "tenor" | "bass">) {
   return {
-    sopranoAlto: checkParallelVulnerableInterval(soprano, alto),
-    sopranoTenor: checkParallelVulnerableInterval(soprano, tenor),
-    sopranoBass: checkParallelVulnerableInterval(soprano, bass),
-    altoTenor: checkParallelVulnerableInterval(alto, tenor),
-    altoBass: checkParallelVulnerableInterval(alto, bass),
-    tenorBass: checkParallelVulnerableInterval(tenor, bass),
+    sopranoAlto:
+      soprano?.type === "note" && alto?.type === "note"
+        ? checkParallelVulnerableInterval(soprano, alto)
+        : null,
+    sopranoTenor:
+      soprano?.type === "note" && tenor?.type === "note"
+        ? checkParallelVulnerableInterval(soprano, tenor)
+        : null,
+    sopranoBass:
+      soprano?.type === "note" && bass?.type === "note"
+        ? checkParallelVulnerableInterval(soprano, bass)
+        : null,
+    altoTenor:
+      alto?.type === "note" && tenor?.type === "note"
+        ? checkParallelVulnerableInterval(alto, tenor)
+        : null,
+    altoBass:
+      alto?.type === "note" && bass?.type === "note"
+        ? checkParallelVulnerableInterval(alto, bass)
+        : null,
+    tenorBass:
+      tenor?.type === "note" && bass?.type === "note"
+        ? checkParallelVulnerableInterval(tenor, bass)
+        : null,
   };
 }
 
@@ -110,10 +125,10 @@ function getParallelIntervalsErrors(
     voices: { topVoice: Voice; bottomVoice: Voice };
     first: ParallelVulnerableInterval | null;
     second: ParallelVulnerableInterval | null;
-    firstTopVoice: NoteElementProcessed;
-    firstBottomVoice: NoteElementProcessed;
-    secondTopVoice: NoteElementProcessed;
-    secondBottomVoice: NoteElementProcessed;
+    firstTopVoice: NotationElementProcessed | undefined;
+    firstBottomVoice: NotationElementProcessed | undefined;
+    secondTopVoice: NotationElementProcessed | undefined;
+    secondBottomVoice: NotationElementProcessed | undefined;
   }[] = [
     {
       voices: { topVoice: "soprano", bottomVoice: "alto" },
@@ -177,34 +192,31 @@ function getParallelIntervalsErrors(
     voices: { topVoice, bottomVoice },
     first,
     second,
-    firstTopVoice: {
-      pitch: firstTopPitch,
-      absoluteSignature: firstTopAbsoluteSignature,
-    },
-    firstBottomVoice: {
-      pitch: firstBottomPitch,
-      absoluteSignature: firstBottomAbsoluteSignature,
-    },
-    secondTopVoice: {
-      pitch: secondTopPitch,
-      absoluteSignature: secondTopAbsoluteSignature,
-    },
-    secondBottomVoice: {
-      pitch: secondBottomPitch,
-      absoluteSignature: secondBottomAbsoluteSignature,
-    },
+    firstTopVoice,
+    firstBottomVoice,
+    secondTopVoice,
+    secondBottomVoice,
   } of consecutiveBeatsParallelVulnerableIntervals) {
-    if (first === null || second === null) {
+    if (
+      first === null ||
+      second === null ||
+      firstTopVoice?.type !== "note" ||
+      firstBottomVoice?.type !== "note" ||
+      secondTopVoice?.type !== "note" ||
+      secondBottomVoice?.type !== "note"
+    ) {
       continue;
     }
 
     const intervalsAreTheSame =
-      firstTopPitch.noteSymbol === secondTopPitch.noteSymbol &&
-      firstTopPitch.octave === secondTopPitch.octave &&
-      firstTopAbsoluteSignature === secondTopAbsoluteSignature &&
-      firstBottomPitch.noteSymbol === secondBottomPitch.noteSymbol &&
-      firstBottomPitch.octave === secondBottomPitch.octave &&
-      firstBottomAbsoluteSignature === secondBottomAbsoluteSignature;
+      firstTopVoice.pitch.noteSymbol === secondTopVoice.pitch.noteSymbol &&
+      firstTopVoice.pitch.octave === secondTopVoice.pitch.octave &&
+      firstTopVoice.absoluteSignature === secondTopVoice.absoluteSignature &&
+      firstBottomVoice.pitch.noteSymbol ===
+        secondBottomVoice.pitch.noteSymbol &&
+      firstBottomVoice.pitch.octave === secondBottomVoice.pitch.octave &&
+      firstBottomVoice.absoluteSignature ===
+        secondBottomVoice.absoluteSignature;
 
     if (intervalsAreTheSame) continue;
 
@@ -243,19 +255,6 @@ export function checkTwoConsecutiveBeats(
   firstBeat: BeatProcessedWithBarNumber,
   secondBeat: BeatProcessedWithBarNumber
 ) {
-  if (
-    firstBeat.soprano?.type !== "note" ||
-    firstBeat.alto?.type !== "note" ||
-    firstBeat.tenor?.type !== "note" ||
-    firstBeat.bass?.type !== "note" ||
-    secondBeat.soprano?.type !== "note" ||
-    secondBeat.alto?.type !== "note" ||
-    secondBeat.tenor?.type !== "note" ||
-    secondBeat.bass?.type !== "note"
-  ) {
-    return [];
-  }
-
   const parallelIntervalsErrors = getParallelIntervalsErrors(
     {
       barNumber: firstBeat.barNumber,

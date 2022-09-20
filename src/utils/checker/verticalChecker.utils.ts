@@ -3,14 +3,15 @@ import {
   BeatProcessedWithBarNumber,
   NoteElementProcessed,
   Voice,
+  NotationElementProcessed,
 } from "../../types";
 import { calculateTwoNoteSymbolsDistance } from "../calculateStaffElementsPositions.utils";
 
 interface CheckNotesErrorsParams {
-  soprano: NoteElementProcessed;
-  alto: NoteElementProcessed;
-  tenor: NoteElementProcessed;
-  bass: NoteElementProcessed;
+  soprano: NotationElementProcessed | undefined;
+  alto: NotationElementProcessed | undefined;
+  tenor: NotationElementProcessed | undefined;
+  bass: NotationElementProcessed | undefined;
 }
 function getVoiceCrossingErrors({
   soprano,
@@ -19,12 +20,22 @@ function getVoiceCrossingErrors({
   bass,
 }: CheckNotesErrorsParams) {
   const errors: Pick<VerticalHarmonyError, "topVoice" | "bottomVoice">[] = [];
-  const elementsTopBottom: { voice: Voice; element: NoteElementProcessed }[] = [
-    { voice: "soprano", element: soprano },
-    { voice: "alto", element: alto },
-    { voice: "tenor", element: tenor },
-    { voice: "bass", element: bass },
-  ];
+  const elementsTopBottom: { voice: Voice; element: NoteElementProcessed }[] =
+    [];
+
+  if (soprano?.type === "note") {
+    elementsTopBottom.push({ voice: "soprano", element: soprano });
+  }
+  if (alto?.type === "note") {
+    elementsTopBottom.push({ voice: "alto", element: alto });
+  }
+  if (tenor?.type === "note") {
+    elementsTopBottom.push({ voice: "tenor", element: tenor });
+  }
+  if (bass?.type === "note") {
+    elementsTopBottom.push({ voice: "bass", element: bass });
+  }
+
   for (
     let elementIndex = 0;
     elementIndex < elementsTopBottom.length - 1;
@@ -57,26 +68,33 @@ function getVoiceDistanceErrors({
   bass,
 }: CheckNotesErrorsParams) {
   const errors: Pick<VerticalHarmonyError, "topVoice" | "bottomVoice">[] = [];
-  const sopranoAltoDistance = calculateTwoNoteSymbolsDistance(
-    soprano.pitch,
-    alto.pitch
-  );
-  if (sopranoAltoDistance > 7) {
-    errors.push({ topVoice: "soprano", bottomVoice: "alto" });
+
+  if (soprano?.type === "note" && alto?.type === "note") {
+    const sopranoAltoDistance = calculateTwoNoteSymbolsDistance(
+      soprano.pitch,
+      alto.pitch
+    );
+    if (sopranoAltoDistance > 7) {
+      errors.push({ topVoice: "soprano", bottomVoice: "alto" });
+    }
   }
-  const altoTenorDistance = calculateTwoNoteSymbolsDistance(
-    alto.pitch,
-    tenor.pitch
-  );
-  if (altoTenorDistance > 6) {
-    errors.push({ topVoice: "alto", bottomVoice: "tenor" });
+  if (alto?.type === "note" && tenor?.type === "note") {
+    const altoTenorDistance = calculateTwoNoteSymbolsDistance(
+      alto.pitch,
+      tenor.pitch
+    );
+    if (altoTenorDistance > 6) {
+      errors.push({ topVoice: "alto", bottomVoice: "tenor" });
+    }
   }
-  const tenorBassDistance = calculateTwoNoteSymbolsDistance(
-    tenor.pitch,
-    bass.pitch
-  );
-  if (tenorBassDistance > 14) {
-    errors.push({ topVoice: "tenor", bottomVoice: "bass" });
+  if (tenor?.type === "note" && bass?.type === "note") {
+    const tenorBassDistance = calculateTwoNoteSymbolsDistance(
+      tenor.pitch,
+      bass.pitch
+    );
+    if (tenorBassDistance > 14) {
+      errors.push({ topVoice: "tenor", bottomVoice: "bass" });
+    }
   }
   return errors;
 }
@@ -89,14 +107,6 @@ export function checkBeat({
   beatPosition,
   barNumber,
 }: BeatProcessedWithBarNumber) {
-  if (
-    soprano?.type !== "note" ||
-    alto?.type !== "note" ||
-    tenor?.type !== "note" ||
-    bass?.type !== "note"
-  ) {
-    return [];
-  }
   const voiceCrossingErrors: VerticalHarmonyError[] = getVoiceCrossingErrors({
     soprano,
     alto,

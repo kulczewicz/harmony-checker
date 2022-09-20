@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { SetterOrUpdater } from "recoil";
 import {
   Bar,
+  NotationElement,
   NoteOctave,
   NoteSymbol,
   RestElement,
@@ -10,7 +11,9 @@ import {
 import { getNoteAbove, getNoteBelow } from "./getNoteAboveBelow.utils";
 
 interface OnKeyDownActionParams {
-  selectedElement: SelectedElement;
+  currentElement: NotationElement | undefined;
+  selectedBarNumber: number;
+  selectedBeatPosition: number;
   bars: Bar[];
   updateBars: (updatedElement: SelectedElement) => void;
   setSelectedBarNumber: SetterOrUpdater<number | null>;
@@ -22,7 +25,9 @@ interface OnKeyDownActionParams {
 export const onKeyDownAction =
   ({
     bars,
-    selectedElement: { element, barNumber, beatPosition },
+    currentElement,
+    selectedBarNumber,
+    selectedBeatPosition,
     updateBars,
     setSelectedBarNumber,
     setSelectedBeatPosition,
@@ -33,34 +38,35 @@ export const onKeyDownAction =
     if (ev.code === "Backspace") {
       ev.preventDefault();
 
-      if (element.type === "rest") return;
+      if (currentElement?.type !== "note") return;
 
       setPreviewNoteSymbol(null);
       setPreviewNoteOctave(null);
 
       const newElement: RestElement = {
         type: "rest",
-        duration: element.duration,
-        voice: element.voice,
+        duration: currentElement.duration,
+        voice: currentElement.voice,
       };
       updateBars({
-        barNumber,
-        beatPosition,
+        barNumber: selectedBarNumber,
+        beatPosition: selectedBeatPosition,
         element: newElement,
       });
     }
 
     if (ev.code === "ArrowUp") {
       ev.preventDefault();
-      if (element.type === "rest") return;
-      const noteAbove = getNoteAbove(element);
+      if (currentElement?.type !== "note") return;
+
+      const noteAbove = getNoteAbove(currentElement);
 
       if (noteAbove) {
         setPreviewNoteSymbol(null);
         setPreviewNoteOctave(null);
         updateBars({
-          barNumber,
-          beatPosition,
+          barNumber: selectedBarNumber,
+          beatPosition: selectedBeatPosition,
           element: noteAbove,
         });
       }
@@ -68,15 +74,15 @@ export const onKeyDownAction =
     if (ev.code === "ArrowDown") {
       ev.preventDefault();
 
-      if (element.type === "rest") return;
-      const noteBelow = getNoteBelow(element);
+      if (currentElement?.type !== "note") return;
+      const noteBelow = getNoteBelow(currentElement);
 
       if (noteBelow) {
         setPreviewNoteSymbol(null);
         setPreviewNoteOctave(null);
         updateBars({
-          barNumber,
-          beatPosition,
+          barNumber: selectedBarNumber,
+          beatPosition: selectedBeatPosition,
           element: noteBelow,
         });
       }
@@ -84,10 +90,10 @@ export const onKeyDownAction =
     if (ev.code === "ArrowLeft") {
       ev.preventDefault();
 
-      if (barNumber === 0 && beatPosition === 0) return;
+      if (selectedBarNumber === 0 && selectedBeatPosition === 0) return;
 
-      if (beatPosition === 0) {
-        const previousBarNumber = barNumber - 1;
+      if (selectedBeatPosition === 0) {
+        const previousBarNumber = selectedBarNumber - 1;
         const previousBar = bars[previousBarNumber];
         const lastBeatInBar = previousBar.beats.at(-1);
         if (!lastBeatInBar) return;
@@ -95,9 +101,9 @@ export const onKeyDownAction =
         setSelectedBarNumber(previousBarNumber);
         setSelectedBeatPosition(lastBeatInBar.beatPosition);
       } else {
-        const selectedBarBeats = bars[barNumber].beats;
+        const selectedBarBeats = bars[selectedBarNumber].beats;
         const currentBeatIndex = selectedBarBeats.findIndex(
-          ({ beatPosition: position }) => position === beatPosition
+          ({ beatPosition: position }) => position === selectedBeatPosition
         );
         setSelectedBeatPosition(
           selectedBarBeats[currentBeatIndex - 1].beatPosition
@@ -112,16 +118,16 @@ export const onKeyDownAction =
       const lastBeatPositionInLastBar =
         bars[lastBarIndex].beats.at(-1)?.beatPosition;
       if (
-        barNumber === lastBarIndex &&
-        beatPosition === lastBeatPositionInLastBar
+        selectedBarNumber === lastBarIndex &&
+        selectedBeatPosition === lastBeatPositionInLastBar
       )
         return;
 
       const lastBeatPositionInCurrentBar =
-        bars[barNumber].beats.at(-1)?.beatPosition;
+        bars[selectedBarNumber].beats.at(-1)?.beatPosition;
 
-      if (beatPosition === lastBeatPositionInCurrentBar) {
-        const nextBarNumber = barNumber + 1;
+      if (selectedBeatPosition === lastBeatPositionInCurrentBar) {
+        const nextBarNumber = selectedBarNumber + 1;
         const nextBar = bars[nextBarNumber];
         const firstBeatInBar = nextBar.beats[0];
         if (!firstBeatInBar) return;
@@ -129,9 +135,9 @@ export const onKeyDownAction =
         setSelectedBarNumber(nextBarNumber);
         setSelectedBeatPosition(firstBeatInBar.beatPosition);
       } else {
-        const selectedBarBeats = bars[barNumber].beats;
+        const selectedBarBeats = bars[selectedBarNumber].beats;
         const currentBeatIndex = selectedBarBeats.findIndex(
-          ({ beatPosition: position }) => position === beatPosition
+          ({ beatPosition: position }) => position === selectedBeatPosition
         );
         setSelectedBeatPosition(
           selectedBarBeats[currentBeatIndex + 1].beatPosition

@@ -120,7 +120,16 @@ export function StaffElementWithAccidental({
         position={position}
         element={element}
         onClick={setSelected}
-        sx={{ fill: isSelected ? "blue" : isCausingError ? "red" : "black" }}
+        sx={{
+          fill:
+            isSelected && isCausingError
+              ? "purple"
+              : isSelected
+              ? "blue"
+              : isCausingError
+              ? "red"
+              : "black",
+        }}
       />
       {element.type === "note" &&
       showAccidental &&

@@ -29,8 +29,12 @@ export function StaffLines({ sx, ...props }: BoxProps) {
 export function SheetStaffLines() {
   return (
     <>
-      <StaffLines sx={{ top: `${staffVerticalPadding}px` }} />
       <StaffLines
+        id="SheetStaffLines"
+        sx={{ top: `${staffVerticalPadding}px` }}
+      />
+      <StaffLines
+        id="SheetStaffLines"
         sx={{ top: `${staffWithPaddingHeight + staffVerticalPadding}px` }}
       />
     </>

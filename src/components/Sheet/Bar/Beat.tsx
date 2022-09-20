@@ -1,6 +1,8 @@
-import { memo, useEffect } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import Tippy from "@tippyjs/react";
+import { memo, useEffect, useRef, useState } from "react";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, BoxProps } from "theme-ui";
+import { sheetHeight, staffWithPaddingHeight } from "../../../constants";
 import { useUpdateBars } from "../../../hooks";
 import {
   inputDotOnState,
@@ -20,7 +22,9 @@ import type {
   Voice,
 } from "../../../types";
 import { getBeatId } from "../../../utils";
+import { getErrorMessage } from "../../../utils/checker/getErrorMessages.utils";
 import { getWidthIncreaseFactorForBeat } from "../../../utils/timeSignature.utils";
+import { SheetStaffLines } from "../Staff";
 import { StaffVoices } from "./StaffVoices";
 
 function getErrorObjectForBeat(errors: BeatHarmonyError[]) {
@@ -32,11 +36,53 @@ function getErrorObjectForBeat(errors: BeatHarmonyError[]) {
     bass: false,
   };
   for (const { type, topVoice, bottomVoice } of errors) {
-    error.errorMessages.push(type);
+    error.errorMessages.push(getErrorMessage({ type, topVoice, bottomVoice }));
     error[topVoice] = true;
     error[bottomVoice] = true;
   }
   return error;
+}
+
+interface BeatErrorTooltipProps extends BoxProps {
+  showError: boolean;
+  errorMessages: string[];
+}
+function BeatErrorTooltip({
+  showError,
+  errorMessages,
+  sx,
+  ...props
+}: BeatErrorTooltipProps) {
+  return (
+    <Box
+      sx={{
+        position: "absolute",
+        visibility: showError ? "visible" : "hidden",
+        bottom: `${staffWithPaddingHeight * 2 + 8}px`,
+        backgroundColor: "white",
+        borderRadius: "8px",
+        boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+        p: "12px",
+        minWidth: "250px",
+        opacity: showError ? 1 : 0,
+        transition: "all 0.2s",
+        ...sx,
+      }}
+      {...props}
+    >
+      <ul
+        sx={{
+          paddingInlineStart: "16px",
+          marginBlockStart: 0,
+          marginBlockEnd: 0,
+        }}
+      >
+        {errorMessages.map((message) => (
+          <li key={message}>{message}</li>
+        ))}
+      </ul>
+    </Box>
+  );
 }
 
 export type BeatInputElement = NotationElement | null;
@@ -61,7 +107,7 @@ function BeatComponent({
   const { updateBars } = useUpdateBars();
   const setSelectedBarNumber = useSetRecoilState(selectedBarNumberState);
   const setSelectedBeatPosition = useSetRecoilState(selectedBeatPositionState);
-  const setMouseOverBeat = useSetRecoilState(mouseOverBeatState);
+  const [mouseOverBeat, setMouseOverBeat] = useRecoilState(mouseOverBeatState);
   const inputDuration = useRecoilValue(inputElementTypeState);
   const selectedAccidental = useRecoilValue(selectedAccidentalState);
   const isDotOn = useRecoilValue(inputDotOnState);
@@ -123,12 +169,18 @@ function BeatComponent({
       ? previewElement
       : null;
 
+  const showError =
+    errorMessages.length > 0 &&
+    mouseOverBeat?.barNumber === barNumber &&
+    mouseOverBeat?.beatPosition === beatPosition;
+
   const widthIncreaseFactor = getWidthIncreaseFactorForBeat(beat);
   return (
     <Box
       key={beatPosition}
       id={getBeatId(barNumber, beatPosition)}
       sx={{
+        position: "relative",
         flexBasis: 0,
         flexGrow: widthIncreaseFactor,
         backgroundColor: selectedVoice ? "lightskyblue" : "white",
@@ -161,6 +213,8 @@ function BeatComponent({
           })}
       {...props}
     >
+      <BeatErrorTooltip errorMessages={errorMessages} showError={showError} />
+      <SheetStaffLines />
       <StaffVoices
         type="violin"
         barNumber={barNumber}

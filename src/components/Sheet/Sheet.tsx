@@ -193,7 +193,6 @@ export function Sheet() {
           sx={{ position: "relative", width: "100%" }}
         >
           <StaffLineBeginning keySignatureSymbols={keySignatureSymbols} />
-          <SheetStaffLines />
           {line.map((bar) => {
             const barSelected = selectedBarNumber === bar.barNumber;
             const barPreview = mouseOverBeat?.barNumber === bar.barNumber;

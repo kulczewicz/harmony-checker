@@ -16,6 +16,7 @@ import {
   calculateNotePositionFromTop,
 } from "../../utils";
 import { FlatAccidental, SharpAccidental } from "../Notation";
+import { SheetStaffLines } from "./Staff";
 
 const sharpKeySignatureNotesInOrder: NotePitch[] = [
   { noteSymbol: "F", octave: 5, accidental: null },
@@ -88,6 +89,7 @@ interface KeySignatureProps {
 export function KeySignature({ keySignatureSymbols }: KeySignatureProps) {
   return (
     <Box>
+      <SheetStaffLines />
       <StaffKeySignature
         type="violin"
         keySignatureSymbols={keySignatureSymbols}

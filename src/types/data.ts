@@ -243,6 +243,9 @@ export interface HorizontalHarmonyError {
   bottomVoice: Voice;
 }
 
+export type HarmonyErrorType =
+  | VerticalHarmonyErrorType
+  | HorizontalHarmonyErrorType;
 export interface BeatHarmonyError {
   type: VerticalHarmonyErrorType | HorizontalHarmonyErrorType;
   topVoice: Voice;

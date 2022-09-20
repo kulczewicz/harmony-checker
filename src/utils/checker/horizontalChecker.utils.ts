@@ -7,7 +7,7 @@ import {
 import { calculateTwoNoteSymbolsDistance } from "../calculateStaffElementsPositions.utils";
 
 const FIFTH_NOTES_DISTANCE = 4;
-const OCTAVE_NOTES_DISTANCE = 6;
+const OCTAVE_NOTES_DISTANCE = 7;
 const TWELFTH_NOTES_DISTANCE = 11;
 
 type ParallelVulnerableInterval = "octave" | "fifth" | "twelfth";

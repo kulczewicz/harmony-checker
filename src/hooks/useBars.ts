@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useRecoilState } from "recoil";
 import { durationByNoteValue } from "../constants/timeSignature.constants";
-import { barsState } from "../NoteInputState";
+import { barsState, defaultBarsState } from "../NoteInputState";
 import { Bar, Beat, SelectedElement } from "../types";
 import {
   calculateBarDuration,
@@ -143,7 +143,7 @@ export function getUpdatedBar(
   return bar;
 }
 
-function getUpdatedBars(newElement: SelectedElement, bars: Bar[]) {
+function getBarsWithUpdatedElement(newElement: SelectedElement, bars: Bar[]) {
   return bars.map((bar) => {
     if (bar.barNumber !== newElement.barNumber) return bar;
 
@@ -151,16 +151,45 @@ function getUpdatedBars(newElement: SelectedElement, bars: Bar[]) {
   });
 }
 
-export function useUpdateBars() {
+export function useBars() {
   const [bars, setBars] = useRecoilState(barsState);
-  const updateBars = useCallback(
+
+  const updateBarsWithCache = (bars: Bar[]) => {
+    setBars(bars);
+    localStorage.setItem("bars", JSON.stringify(bars));
+  };
+
+  const resetBars = () => {
+    setBars([...defaultBarsState]);
+    localStorage.removeItem("bars");
+  };
+
+  const updateElementInBars = useCallback(
     (newElement: SelectedElement) => {
-      const newBars = getUpdatedBars(newElement, bars);
+      const newBars = getBarsWithUpdatedElement(newElement, bars);
       setBars(newBars);
       localStorage.setItem("bars", JSON.stringify(newBars));
     },
     [bars, setBars]
   );
 
-  return { bars, updateBars };
+  const loadBarsFromLocalStorage = () => {
+    const barsFromLocalStorage = localStorage.getItem("bars");
+    if (!barsFromLocalStorage) return;
+    let bars: Bar[] = [];
+    try {
+      bars = JSON.parse(barsFromLocalStorage);
+    } catch {
+      return;
+    }
+    setBars(bars);
+  };
+
+  return {
+    bars,
+    resetBars,
+    loadBarsFromLocalStorage,
+    updateBarsWithCache,
+    updateElementInBars,
+  };
 }

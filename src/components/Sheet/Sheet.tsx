@@ -1,15 +1,27 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Box, Button, Flex } from "theme-ui";
-import { useCursor } from "../../hooks";
+import { useCursor, useBars } from "../../hooks";
 import { useKeyboard } from "../../hooks/useKeyboard";
 import { useMusicKey } from "../../hooks/useMusicKey";
 import { barsState, inputVoiceState } from "../../NoteInputState";
 
-import { Bar, Line, NoteOctave, NoteSymbol, Voice } from "../../types/data";
+import {
+  Bar,
+  OldLine,
+  NoteOctave,
+  NoteSymbol,
+  Voice,
+  Line,
+} from "../../types/data";
 import { getLineId } from "../../utils";
 import { preprocessBars } from "../../utils/barsPreprocession.utils";
 import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";
+import {
+  controlPanelButtonWidth,
+  InputVoices,
+  inputVoicesRightMargin,
+} from "../ControlPanel";
 import { BarBlock } from "./Bar";
 import { EndBarLine } from "./Bar/BarLine";
 import {
@@ -19,15 +31,12 @@ import {
 
 const sheetElementId = "sheet";
 export function Sheet() {
-  const [bars, setBars] = useRecoilState(barsState);
-  const {
-    keySignatureSymbols,
-    musicKey,
-    signatureSymbolsForNotesInKey,
-    updateMusicKey,
-  } = useMusicKey();
+  const { bars, loadBarsFromLocalStorage } = useBars();
+  const { keySignatureSymbols, signatureSymbolsForNotesInKey } = useMusicKey();
   const [availableSheetWidth, setAvailableSheetWidth] = useState<number>(0);
-  const [lines, setLines] = useState<Line[]>([[]]);
+  const [lines, setLines] = useState<Line[]>([
+    { bars: [], barNumbersRange: { start: 0, end: 0 } },
+  ]);
   const voice = useRecoilValue(inputVoiceState);
   const {
     selectedBarNumber,
@@ -56,29 +65,19 @@ export function Sheet() {
         signatureSymbolsForNotesInKey
       );
 
-      setLines(
-        breakProcessedBarsIntoLines({
-          availableSheetWidth,
-          bars: processedBars,
-        })
-      );
+      const lines = breakProcessedBarsIntoLines({
+        availableSheetWidth,
+        bars: processedBars,
+      });
+      setLines(lines);
     },
     [setLines, signatureSymbolsForNotesInKey]
   );
 
   useEffect(() => {
     updateSheetWidth();
-    // updateMusicKey({ mode: "major", note: "D", signature: null });
 
-    const barsFromLocalStorage = localStorage.getItem("bars");
-    if (!barsFromLocalStorage) return;
-    let bars: Bar[] = [];
-    try {
-      bars = JSON.parse(barsFromLocalStorage);
-    } catch {
-      return;
-    }
-    setBars(bars);
+    loadBarsFromLocalStorage();
   }, []);
 
   useEffect(() => {
@@ -92,14 +91,25 @@ export function Sheet() {
 
   return (
     <Box id="sheet" sx={{ width: "100%" }}>
-      {lines.map((line, lineIndex) => (
+      {lines.map(({ bars, barNumbersRange: { start, end } }, lineIndex) => (
         <Flex
           id={getLineId(lineIndex)}
           key={lineIndex}
           sx={{ position: "relative", width: "100%" }}
         >
+          <Box
+            sx={{
+              width: `${controlPanelButtonWidth + inputVoicesRightMargin}px`,
+            }}
+          >
+            {selectedBarNumber !== null &&
+            selectedBarNumber >= start &&
+            selectedBarNumber <= end ? (
+              <InputVoices />
+            ) : null}
+          </Box>
           <StaffLineBeginning keySignatureSymbols={keySignatureSymbols} />
-          {line.map((bar) => {
+          {bars.map((bar) => {
             const barSelected = selectedBarNumber === bar.barNumber;
             const barPreview = mouseOverBeat?.barNumber === bar.barNumber;
             const selectedBeatPositionInBar: number | null = barSelected

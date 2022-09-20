@@ -1,9 +1,6 @@
 import type { NextPage } from "next";
 import { Box, Flex } from "theme-ui";
-import {
-  InputNotationElements,
-  InputVoices,
-} from "../src/components/InputPanel";
+import { ControlPanel } from "../src/components/ControlPanel";
 import { Sheet } from "../src/components/Sheet";
 
 const Home: NextPage = () => {
@@ -17,11 +14,8 @@ const Home: NextPage = () => {
     >
       <Flex sx={{ width: "100%", justifyContent: "center" }}>
         <Box sx={{ width: "100%", maxWidth: "1024px" }}>
-          <InputNotationElements />
-          <Flex>
-            <InputVoices />
-            <Sheet />
-          </Flex>
+          <ControlPanel />
+          <Sheet />
         </Box>
       </Flex>
     </Box>

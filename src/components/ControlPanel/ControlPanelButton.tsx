@@ -1,19 +1,21 @@
 import { Button, ButtonProps } from "theme-ui";
 
-interface SelectNoteVoiceButtonProps extends ButtonProps {
+interface ControlPanelButtonProps extends ButtonProps {
   isActive: boolean;
 }
-export function InputPanelButton({
+export const controlPanelButtonWidth = 32;
+export const controlPanelButtonHeight = 32;
+export function ControlPanelButton({
   isActive,
   sx,
   ...props
-}: SelectNoteVoiceButtonProps) {
+}: ControlPanelButtonProps) {
   return (
     <Button
       sx={{
         padding: "4px",
-        minHeight: "32px",
-        minWidth: "32px",
+        minHeight: `${controlPanelButtonWidth}px`,
+        minWidth: `${controlPanelButtonWidth}px`,
         color: "black",
         border: "1px solid",
         cursor: "pointer",

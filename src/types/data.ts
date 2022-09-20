@@ -74,8 +74,9 @@ export interface KeySignatureSymbols {
   numberOfSymbols: KeySignatureNumberOfSymbols;
 }
 
+export type MusicKeyMode = "major" | "minor";
 export interface MusicKey {
-  mode: "major" | "minor";
+  mode: MusicKeyMode;
   note: NoteSymbol;
   signature: KeySignatureSymbol | null;
 }
@@ -185,7 +186,14 @@ export interface BeatProcessedWithBarNumber extends BeatProcessed {
   barNumber: number;
 }
 
-export type Line = BarProcessed[];
+export type OldLine = BarProcessed[];
+export type Line = {
+  barNumbersRange: {
+    start: number;
+    end: number;
+  };
+  bars: BarProcessed[];
+};
 
 export interface SelectedElement {
   element: NotationElement;

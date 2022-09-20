@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { BoxProps, Flex } from "theme-ui";
-import { barsState, defaultBarsState } from "../../NoteInputState";
-import { InputPanelButton } from "./InputPanelButton";
+import { barsState } from "../../NoteInputState";
+import {
+  ControlPanelButton,
+  controlPanelButtonHeight,
+} from "./ControlPanelButton";
 import { saveAs } from "file-saver";
+import { inputPanelSectionStyles } from "./styles";
+import { useBars } from "../../hooks";
 
 interface SheetDataHandlerProps extends BoxProps {}
-export function SheetDataHandler({ ...props }: SheetDataHandlerProps) {
+export function SaveToReadFromFile({ sx, ...props }: SheetDataHandlerProps) {
   const [fileToLoad, setFileToLoad] = useState<Blob | null>(null);
-  const [bars, setBars] = useRecoilState(barsState);
+  const { bars, updateBarsWithCache } = useBars();
+
   useEffect(() => {
     async function setBarsFromFile() {
       const jsonData = await fileToLoad?.text();
@@ -20,18 +26,17 @@ export function SheetDataHandler({ ...props }: SheetDataHandlerProps) {
       } catch {
         return;
       }
-      setBars(parsed);
+      // TODO: check if data is valid
+      updateBarsWithCache(parsed);
     }
     setBarsFromFile();
-  }, [fileToLoad, setBars]);
+  }, [fileToLoad, updateBarsWithCache]);
 
   return (
-    <Flex
-      sx={{ flexDirection: "column", justifyContent: "space-between", ml: 2 }}
-      {...props}
-    >
+    <Flex sx={{ ...inputPanelSectionStyles, ...sx }} {...props}>
       <Flex>
-        <InputPanelButton
+        <ControlPanelButton
+          sx={{ mr: 2 }}
           isActive={false}
           onClick={() => {
             const fileToSave = new Blob([JSON.stringify(bars)], {
@@ -41,21 +46,12 @@ export function SheetDataHandler({ ...props }: SheetDataHandlerProps) {
             saveAs(fileToSave, "sheetData.json");
           }}
         >
-          Save data
-        </InputPanelButton>
-        <InputPanelButton
-          sx={{ ml: 2 }}
-          isActive={false}
-          onClick={() => {
-            setBars(defaultBarsState);
-            localStorage.removeItem("bars");
-          }}
-        >
-          Reset data
-        </InputPanelButton>
+          Save to file
+        </ControlPanelButton>
       </Flex>
       <input
-        sx={{ maxWidth: "200px" }}
+        sx={{ maxWidth: "200px", height: `${controlPanelButtonHeight}px` }}
+        accept=".json"
         type="file"
         onChange={({ target: { files } }) => {
           if (!files?.item) return;

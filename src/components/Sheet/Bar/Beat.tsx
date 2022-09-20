@@ -2,7 +2,7 @@ import { memo, useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, BoxProps } from "theme-ui";
 import { noteZIndex, staffWithPaddingHeight } from "../../../constants";
-import { useUpdateBars } from "../../../hooks";
+import { useBars } from "../../../hooks";
 import {
   inputDotOnState,
   inputElementTypeState,
@@ -104,7 +104,7 @@ function BeatComponent({
   sx,
   ...props
 }: BeatProps) {
-  const { updateBars } = useUpdateBars();
+  const { updateElementInBars } = useBars();
   const setSelectedBarNumber = useSetRecoilState(selectedBarNumberState);
   const setSelectedBeatPosition = useSetRecoilState(selectedBeatPositionState);
   const [mouseOverBeat, setMouseOverBeat] = useRecoilState(mouseOverBeatState);
@@ -201,7 +201,7 @@ function BeatComponent({
                 previewElement &&
                 (previewElementViolin || previewElementBass)
               ) {
-                updateBars({
+                updateElementInBars({
                   barNumber,
                   beatPosition,
                   element: previewElement,

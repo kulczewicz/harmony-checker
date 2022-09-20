@@ -162,7 +162,7 @@ export const defaultBarsState = [
 ];
 export const barsState = atom<Bar[]>({
   key: "bars",
-  default: defaultBarsState,
+  default: [...defaultBarsState],
 });
 
 export const timeSignatureState = atom<number>({

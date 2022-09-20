@@ -1,2 +1,2 @@
 export * from "./useCursor";
-export * from "./useUpdateBars";
+export * from "./useBars";

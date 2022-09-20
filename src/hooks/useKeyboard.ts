@@ -12,10 +12,10 @@ import {
 } from "../NoteInputState";
 import { getSelectedElement } from "../utils/getSelectedElement.utils";
 import { onKeyDownAction } from "../utils/onKeyDownAction.utils";
-import { useUpdateBars } from "./useUpdateBars";
+import { useBars } from "./useBars";
 
 export function useKeyboard() {
-  const { bars, updateBars } = useUpdateBars();
+  const { bars, updateElementInBars } = useBars();
   const [selectedBarNumber, setSelectedBarNumber] = useRecoilState(
     selectedBarNumberState
   );
@@ -43,7 +43,7 @@ export function useKeyboard() {
       selectedBeatPosition,
       setSelectedBarNumber,
       setSelectedBeatPosition,
-      updateBars,
+      updateElementInBars,
       setPreviewNoteSymbol,
       setPreviewNoteOctave,
     });
@@ -76,7 +76,7 @@ export function useKeyboard() {
     selectedBeatPosition,
     setSelectedBeatPosition,
     voice,
-    updateBars,
+    updateElementInBars,
     setPreviewNoteSymbol,
     setPreviewNoteOctave,
     setInputElementType,

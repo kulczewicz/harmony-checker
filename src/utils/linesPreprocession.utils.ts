@@ -1,4 +1,4 @@
-import { BarProcessed, Line } from "../types";
+import { BarProcessed, OldLine, Line } from "../types";
 
 interface BreakProcessedBarsIntoLinesParams {
   availableSheetWidth: number;
@@ -24,7 +24,10 @@ export function breakProcessedBarsIntoLines({
   //   lines.push(bars.slice(i, i + barsPerLine));
   // }
 
-  const lines: Line[] = [[]];
+  const newLines: Line[] = [
+    { bars: [], barNumbersRange: { start: 0, end: 0 } },
+  ];
+  const lines: OldLine[] = [[]];
   let currentLineIndex = 0;
   let currentLineWidth = 0;
   for (const bar of bars) {
@@ -32,13 +35,24 @@ export function breakProcessedBarsIntoLines({
       currentLineWidth + bar.width * widthIncreaseFactor >
       availableSheetWidth
     ) {
+      console.log("newline");
       currentLineIndex++;
       currentLineWidth = 0;
       lines.push([]);
+      newLines.push({
+        bars: [],
+        barNumbersRange: {
+          start: bar.barNumber,
+          end: bar.barNumber,
+        },
+      });
     }
     lines[currentLineIndex].push(bar);
+    newLines[currentLineIndex].bars.push(bar);
+    newLines[currentLineIndex].barNumbersRange.end = bar.barNumber;
+    console.log(newLines);
     currentLineWidth += bar.width * widthIncreaseFactor;
   }
 
-  return lines;
+  return newLines;
 }

@@ -15,7 +15,7 @@ interface OnKeyDownActionParams {
   selectedBarNumber: number;
   selectedBeatPosition: number;
   bars: Bar[];
-  updateBars: (updatedElement: SelectedElement) => void;
+  updateElementInBars: (updatedElement: SelectedElement) => void;
   setSelectedBarNumber: SetterOrUpdater<number | null>;
   setSelectedBeatPosition: SetterOrUpdater<number | null>;
   setPreviewNoteSymbol: Dispatch<SetStateAction<NoteSymbol | null>>;
@@ -28,7 +28,7 @@ export const onKeyDownAction =
     currentElement,
     selectedBarNumber,
     selectedBeatPosition,
-    updateBars,
+    updateElementInBars,
     setSelectedBarNumber,
     setSelectedBeatPosition,
     setPreviewNoteSymbol,
@@ -48,7 +48,7 @@ export const onKeyDownAction =
         duration: currentElement.duration,
         voice: currentElement.voice,
       };
-      updateBars({
+      updateElementInBars({
         barNumber: selectedBarNumber,
         beatPosition: selectedBeatPosition,
         element: newElement,
@@ -64,7 +64,7 @@ export const onKeyDownAction =
       if (noteAbove) {
         setPreviewNoteSymbol(null);
         setPreviewNoteOctave(null);
-        updateBars({
+        updateElementInBars({
           barNumber: selectedBarNumber,
           beatPosition: selectedBeatPosition,
           element: noteAbove,
@@ -80,7 +80,7 @@ export const onKeyDownAction =
       if (noteBelow) {
         setPreviewNoteSymbol(null);
         setPreviewNoteOctave(null);
-        updateBars({
+        updateElementInBars({
           barNumber: selectedBarNumber,
           beatPosition: selectedBeatPosition,
           element: noteBelow,

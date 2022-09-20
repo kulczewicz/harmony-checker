@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { useSetRecoilState } from "recoil";
 import { notePadding } from "../../../constants";
-import { useUpdateBars } from "../../../hooks";
+import { useBars } from "../../../hooks";
 import { inputVoiceState } from "../../../NoteInputState";
 import {
   NotationElementProcessed,
@@ -56,14 +56,16 @@ function PreviewElement({
   showAccidental,
 }: PreviewElementProps) {
   const position = calculatePreviewElementPosition(element, showAccidental);
-  const { updateBars } = useUpdateBars();
+  const { updateElementInBars } = useBars();
   return (
     <StaffElementWithAccidental
       position={position}
       element={element}
       isSelected={true}
       isCausingError={false}
-      setSelected={() => updateBars({ barNumber, beatPosition, element })}
+      setSelected={() =>
+        updateElementInBars({ barNumber, beatPosition, element })
+      }
       showAccidental={showAccidental}
     />
   );

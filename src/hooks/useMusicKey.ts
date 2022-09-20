@@ -5,7 +5,6 @@ import {
   musicKeyState,
   signatureSymbolsForNotesInKeyState,
 } from "../NoteInputState";
-import { MusicKey } from "../types";
 import {
   getKeySignatureSymbols,
   getSignatureSymbolsForNotesInKey,
@@ -19,21 +18,18 @@ export function useMusicKey() {
   const [signatureSymbolsForNotesInKey, setSignatureSymbolsForNotesInKey] =
     useRecoilState(signatureSymbolsForNotesInKeyState);
 
-  const updateMusicKey = (newKey: MusicKey) => {
-    const signatureSymbolsForNotes = getSignatureSymbolsForNotesInKey(newKey);
+  useEffect(() => {
+    const signatureSymbolsForNotes = getSignatureSymbolsForNotesInKey(musicKey);
     const keySignatureSymbols = getKeySignatureSymbols(
       signatureSymbolsForNotes
     );
-
     setSignatureSymbolsForNotesInKey(signatureSymbolsForNotes);
     setKeySignatureSymbols(keySignatureSymbols);
-    setMusicKey(musicKey);
-  };
+  }, [musicKey, setSignatureSymbolsForNotesInKey, setKeySignatureSymbols]);
 
   return {
     musicKey,
     keySignatureSymbols,
     signatureSymbolsForNotesInKey,
-    updateMusicKey,
   };
 }

@@ -24,10 +24,7 @@ export function breakProcessedBarsIntoLines({
   //   lines.push(bars.slice(i, i + barsPerLine));
   // }
 
-  const newLines: Line[] = [
-    { bars: [], barNumbersRange: { start: 0, end: 0 } },
-  ];
-  const lines: OldLine[] = [[]];
+  const lines: Line[] = [{ bars: [], barNumbersRange: { start: 0, end: 0 } }];
   let currentLineIndex = 0;
   let currentLineWidth = 0;
   for (const bar of bars) {
@@ -35,11 +32,9 @@ export function breakProcessedBarsIntoLines({
       currentLineWidth + bar.width * widthIncreaseFactor >
       availableSheetWidth
     ) {
-      console.log("newline");
       currentLineIndex++;
       currentLineWidth = 0;
-      lines.push([]);
-      newLines.push({
+      lines.push({
         bars: [],
         barNumbersRange: {
           start: bar.barNumber,
@@ -47,12 +42,10 @@ export function breakProcessedBarsIntoLines({
         },
       });
     }
-    lines[currentLineIndex].push(bar);
-    newLines[currentLineIndex].bars.push(bar);
-    newLines[currentLineIndex].barNumbersRange.end = bar.barNumber;
-    console.log(newLines);
+    lines[currentLineIndex].bars.push(bar);
+    lines[currentLineIndex].barNumbersRange.end = bar.barNumber;
     currentLineWidth += bar.width * widthIncreaseFactor;
   }
 
-  return newLines;
+  return lines;
 }

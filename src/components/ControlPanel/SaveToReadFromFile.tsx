@@ -33,10 +33,12 @@ export function SaveToReadFromFile({ sx, ...props }: SheetDataHandlerProps) {
   }, [fileToLoad, updateBarsWithCache]);
 
   return (
-    <Flex sx={{ ...inputPanelSectionStyles, ...sx }} {...props}>
+    <Flex
+      sx={{ ...inputPanelSectionStyles, flexWrap: "wrap", ...sx }}
+      {...props}
+    >
       <Flex>
         <ControlPanelButton
-          sx={{ mr: 2 }}
           isActive={false}
           onClick={() => {
             const fileToSave = new Blob([JSON.stringify(bars)], {
@@ -49,18 +51,20 @@ export function SaveToReadFromFile({ sx, ...props }: SheetDataHandlerProps) {
           Save to file
         </ControlPanelButton>
       </Flex>
-      <input
-        sx={{ maxWidth: "200px", height: `${controlPanelButtonHeight}px` }}
-        accept=".json"
-        type="file"
-        onChange={({ target: { files } }) => {
-          if (!files?.item) return;
+      <Flex sx={{ mt: "8px", alignItems: "center" }}>
+        <input
+          sx={{ maxWidth: "200px" }}
+          accept=".json"
+          type="file"
+          onChange={({ target: { files } }) => {
+            if (!files?.item) return;
 
-          const file = files[0];
-          if (!file) return;
-          setFileToLoad(file);
-        }}
-      />
+            const file = files[0];
+            if (!file) return;
+            setFileToLoad(file);
+          }}
+        />
+      </Flex>
     </Flex>
   );
 }

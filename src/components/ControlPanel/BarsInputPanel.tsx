@@ -30,9 +30,11 @@ export function BarsInputPanel({
 }: BarsInputPanelProps) {
   const { bars, resetBars, updateBarsWithCache } = useBars();
   return (
-    <Flex sx={{ ...inputPanelSectionStyles, ...sx }} {...props}>
+    <Flex
+      sx={{ ...inputPanelSectionStyles, flexWrap: "wrap", ...sx }}
+      {...props}
+    >
       <ControlPanelButton
-        sx={{ mr: 2 }}
         isActive={false}
         onClick={() => {
           if (
@@ -87,7 +89,7 @@ export function BarsInputPanel({
         + bar
       </ControlPanelButton>
       <ControlPanelButton
-        sx={{ ml: 2, color: "red" }}
+        sx={{ color: "red" }}
         isActive={false}
         onClick={resetBars}
       >

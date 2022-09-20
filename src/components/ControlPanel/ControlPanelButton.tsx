@@ -14,6 +14,8 @@ export function ControlPanelButton({
     <Button
       sx={{
         padding: "4px",
+        mt: "8px",
+        mr: "8px",
         minHeight: `${controlPanelButtonWidth}px`,
         minWidth: `${controlPanelButtonWidth}px`,
         color: "black",

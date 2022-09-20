@@ -15,14 +15,12 @@ import { ControlPanelButton } from "./ControlPanelButton";
 import { inputPanelSectionStyles } from "./styles";
 
 const inputButtonStyle: ThemeUIStyleObject = {
-  p: 2,
-  mr: 2,
+  p: "8px",
   display: "inline-flex",
   justifyContent: "center",
-  width: "40px",
+  width: "38px",
   height: "45px",
 };
-const noteButtonHeight = "24px";
 interface NotationElementsInput extends FlexProps {
   selectedBarNumber: number | null;
   selectedBeatPosition: number | null;
@@ -183,7 +181,7 @@ export function NotationElementsInput({
             setSelectedAccidental(newAccidental);
           }}
         >
-          <Accidental height="22px" />
+          <Accidental height="20px" />
         </ControlPanelButton>
       ))}
     </Flex>

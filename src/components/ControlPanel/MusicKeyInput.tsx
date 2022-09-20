@@ -41,7 +41,8 @@ function getSignatureSymbolForKeyword(signature: MusicKeyInputSignature) {
 const selectStyle: ThemeUIStyleObject = {
   p: "4px",
   fontSize: "16px",
-  mr: "4px",
+  mr: "8px",
+  mt: "8px",
   borderRadius: "4px",
 };
 export function MusicKeyInput({ sx, ...props }: MusicKeyInputProps) {
@@ -69,7 +70,10 @@ export function MusicKeyInput({ sx, ...props }: MusicKeyInputProps) {
   }, [keyMode, musicKeyNote, musicKeySignature, setMusicKey]);
 
   return (
-    <Flex sx={{ ...inputPanelSectionStyles, ...sx }} {...props}>
+    <Flex
+      sx={{ ...inputPanelSectionStyles, ...sx, flexWrap: "wrap" }}
+      {...props}
+    >
       <select
         sx={selectStyle}
         name="note"

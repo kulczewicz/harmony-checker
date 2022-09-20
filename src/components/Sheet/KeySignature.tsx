@@ -88,7 +88,7 @@ interface KeySignatureProps {
 }
 export function KeySignature({ keySignatureSymbols }: KeySignatureProps) {
   return (
-    <Box>
+    <Box sx={{ position: "relative" }}>
       <SheetStaffLines />
       <StaffKeySignature
         type="violin"

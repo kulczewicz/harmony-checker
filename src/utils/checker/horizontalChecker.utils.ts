@@ -110,36 +110,64 @@ function getParallelIntervalsErrors(
     voices: { topVoice: Voice; bottomVoice: Voice };
     first: ParallelVulnerableInterval | null;
     second: ParallelVulnerableInterval | null;
+    firstTopVoice: NoteElementProcessed;
+    firstBottomVoice: NoteElementProcessed;
+    secondTopVoice: NoteElementProcessed;
+    secondBottomVoice: NoteElementProcessed;
   }[] = [
     {
       voices: { topVoice: "soprano", bottomVoice: "alto" },
       first: firstBeatVoicesParallelIntervals.sopranoAlto,
       second: secondBeatVoicesParallelIntervals.sopranoAlto,
+      firstTopVoice: firstSoprano,
+      firstBottomVoice: firstAlto,
+      secondTopVoice: secondSoprano,
+      secondBottomVoice: secondAlto,
     },
     {
       voices: { topVoice: "soprano", bottomVoice: "tenor" },
       first: firstBeatVoicesParallelIntervals.sopranoTenor,
       second: secondBeatVoicesParallelIntervals.sopranoTenor,
+      firstTopVoice: firstSoprano,
+      firstBottomVoice: firstTenor,
+      secondTopVoice: secondSoprano,
+      secondBottomVoice: secondTenor,
     },
     {
       voices: { topVoice: "soprano", bottomVoice: "bass" },
       first: firstBeatVoicesParallelIntervals.sopranoBass,
       second: secondBeatVoicesParallelIntervals.sopranoBass,
+      firstTopVoice: firstSoprano,
+      firstBottomVoice: firstBass,
+      secondTopVoice: secondSoprano,
+      secondBottomVoice: secondBass,
     },
     {
       voices: { topVoice: "alto", bottomVoice: "tenor" },
       first: firstBeatVoicesParallelIntervals.altoTenor,
       second: secondBeatVoicesParallelIntervals.altoTenor,
+      firstTopVoice: firstAlto,
+      firstBottomVoice: firstTenor,
+      secondTopVoice: secondAlto,
+      secondBottomVoice: secondTenor,
     },
     {
       voices: { topVoice: "alto", bottomVoice: "bass" },
       first: firstBeatVoicesParallelIntervals.altoBass,
       second: secondBeatVoicesParallelIntervals.altoBass,
+      firstTopVoice: firstAlto,
+      firstBottomVoice: firstBass,
+      secondTopVoice: secondAlto,
+      secondBottomVoice: secondBass,
     },
     {
       voices: { topVoice: "tenor", bottomVoice: "bass" },
       first: firstBeatVoicesParallelIntervals.tenorBass,
       second: secondBeatVoicesParallelIntervals.tenorBass,
+      firstTopVoice: firstTenor,
+      firstBottomVoice: firstBass,
+      secondTopVoice: secondTenor,
+      secondBottomVoice: secondBass,
     },
   ];
 
@@ -149,10 +177,36 @@ function getParallelIntervalsErrors(
     voices: { topVoice, bottomVoice },
     first,
     second,
+    firstTopVoice: {
+      pitch: firstTopPitch,
+      absoluteSignature: firstTopAbsoluteSignature,
+    },
+    firstBottomVoice: {
+      pitch: firstBottomPitch,
+      absoluteSignature: firstBottomAbsoluteSignature,
+    },
+    secondTopVoice: {
+      pitch: secondTopPitch,
+      absoluteSignature: secondTopAbsoluteSignature,
+    },
+    secondBottomVoice: {
+      pitch: secondBottomPitch,
+      absoluteSignature: secondBottomAbsoluteSignature,
+    },
   } of consecutiveBeatsParallelVulnerableIntervals) {
     if (first === null || second === null) {
       continue;
     }
+
+    const intervalsAreTheSame =
+      firstTopPitch.noteSymbol === secondTopPitch.noteSymbol &&
+      firstTopPitch.octave === secondTopPitch.octave &&
+      firstTopAbsoluteSignature === secondTopAbsoluteSignature &&
+      firstBottomPitch.noteSymbol === secondBottomPitch.noteSymbol &&
+      firstBottomPitch.octave === secondBottomPitch.octave &&
+      firstBottomAbsoluteSignature === secondBottomAbsoluteSignature;
+
+    if (intervalsAreTheSame) continue;
 
     if (
       (first === "fifth" && second === "fifth") ||

@@ -16,110 +16,6 @@ import {
   staffLineBeginningWidth,
 } from "./SheetLineBeginning";
 
-const defaultBar: Omit<Bar, "barNumber"> = {
-  timeSignature: {
-    topNumber: 4,
-    bottomNumber: 4,
-  },
-  beats: [
-    {
-      beatPosition: 0,
-      soprano: {
-        type: "note",
-        voice: "soprano",
-        duration: { value: "quarter" },
-        pitch: { octave: 4, noteSymbol: "D", accidental: null },
-      },
-      alto: {
-        type: "note",
-        voice: "alto",
-        duration: { value: "half" },
-        pitch: { octave: 4, noteSymbol: "C", accidental: null },
-      },
-      tenor: {
-        type: "rest",
-        voice: "tenor",
-        duration: { value: "quarter" },
-      },
-      bass: {
-        type: "note",
-        voice: "bass",
-        duration: { value: "quarter" },
-        pitch: { octave: 3, noteSymbol: "A", accidental: null },
-      },
-    },
-    {
-      beatPosition: 8,
-      soprano: {
-        type: "note",
-        voice: "soprano",
-        duration: { value: "quarter" },
-        pitch: { octave: 4, noteSymbol: "B", accidental: null },
-      },
-      tenor: {
-        type: "note",
-        voice: "tenor",
-        duration: { value: "quarter" },
-        pitch: { octave: 4, noteSymbol: "E", accidental: null },
-      },
-      bass: {
-        type: "note",
-        voice: "bass",
-        duration: { value: "quarter" },
-        pitch: { octave: 3, noteSymbol: "D", accidental: null },
-      },
-    },
-    {
-      beatPosition: 16,
-      soprano: {
-        type: "note",
-        voice: "soprano",
-        duration: { value: "eights" },
-        pitch: { octave: 4, noteSymbol: "G", accidental: null },
-      },
-      alto: {
-        type: "note",
-        voice: "alto",
-        duration: { value: "half" },
-        pitch: { octave: 4, noteSymbol: "E", accidental: null },
-      },
-      tenor: {
-        type: "rest",
-        voice: "tenor",
-        duration: { value: "half" },
-      },
-      bass: {
-        type: "note",
-        voice: "bass",
-        duration: { value: "half" },
-        pitch: { octave: 3, noteSymbol: "G", accidental: null },
-      },
-    },
-    {
-      beatPosition: 20,
-      soprano: {
-        type: "note",
-        voice: "soprano",
-        duration: { value: "quarter" },
-        pitch: { octave: 4, noteSymbol: "A", accidental: null },
-      },
-    },
-    {
-      beatPosition: 28,
-      soprano: {
-        type: "note",
-        voice: "soprano",
-        duration: { value: "eights" },
-        pitch: { octave: 5, noteSymbol: "C", accidental: null },
-      },
-    },
-  ],
-};
-
-const defaultBars: Bar[] = new Array(10)
-  .fill(defaultBar)
-  .map((bar, index) => ({ ...bar, barNumber: index }));
-
 const sheetElementId = "sheet";
 export function Sheet() {
   const [bars, setBars] = useRecoilState(barsState);
@@ -171,6 +67,7 @@ export function Sheet() {
 
   useEffect(() => {
     updateSheetWidth();
+    // updateMusicKey({ mode: "major", note: "D", signature: null });
 
     const barsFromLocalStorage = localStorage.getItem("bars");
     if (!barsFromLocalStorage) return;

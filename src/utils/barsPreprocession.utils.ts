@@ -82,7 +82,7 @@ function preprocessBeat(
     bottomAccidentalLeftOffset: bassAccidentalLeftOffset,
     beatStaffWidth: bassBeatStaffWidth,
   } = calculateBeatStaffPositions({
-    topElement: alto,
+    topElement: tenor,
     showTopAccidental: tenorShowAccidental,
     bottomElement: bass,
     showBottomAccidental: bassShowAccidental,
@@ -181,15 +181,7 @@ export function preprocessBar(
   };
 }
 
-export function preprocessBars(
-  bars: Bar[],
-  signatureSymbolsForNotesInKey: SignatureSymbolsForNotesInKey
-) {
-  const barsWithTimeSignatureChanges = preprocessTimeSignatureChanges(bars);
-  const processedBars = barsWithTimeSignatureChanges.map((bar) =>
-    preprocessBar(bar, signatureSymbolsForNotesInKey)
-  );
-
+function mutateProcessBarsByAddingErrors(processedBars: BarProcessed[]) {
   const allBeats = processedBars.reduce((acc, curr) => {
     const currentBeatsWithBarNumber = curr.beats.map((beat) => ({
       ...beat,
@@ -267,5 +259,18 @@ export function preprocessBars(
       }
     }
   }
+}
+
+export function preprocessBars(
+  bars: Bar[],
+  signatureSymbolsForNotesInKey: SignatureSymbolsForNotesInKey
+) {
+  const barsWithTimeSignatureChanges = preprocessTimeSignatureChanges(bars);
+  const processedBars = barsWithTimeSignatureChanges.map((bar) =>
+    preprocessBar(bar, signatureSymbolsForNotesInKey)
+  );
+
+  mutateProcessBarsByAddingErrors(processedBars);
+
   return { processedBars };
 }

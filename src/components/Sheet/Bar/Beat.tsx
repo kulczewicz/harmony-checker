@@ -1,8 +1,7 @@
-import Tippy from "@tippyjs/react";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, BoxProps } from "theme-ui";
-import { sheetHeight, staffWithPaddingHeight } from "../../../constants";
+import { staffWithPaddingHeight } from "../../../constants";
 import { useUpdateBars } from "../../../hooks";
 import {
   inputDotOnState,
@@ -63,7 +62,7 @@ function BeatErrorTooltip({
         borderRadius: "8px",
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
         p: "12px",
-        minWidth: "250px",
+        minWidth: "300px",
         opacity: showError ? 1 : 0,
         transition: "all 0.2s",
         ...sx,

@@ -1,12 +1,12 @@
 import { BoxProps, Flex } from "theme-ui";
 import {
-  barPadding,
   staffHeight,
   staffVerticalPadding,
   timeSignatureWidth,
 } from "../../constants";
 import { TimeSignature } from "../../types";
 import { TimeSignatureNumberSvg } from "../Notation";
+import { SheetStaffLines } from "./Staff";
 
 interface TimeSignatureStaffProps extends BoxProps {
   timeSignature: TimeSignature;
@@ -45,13 +45,14 @@ export function TimeSignature({
   return (
     <Flex
       sx={{
+        position: "relative",
         width: `${timeSignatureWidth}px`,
-        px: `${barPadding}px`,
         flexDirection: "column",
         ...sx,
       }}
       {...props}
     >
+      <SheetStaffLines />
       <TimeSignatureStaff timeSignature={timeSignature} />
       <TimeSignatureStaff timeSignature={timeSignature} />
     </Flex>

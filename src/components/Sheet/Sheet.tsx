@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { Box, Button, Flex } from "theme-ui";
 import { useCursor } from "../../hooks";
 import { useKeyboard } from "../../hooks/useKeyboard";
@@ -11,7 +11,6 @@ import { getLineId } from "../../utils";
 import { preprocessBars } from "../../utils/barsPreprocession.utils";
 import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";
 import { BarBlock } from "./Bar";
-import { SheetStaffLines } from "./Staff";
 import {
   StaffLineBeginning,
   staffLineBeginningWidth,
@@ -123,7 +122,7 @@ const defaultBars: Bar[] = new Array(10)
 
 const sheetElementId = "sheet";
 export function Sheet() {
-  const bars = useRecoilValue(barsState);
+  const [bars, setBars] = useRecoilState(barsState);
   const {
     keySignatureSymbols,
     musicKey,
@@ -172,7 +171,16 @@ export function Sheet() {
 
   useEffect(() => {
     updateSheetWidth();
-    updateMusicKey({ mode: "major", note: "D", signature: null });
+
+    const barsFromLocalStorage = localStorage.getItem("bars");
+    if (!barsFromLocalStorage) return;
+    let bars: Bar[] = [];
+    try {
+      bars = JSON.parse(barsFromLocalStorage);
+    } catch {
+      return;
+    }
+    setBars(bars);
   }, []);
 
   useEffect(() => {

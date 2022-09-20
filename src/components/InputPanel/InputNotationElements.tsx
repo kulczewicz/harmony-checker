@@ -2,7 +2,6 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { Flex, ThemeUIStyleObject } from "theme-ui";
 import { useUpdateBars } from "../../hooks";
 import {
-  barsState,
   inputDotOnState,
   inputElementTypeState,
   inputVoiceState,
@@ -16,6 +15,7 @@ import { getSignatureForNote } from "../../utils";
 import { getSelectedElement } from "../../utils/getSelectedElement.utils";
 import { AccidentalSvg, ElementNoteSvgUp, ElementRestSvg } from "../Notation";
 import { InputPanelButton } from "./InputPanelButton";
+import { SheetDataHandler } from "./SheetDataHandler";
 
 const inputButtonStyle: ThemeUIStyleObject = {
   mr: 2,
@@ -195,6 +195,7 @@ export function InputNotationElements() {
       >
         Add bar
       </InputPanelButton>
+      <SheetDataHandler />
     </Flex>
   );
 }

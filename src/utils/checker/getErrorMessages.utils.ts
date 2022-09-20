@@ -15,7 +15,7 @@ export function getErrorMessage({
     return `Parallel octave at ${topVoice} and ${bottomVoice}`;
   }
   if (type === "voiceDistance") {
-    let message = "Distance between voices";
+    let message = `Distance between ${topVoice} and ${bottomVoice}`;
     if (topVoice === "soprano" && bottomVoice === "alto") {
       return `${message}: should not exceed an octave`;
     }

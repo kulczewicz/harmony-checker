@@ -35,29 +35,6 @@ export function BarsInputPanel({
         sx={{ mr: 2 }}
         isActive={false}
         onClick={() => {
-          if (selectedBarNumber === null || selectedBarNumber === undefined)
-            return;
-
-          const newBarNumber = selectedBarNumber + 1;
-          const barsBefore = bars.slice(0, newBarNumber);
-          const barsAfter = bars
-            .slice(newBarNumber)
-            .map(({ barNumber, ...bar }) => ({
-              barNumber: barNumber + 1,
-              ...bar,
-            }));
-          updateBarsWithCache([
-            ...barsBefore,
-            { barNumber: newBarNumber, ...defaultBarWithoutBarNumber },
-            ...barsAfter,
-          ]);
-        }}
-      >
-        + bar
-      </ControlPanelButton>
-      <ControlPanelButton
-        isActive={false}
-        onClick={() => {
           if (
             selectedBarNumber === null ||
             selectedBarNumber === undefined ||
@@ -86,7 +63,29 @@ export function BarsInputPanel({
       >
         - bar
       </ControlPanelButton>
+      <ControlPanelButton
+        isActive={false}
+        onClick={() => {
+          if (selectedBarNumber === null || selectedBarNumber === undefined)
+            return;
 
+          const newBarNumber = selectedBarNumber + 1;
+          const barsBefore = bars.slice(0, newBarNumber);
+          const barsAfter = bars
+            .slice(newBarNumber)
+            .map(({ barNumber, ...bar }) => ({
+              barNumber: barNumber + 1,
+              ...bar,
+            }));
+          updateBarsWithCache([
+            ...barsBefore,
+            { barNumber: newBarNumber, ...defaultBarWithoutBarNumber },
+            ...barsAfter,
+          ]);
+        }}
+      >
+        + bar
+      </ControlPanelButton>
       <ControlPanelButton
         sx={{ ml: 2, color: "red" }}
         isActive={false}

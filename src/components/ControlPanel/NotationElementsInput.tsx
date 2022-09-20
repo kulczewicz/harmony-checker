@@ -15,9 +15,14 @@ import { ControlPanelButton } from "./ControlPanelButton";
 import { inputPanelSectionStyles } from "./styles";
 
 const inputButtonStyle: ThemeUIStyleObject = {
+  p: 2,
   mr: 2,
-  mt: 2,
+  display: "inline-flex",
+  justifyContent: "center",
+  width: "40px",
+  height: "45px",
 };
+const noteButtonHeight = "24px";
 interface NotationElementsInput extends FlexProps {
   selectedBarNumber: number | null;
   selectedBeatPosition: number | null;
@@ -46,7 +51,7 @@ export function NotationElementsInput({
             inputDuration.noteValue === duration &&
             inputDuration.type === "note"
           }
-          sx={{ mr: 2 }}
+          sx={{ ...inputButtonStyle, alignItems: "flex-end" }}
           onClick={() => {
             const newDurationNoteValue = duration as DurationValue;
             setInputDuration({
@@ -77,7 +82,7 @@ export function NotationElementsInput({
             }
           }}
         >
-          <Note height={duration === "whole" ? "5px" : "22px"} />
+          <Note sx={{ height: duration === "whole" ? "6px" : "30px" }} />
         </ControlPanelButton>
       ))}
       {Object.entries(ElementRestSvg).map(([duration, Rest]) => (
@@ -87,7 +92,7 @@ export function NotationElementsInput({
             inputDuration.noteValue === duration &&
             inputDuration.type === "rest"
           }
-          sx={inputButtonStyle}
+          sx={{ ...inputButtonStyle, alignItems: "center" }}
           onClick={() => {
             if (selectedBarNumber !== null && selectedBeatPosition !== null) {
               const selectedElement = getSelectedElement({
@@ -124,14 +129,19 @@ export function NotationElementsInput({
             }
           }}
         >
-          <Rest height="22px" />
+          <Rest
+            sx={{
+              height:
+                duration === "whole" || duration === "half" ? "10px" : "20px",
+            }}
+          />
         </ControlPanelButton>
       ))}
       {Object.entries(AccidentalSvg).map(([accidental, Accidental], index) => (
         <ControlPanelButton
           key={accidental}
           isActive={selectedAccidental === accidental}
-          sx={inputButtonStyle}
+          sx={{ ...inputButtonStyle, alignItems: "center" }}
           onClick={() => {
             let newAccidental: NoteAccidental | null;
 

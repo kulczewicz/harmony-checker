@@ -1,18 +1,7 @@
-import {
-  SetterOrUpdater,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { SetterOrUpdater } from "recoil";
 import { Flex, FlexProps } from "theme-ui";
 import { useBars } from "../../hooks";
-import {
-  barsState,
-  defaultBarsState,
-  defaultBarWithoutBarNumber,
-  selectedBarNumberState,
-  selectedBeatPositionState,
-} from "../../NoteInputState";
+import { defaultBarWithoutBarNumber } from "../../NoteInputState";
 import { ControlPanelButton } from "./ControlPanelButton";
 import { inputPanelSectionStyles } from "./styles";
 
@@ -93,7 +82,7 @@ export function BarsInputPanel({
         isActive={false}
         onClick={resetBars}
       >
-        Reset sheet
+        Reset score
       </ControlPanelButton>
     </Flex>
   );

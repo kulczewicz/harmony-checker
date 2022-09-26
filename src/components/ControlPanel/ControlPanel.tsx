@@ -42,6 +42,8 @@ export function ControlPanel() {
             selectedVoice={voice}
             bars={bars}
             updateElementInBars={updateElementInBars}
+            setSelectedBarNumber={setSelectedBarNumber}
+            setSelectedBeatPosition={setSelectedBeatPosition}
           />
         </Flex>
       </Box>

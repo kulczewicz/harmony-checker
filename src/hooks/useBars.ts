@@ -75,12 +75,18 @@ export function getUpdatedBar(
 
     let missingBeats: Beat[] = [];
     let updatedBeatsAfter: Beat[] = beatsAfter;
-    if (nextBeatAfterNewElement?.beatPosition === beatPositionOfNewElementEnd) {
+    if (
+      nextBeatAfterNewElement?.beatPosition === beatPositionOfNewElementEnd &&
+      !nextBeatAfterNewElement[oldElement.voice]
+    ) {
+      const beatAfterNextBeat = beats[nextBeatAfterNewElementIndex + 1];
+      const beatAfterNextBeatPosition =
+        beatAfterNextBeat?.beatPosition ?? barDuration;
       updatedBeatsAfter = beatsAfter.map((beat) => {
-        const beatAfterNextBeat = beats[nextBeatAfterNewElementIndex + 1];
-        const beatAfterNextBeatPosition =
-          beatAfterNextBeat?.beatPosition ?? barDuration;
-        if (nextBeatAfterNewElement?.beatPosition === beat.beatPosition) {
+        if (
+          nextBeatAfterNewElement?.beatPosition === beat.beatPosition &&
+          !nextBeatAfterNewElement[oldElement.voice]
+        ) {
           const newBeat = { ...beat };
           const [validDuration] = getValidDurationsForDurationNumber(
             beatAfterNextBeatPosition - beat.beatPosition

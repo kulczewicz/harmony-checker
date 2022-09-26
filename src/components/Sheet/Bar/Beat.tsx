@@ -142,7 +142,7 @@ function BeatComponent({
   }, [barHtmlElementId, barNumber, beatPosition, setMouseOverBeat]);
 
   const previewElement: NoteElement | null =
-    previewNoteOctave && previewNoteSymbol && previewVoice
+    previewNoteOctave && previewNoteSymbol && previewVoice && inputDuration
       ? {
           type: "note",
           duration: {

@@ -18,9 +18,9 @@ import {
 export const inputElementValueState = atom<{
   type: NotationElementType;
   noteValue: DurationValue;
-}>({
+} | null>({
   key: "inputElementValue",
-  default: { type: "note", noteValue: "quarter" },
+  default: null,
 });
 
 export const inputDotOnState = atom<boolean>({

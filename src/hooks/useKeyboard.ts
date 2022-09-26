@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
-  barsState,
   inputElementValueState,
   inputVoiceState,
   previewNoteOctaveState,

@@ -34,6 +34,8 @@ interface NotationElementsInputProps extends FlexProps {
   selectedVoice: Voice;
   bars: Bar[];
   updateElementInBars: (newElement: SelectedElement) => void;
+  setSelectedBarNumber: SetterOrUpdater<number | null>;
+  setSelectedBeatPosition: SetterOrUpdater<number | null>;
 }
 export function NotationElementsInput({
   selectedBarNumber,
@@ -41,6 +43,8 @@ export function NotationElementsInput({
   bars,
   updateElementInBars,
   selectedVoice,
+  setSelectedBarNumber,
+  setSelectedBeatPosition,
 }: NotationElementsInputProps) {
   const [inputDuration, setInputDuration] = useRecoilState(
     inputElementValueState
@@ -57,12 +61,19 @@ export function NotationElementsInput({
         <ControlPanelButton
           key={duration}
           isActive={
-            inputDuration.noteValue === duration &&
-            inputDuration.type === "note"
+            inputDuration?.noteValue === duration &&
+            inputDuration?.type === "note"
           }
           sx={{ ...inputButtonStyle, alignItems: "flex-end" }}
           onClick={() => {
             const newDurationNoteValue = duration as DurationValue;
+
+            if (newDurationNoteValue === inputDuration?.noteValue) {
+              setInputDuration(null);
+              setSelectedBarNumber(null);
+              setSelectedBeatPosition(null);
+              return;
+            }
             setInputDuration({
               noteValue: newDurationNoteValue,
               type: "note",
@@ -98,11 +109,18 @@ export function NotationElementsInput({
         <ControlPanelButton
           key={duration}
           isActive={
-            inputDuration.noteValue === duration &&
-            inputDuration.type === "rest"
+            inputDuration?.noteValue === duration &&
+            inputDuration?.type === "rest"
           }
           sx={{ ...inputButtonStyle, alignItems: "center" }}
           onClick={() => {
+            const newDurationNoteValue = duration as DurationValue;
+            if (newDurationNoteValue === inputDuration?.noteValue) {
+              setInputDuration(null);
+              setSelectedBarNumber(null);
+              setSelectedBeatPosition(null);
+              return;
+            }
             if (selectedBarNumber !== null && selectedBeatPosition !== null) {
               const selectedElement = getSelectedElement({
                 bars,
@@ -112,7 +130,6 @@ export function NotationElementsInput({
               });
 
               if (selectedElement) {
-                const newDurationNoteValue = duration as DurationValue;
                 setInputDuration({
                   noteValue: newDurationNoteValue,
                   type: "rest",

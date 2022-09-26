@@ -87,7 +87,7 @@ export type SignatureSymbolsForNotesInKey = {
 
 interface BaseElement {
   type: NotationElementType;
-  duration: ElementDuration; // offset from the beginning of the bar
+  duration: ElementDuration;
   voice: Voice;
 }
 export interface NoteElement extends BaseElement {
@@ -186,7 +186,6 @@ export interface BeatProcessedWithBarNumber extends BeatProcessed {
   barNumber: number;
 }
 
-export type OldLine = BarProcessed[];
 export type Line = {
   barNumbersRange: {
     start: number;
@@ -259,4 +258,3 @@ export interface BeatHarmonyError {
   topVoice: Voice;
   bottomVoice: Voice;
 }
-export type HarmonyError = VerticalHarmonyError | HorizontalHarmonyError;

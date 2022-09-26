@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   barsState,
-  inputElementTypeState,
+  inputElementValueState,
   inputVoiceState,
   previewNoteOctaveState,
   previewNoteSymbolState,
@@ -22,7 +22,7 @@ export function useKeyboard() {
   const [selectedBeatPosition, setSelectedBeatPosition] = useRecoilState(
     selectedBeatPositionState
   );
-  const setInputElementType = useSetRecoilState(inputElementTypeState);
+  const setInputElementType = useSetRecoilState(inputElementValueState);
   const setSelectedAccidental = useSetRecoilState(selectedAccidentalState);
   const setPreviewNoteSymbol = useSetRecoilState(previewNoteSymbolState);
   const setPreviewNoteOctave = useSetRecoilState(previewNoteOctaveState);

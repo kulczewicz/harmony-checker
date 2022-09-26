@@ -2,7 +2,7 @@ import { SetterOrUpdater, useRecoilState, useRecoilValue } from "recoil";
 import { Flex, FlexProps, ThemeUIStyleObject } from "theme-ui";
 import { useBars } from "../../hooks";
 import {
-  inputElementTypeState,
+  inputElementValueState,
   inputVoiceState,
   selectedAccidentalState,
   signatureSymbolsForNotesInKeyState,
@@ -30,7 +30,7 @@ export function NotationElementsInput({
   selectedBeatPosition,
 }: NotationElementsInput) {
   const [inputDuration, setInputDuration] = useRecoilState(
-    inputElementTypeState
+    inputElementValueState
   );
   const [selectedAccidental, setSelectedAccidental] = useRecoilState(
     selectedAccidentalState

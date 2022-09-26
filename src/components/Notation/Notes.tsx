@@ -14,7 +14,7 @@ const addPropsToComponent =
 export function WholeNote({ sx, ...props }: SvgPropsThemeUi) {
   return (
     <svg
-      sx={{ height: `${noteHeadHight}px`, width: `${noteHeadWidth}px`, ...sx }}
+      sx={{ height: `${noteHeadWidth}px`, width: `${noteHeadWidth}px`, ...sx }}
       viewBox="0 -137 459 273"
       {...props}
     >

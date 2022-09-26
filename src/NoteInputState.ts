@@ -15,11 +15,11 @@ import {
   SignatureSymbolsForNotesInKey,
 } from "./types";
 
-export const inputElementTypeState = atom<{
+export const inputElementValueState = atom<{
   type: NotationElementType;
   noteValue: DurationValue;
 }>({
-  key: "inputElementType",
+  key: "inputElementValue",
   default: { type: "note", noteValue: "quarter" },
 });
 

@@ -5,7 +5,7 @@ import { noteZIndex, staffWithPaddingHeight } from "../../../constants";
 import { useBars } from "../../../hooks";
 import {
   inputDotOnState,
-  inputElementTypeState,
+  inputElementValueState,
   mouseOverBeatState,
   selectedAccidentalState,
   selectedBarNumberState,
@@ -108,7 +108,7 @@ function BeatComponent({
   const setSelectedBarNumber = useSetRecoilState(selectedBarNumberState);
   const setSelectedBeatPosition = useSetRecoilState(selectedBeatPositionState);
   const [mouseOverBeat, setMouseOverBeat] = useRecoilState(mouseOverBeatState);
-  const inputDuration = useRecoilValue(inputElementTypeState);
+  const inputDuration = useRecoilValue(inputElementValueState);
   const selectedAccidental = useRecoilValue(selectedAccidentalState);
   const isDotOn = useRecoilValue(inputDotOnState);
 

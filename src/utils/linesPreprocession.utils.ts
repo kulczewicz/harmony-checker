@@ -1,4 +1,4 @@
-import { BarProcessed, OldLine, Line } from "../types";
+import { BarProcessed, Line } from "../types";
 
 interface BreakProcessedBarsIntoLinesParams {
   availableSheetWidth: number;

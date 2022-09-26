@@ -6,14 +6,7 @@ import { useKeyboard } from "../../hooks/useKeyboard";
 import { useMusicKey } from "../../hooks/useMusicKey";
 import { barsState, inputVoiceState } from "../../NoteInputState";
 
-import {
-  Bar,
-  OldLine,
-  NoteOctave,
-  NoteSymbol,
-  Voice,
-  Line,
-} from "../../types/data";
+import { Bar, NoteOctave, NoteSymbol, Voice, Line } from "../../types/data";
 import { getLineId } from "../../utils";
 import { preprocessBars } from "../../utils/barsPreprocession.utils";
 import { breakProcessedBarsIntoLines } from "../../utils/linesPreprocession.utils";

@@ -61,7 +61,8 @@ function PreviewElement({
     <StaffElementWithAccidental
       position={position}
       element={element}
-      isSelected={true}
+      isSelected={false}
+      isPreview={true}
       isCausingError={false}
       setSelected={() =>
         updateElementInBars({ barNumber, beatPosition, element })

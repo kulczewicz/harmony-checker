@@ -1,11 +1,14 @@
 import { useCallback } from "react";
 import { useRecoilState } from "recoil";
-import { durationByNoteValue } from "../constants/timeSignature.constants";
+import {
+  durationByNoteValue,
+  noteValueByDuration,
+} from "../constants/timeSignature.constants";
 import { barsState, defaultBarsState } from "../NoteInputState";
-import { Bar, Beat, SelectedElement } from "../types";
+import { Bar, Beat, DurationValue, SelectedElement } from "../types";
 import {
   calculateBarDuration,
-  getMissingBeats,
+  getMissingRests,
   getValidDurationsForDurationNumber,
 } from "../utils/timeSignature.utils";
 
@@ -71,10 +74,50 @@ export function getUpdatedBar(
     const nextBeatAfterNewElement = beats[nextBeatAfterNewElementIndex];
 
     let missingBeats: Beat[] = [];
-    if (nextBeatAfterNewElement?.beatPosition > beatPositionOfNewElementEnd) {
+    let updatedBeatsAfter: Beat[] = beatsAfter;
+    if (nextBeatAfterNewElement?.beatPosition === beatPositionOfNewElementEnd) {
+      updatedBeatsAfter = beatsAfter.map((beat) => {
+        const beatAfterNextBeat = beats[nextBeatAfterNewElementIndex + 1];
+        const beatAfterNextBeatPosition =
+          beatAfterNextBeat?.beatPosition ?? barDuration;
+        if (nextBeatAfterNewElement?.beatPosition === beat.beatPosition) {
+          const newBeat = { ...beat };
+          const [validDuration] = getValidDurationsForDurationNumber(
+            beatAfterNextBeatPosition - beat.beatPosition
+          );
+
+          if (validDuration) {
+            if (oldElement.type === "rest") {
+              newBeat[newElement.voice] = {
+                type: "rest",
+                duration: {
+                  value: noteValueByDuration[validDuration] as DurationValue,
+                },
+                voice: newElement.voice,
+              };
+            } else {
+              newBeat[newElement.voice] = {
+                type: "note",
+                duration: {
+                  value: noteValueByDuration[validDuration] as DurationValue,
+                },
+                voice: newElement.voice,
+                pitch: oldElement.pitch,
+              };
+            }
+          }
+          return newBeat;
+        }
+        return beat;
+      });
+    }
+
+    const nextBeatAfterNewElementPosition =
+      nextBeatAfterNewElement?.beatPosition ?? barDuration;
+    if (nextBeatAfterNewElementPosition > beatPositionOfNewElementEnd) {
       const missingDuration =
-        nextBeatAfterNewElement.beatPosition - beatPositionOfNewElementEnd;
-      missingBeats = getMissingBeats({
+        nextBeatAfterNewElementPosition - beatPositionOfNewElementEnd;
+      missingBeats = getMissingRests({
         missingBeatsDurations:
           getValidDurationsForDurationNumber(missingDuration),
         startBeatPosition: beatPositionOfNewElementEnd,
@@ -85,7 +128,7 @@ export function getUpdatedBar(
       ...beatsBeforeOldBeat,
       ...beatsToReplace,
       ...missingBeats,
-      ...beatsAfter,
+      ...updatedBeatsAfter,
     ];
 
     return {
@@ -101,7 +144,7 @@ export function getUpdatedBar(
       ...elementBeat,
       [newElement.voice]: newElement,
     };
-    const missingBeats = getMissingBeats({
+    const missingBeats = getMissingRests({
       missingBeatsDurations:
         getValidDurationsForDurationNumber(missingDuration),
       startBeatPosition: beatPositionOfNewElementEnd,

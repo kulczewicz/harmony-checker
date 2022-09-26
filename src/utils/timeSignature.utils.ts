@@ -41,16 +41,16 @@ export function getValidDurationsForDurationNumber(
   return [];
 }
 
-interface GetMissingBeatsParams {
+interface GetMissingRestsParams {
   missingBeatsDurations: number[];
   startBeatPosition: number;
   voice: Voice;
 }
-export function getMissingBeats({
+export function getMissingRests({
   missingBeatsDurations,
   startBeatPosition,
   voice,
-}: GetMissingBeatsParams) {
+}: GetMissingRestsParams) {
   const beats: Beat[] = [];
   let beatPositionOffset = startBeatPosition;
   for (const duration of missingBeatsDurations) {

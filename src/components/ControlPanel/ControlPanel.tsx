@@ -1,5 +1,5 @@
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Box, Button, Flex, Grid } from "theme-ui";
+import { Box, Flex } from "theme-ui";
 import { useBars } from "../../hooks";
 import {
   inputVoiceState,

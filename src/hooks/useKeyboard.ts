@@ -36,6 +36,10 @@ export function useKeyboard() {
       selectedBeatPosition,
       voice,
     });
+    const resetPreviewNote = () => {
+      setPreviewNoteSymbol(null);
+      setPreviewNoteOctave(null);
+    };
     const onKeyDown = onKeyDownAction({
       bars,
       currentElement: selectedElement?.element,
@@ -44,8 +48,7 @@ export function useKeyboard() {
       setSelectedBarNumber,
       setSelectedBeatPosition,
       updateElementInBars,
-      setPreviewNoteSymbol,
-      setPreviewNoteOctave,
+      resetPreviewNote,
     });
     addEventListener("keydown", onKeyDown);
 

@@ -7,7 +7,14 @@ import {
   selectedAccidentalState,
   signatureSymbolsForNotesInKeyState,
 } from "../../NoteInputState";
-import { DurationValue, NotationElement, NoteAccidental } from "../../types";
+import {
+  Bar,
+  DurationValue,
+  NotationElement,
+  NoteAccidental,
+  SelectedElement,
+  Voice,
+} from "../../types";
 import { getSignatureForNote } from "../../utils";
 import { getSelectedElement } from "../../utils/getSelectedElement.utils";
 import { AccidentalSvg, ElementNoteSvgUp, ElementRestSvg } from "../Notation";
@@ -21,14 +28,20 @@ const inputButtonStyle: ThemeUIStyleObject = {
   width: "38px",
   height: "45px",
 };
-interface NotationElementsInput extends FlexProps {
+interface NotationElementsInputProps extends FlexProps {
   selectedBarNumber: number | null;
   selectedBeatPosition: number | null;
+  selectedVoice: Voice;
+  bars: Bar[];
+  updateElementInBars: (newElement: SelectedElement) => void;
 }
 export function NotationElementsInput({
   selectedBarNumber,
   selectedBeatPosition,
-}: NotationElementsInput) {
+  bars,
+  updateElementInBars,
+  selectedVoice,
+}: NotationElementsInputProps) {
   const [inputDuration, setInputDuration] = useRecoilState(
     inputElementValueState
   );
@@ -38,8 +51,6 @@ export function NotationElementsInput({
   const signatureSymbolsForNotes = useRecoilValue(
     signatureSymbolsForNotesInKeyState
   );
-  const voice = useRecoilValue(inputVoiceState);
-  const { bars, updateElementInBars } = useBars();
   return (
     <Flex sx={{ ...inputPanelSectionStyles, flexWrap: "wrap" }}>
       {Object.entries(ElementNoteSvgUp).map(([duration, Note]) => (
@@ -61,7 +72,7 @@ export function NotationElementsInput({
                 bars,
                 selectedBarNumber,
                 selectedBeatPosition,
-                voice,
+                voice: selectedVoice,
               });
 
               if (selectedElement?.element.type === "note") {
@@ -97,7 +108,7 @@ export function NotationElementsInput({
                 bars,
                 selectedBarNumber,
                 selectedBeatPosition,
-                voice,
+                voice: selectedVoice,
               });
 
               if (selectedElement) {
@@ -158,7 +169,7 @@ export function NotationElementsInput({
               bars,
               selectedBarNumber,
               selectedBeatPosition,
-              voice,
+              voice: selectedVoice,
             });
 
             if (selectedElement?.element.type == "note") {

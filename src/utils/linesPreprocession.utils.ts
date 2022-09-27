@@ -10,19 +10,6 @@ export function breakProcessedBarsIntoLines({
   bars,
 }: BreakProcessedBarsIntoLinesParams) {
   const widthIncreaseFactor = 1.5;
-  // const lines: Line[] = [];
-  // const allBarsWidth = bars.reduce((acc, { width }) => {
-  //   return acc + width;
-  // }, 0);
-  // const numberOfLinesRequired = Math.ceil(
-  //   (allBarsWidth * widthIncreaseFactor) / availableSheetWidth
-  // );
-
-  // const barsPerLine = Math.ceil(bars.length / numberOfLinesRequired);
-
-  // for (let i = 0; i < bars.length; i += barsPerLine) {
-  //   lines.push(bars.slice(i, i + barsPerLine));
-  // }
 
   const lines: Line[] = [{ bars: [], barNumbersRange: { start: 0, end: 0 } }];
   let currentLineIndex = 0;

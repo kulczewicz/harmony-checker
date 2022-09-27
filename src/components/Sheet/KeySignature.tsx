@@ -1,15 +1,6 @@
 import { Box, BoxProps, Flex } from "theme-ui";
-import {
-  noteHeadHight,
-  staffVerticalPadding,
-  staffWithPaddingHeight,
-} from "../../constants";
-import {
-  KeySignatureSymbols,
-  MusicKey,
-  NotePitch,
-  NoteSymbol,
-} from "../../types";
+import { noteHeadHight, staffWithPaddingHeight } from "../../constants";
+import { KeySignatureSymbols, NotePitch } from "../../types";
 import {
   adjustFlatPositionFromTop,
   adjustSharpPosition,

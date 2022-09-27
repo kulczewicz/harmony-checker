@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { Box, Button, Flex } from "theme-ui";
+import { useRecoilValue } from "recoil";
+import { Box, Flex } from "theme-ui";
 import { useCursor, useBars } from "../../hooks";
 import { useKeyboard } from "../../hooks/useKeyboard";
 import { useMusicKey } from "../../hooks/useMusicKey";
-import { barsState, inputVoiceState } from "../../NoteInputState";
+import { inputVoiceState } from "../../NoteInputState";
 
 import { Bar, NoteOctave, NoteSymbol, Voice, Line } from "../../types/data";
 import { getLineId } from "../../utils";
